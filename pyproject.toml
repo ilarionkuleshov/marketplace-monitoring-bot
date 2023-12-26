@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "marketplace-monitoring-bot"
+version = "0.1.0"
+description = "Telegram bot for monitoring adverts through search queries on marketplaces."
+authors = ["ilarionkuleshov <ilarion.kuleshov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+scrapy = "^2.11.0"
+pydantic = "^2.5.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
