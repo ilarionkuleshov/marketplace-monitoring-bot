@@ -4,7 +4,7 @@ from functools import lru_cache
 from ipaddress import IPv4Address
 from typing import Literal
 
-from dotenv import find_dotenvs
+from dotenv import find_dotenv
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
