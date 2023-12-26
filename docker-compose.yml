@@ -27,14 +27,14 @@ services:
     volumes:
       - ./data/rabbitmq:/var/lib/rabbitmq
 
-  python-dev:
+  python:
     build:
       dockerfile: Dockerfile
       args:
         - PYTHON_IMAGE=${PYTHON_IMAGE}
     volumes:
       - ./:/app
-    working_dir: /app/src
+    working_dir: /app
     command: sleep infinity
 
 networks:

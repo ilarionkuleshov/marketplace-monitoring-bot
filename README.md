@@ -14,5 +14,5 @@ docker compose build
 ## Usage
 For development, run these services:
 ```
-docker compose up -d python-dev postgres rabbitmq
+docker compose up -d python postgres rabbitmq
 ```
