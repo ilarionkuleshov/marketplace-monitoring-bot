@@ -51,7 +51,7 @@ per-file-ignores = "__init__.py:F401"
 [tool.pylint]
 init-hook = "import sys; sys.path.append('src');"
 py-version = "3.12"
-disable = "R0903,C0114"
+disable = "R0903,C0114,C0103"
 max-line-length = "120"
 ignored-modules = "alembic"
 
