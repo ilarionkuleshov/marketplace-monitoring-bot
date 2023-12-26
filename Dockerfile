@@ -8,7 +8,5 @@ RUN pip install poetry
 WORKDIR /app
 COPY .env pyproject.toml poetry.lock ./
 COPY src ./src
-COPY tests ./tests
-COPY scripts ./scripts
 
 RUN poetry install

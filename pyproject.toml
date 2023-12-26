@@ -14,6 +14,9 @@ aiogram = "^3.2.0"
 kombu = "^5.3.4"
 fastapi = "^0.106.0"
 pydantic-settings = "^2.1.0"
+sqlalchemy = "^2.0.23"
+alembic = "^1.13.1"
+psycopg2-binary = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
@@ -22,6 +25,7 @@ black = "^23.12.1"
 flake8 = "^6.1.0"
 pylint = "^3.0.3"
 mypy = "^1.8.0"
+flake8-pyproject = "^1.2.3"
 
 [build-system]
 requires = ["poetry-core"]
@@ -47,7 +51,7 @@ per-file-ignores = "__init__.py:F401"
 [tool.pylint]
 init-hook = "import sys; sys.path.append('src');"
 py-version = "3.12"
-disable = "R0903,C0114"
+disable = "R0903,C0114,C0103"
 max-line-length = "120"
 ignored-modules = "alembic"
 

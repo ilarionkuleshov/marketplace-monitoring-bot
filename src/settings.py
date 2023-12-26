@@ -29,15 +29,15 @@ class AMQPCredentials(BaseSettings):
     AMQP_USERNAME: str = Field(..., min_length=1)
     AMQP_PASSWORD: str = Field(..., min_length=1)
     AMQP_VIRTUAL_HOST: str = Field(..., min_length=1)
-    AMQP_COLLECTION_TASK_QUEUE: str = Field(..., min_length=1)
-    AMQP_COLLECTION_RESULT_QUEUE: str = Field(..., min_length=1)
-    AMQP_COLLECTION_REPLY_QUEUE: str = Field(..., min_length=1)
+    AMQP_SEARCH_TASK_QUEUE: str = Field(..., min_length=1)
+    AMQP_SEARCH_RESULT_QUEUE: str = Field(..., min_length=1)
+    AMQP_SEARCH_REPLY_QUEUE: str = Field(..., min_length=1)
 
     model_config = SettingsConfigDict(env_file=find_dotenv(), extra="ignore")
 
 
 @lru_cache
-def database_credentials() -> DBCredentials:
+def db_credentials() -> DBCredentials:
     """Returns the credentials for the database."""
     return DBCredentials()
 
