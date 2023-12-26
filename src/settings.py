@@ -37,7 +37,7 @@ class AMQPCredentials(BaseSettings):
 
 
 @lru_cache
-def database_credentials() -> DBCredentials:
+def db_credentials() -> DBCredentials:
     """Returns the credentials for the database."""
     return DBCredentials()
 
