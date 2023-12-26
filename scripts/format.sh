@@ -1,3 +1,5 @@
+set -e
+
 echo "isort formatting:"
 isort src
 

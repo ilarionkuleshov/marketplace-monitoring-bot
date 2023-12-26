@@ -1,3 +1,5 @@
+set -e
+
 echo "isort check:"
 isort src --check
 
