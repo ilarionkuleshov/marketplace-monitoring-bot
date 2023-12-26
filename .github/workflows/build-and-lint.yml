@@ -4,9 +4,6 @@ on:
   pull_request:
     branches:
       - main
-  push:
-    branches:
-      - main
 
 jobs:
   build-and-lint:
@@ -18,6 +15,7 @@ jobs:
 
     - name: Build project with docker compose
       run: |
+        cp .env.example .env
         docker compose build
         docker compose up -d python
 
