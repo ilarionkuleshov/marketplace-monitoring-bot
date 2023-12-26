@@ -1,0 +1,42 @@
+version: "3.9"
+
+services:
+  postgres:
+    restart: always
+    image: ${POSTGRES_IMAGE}
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  rabbitmq:
+    restart: always
+    image: ${RABBITMQ_IMAGE}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: ${AMQP_USERNAME}
+      RABBITMQ_DEFAULT_PASS: ${AMQP_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: ${AMQP_VIRTUAL_HOST}
+    hostname: bunnymq
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq
+
+  python:
+    build:
+      dockerfile: Dockerfile
+      args:
+        - PYTHON_IMAGE=${PYTHON_IMAGE}
+    volumes:
+      - ./:/app
+    working_dir: /app
+    command: sleep infinity
+
+networks:
+  default:
+    driver: bridge

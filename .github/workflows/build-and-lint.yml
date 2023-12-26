@@ -1,0 +1,24 @@
+name: Build and lint
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-lint:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Build project with docker compose
+      run: |
+        cp .env.example .env
+        docker compose build
+        docker compose up -d python
+
+    - name: Run lint script
+      run: |
+        docker compose exec python poetry run sh /app/scripts/lint.sh
