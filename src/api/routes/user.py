@@ -1,7 +1,7 @@
 """Routes for the interacting with user entities."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select, update
+from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 
 from api.dependencies import DatabaseProvider
@@ -61,8 +61,20 @@ async def update_user(
 
     """
     query = update(UserModel).where(UserModel.telegram_id == telegram_id).values(user.model_dump(exclude_none=True))
-    await db_provider.update(query)
+    await db_provider.execute(query)
     return await read_user(telegram_id=telegram_id, db_provider=db_provider)
+
+
+async def delete_user(telegram_id: int, db_provider: DatabaseProvider = Depends(DatabaseProvider)) -> None:
+    """Deletes user from the database.
+
+    Args:
+        telegram_id (int): Telegram id of the user to delete.
+        db_provider (DatabaseProvider): Provider for database.
+
+    """
+    query = delete(UserModel).where(UserModel.telegram_id == telegram_id)
+    await db_provider.execute(query)
 
 
 def setup(router: APIRouter) -> None:
@@ -70,3 +82,4 @@ def setup(router: APIRouter) -> None:
     router.add_api_route("/user/", read_user, methods=["GET"], response_model=User)
     router.add_api_route("/user/", create_user, methods=["POST"], response_model=User)
     router.add_api_route("/user/", update_user, methods=["PATCH"], response_model=User)
+    router.add_api_route("/user/", delete_user, methods=["DELETE"], response_model=None)
