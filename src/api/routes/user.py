@@ -1,6 +1,6 @@
 """Routes for the interacting with user entities."""
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
@@ -17,13 +17,13 @@ async def read_user(telegram_id: int, db_provider: DatabaseProvider = Depends(Da
         db_provider (DatabaseProvider): Provider for database.
 
     Raises:
-        HTTPException: 404 code - user with the given `telegram_id` not found.
+        HTTPException: User with the given `telegram_id` not found.
 
     """
     query = select(UserModel).where(UserModel.telegram_id == telegram_id)
     if user := await db_provider.select_one(query):
         return User.model_validate(user[0])
-    raise HTTPException(404, detail=f"User with Telegram ID {telegram_id} not found")
+    raise HTTPException(status.HTTP_404_NOT_FOUND, f"User with Telegram ID {telegram_id} not found")
 
 
 async def create_user(user: UserCreate, db_provider: DatabaseProvider = Depends(DatabaseProvider)) -> User:
@@ -37,13 +37,13 @@ async def create_user(user: UserCreate, db_provider: DatabaseProvider = Depends(
         User: Created user.
 
     Raises:
-        HTTPException: 409 code - user with the given `telegram_id` already exists in database.
+        HTTPException: User with the given `telegram_id` already exists in database.
 
     """
     query = insert(UserModel).values(user.model_dump())
     if await db_provider.insert(query):
         return await read_user(telegram_id=user.telegram_id, db_provider=db_provider)
-    raise HTTPException(409, detail=f"User with Telegram ID {user.telegram_id} already exists")
+    raise HTTPException(status.HTTP_409_CONFLICT, f"User with Telegram ID {user.telegram_id} already exists")
 
 
 def setup(router: APIRouter) -> None:
