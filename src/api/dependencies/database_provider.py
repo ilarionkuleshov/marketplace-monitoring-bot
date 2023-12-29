@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Literal, Sequence, overload
 
 from sqlalchemy import Delete, Insert, Row, Select, Update
 from sqlalchemy.exc import IntegrityError
@@ -8,7 +8,6 @@ from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.sql.dml import ReturningInsert
 
 from interfaces import SingletonBase
 from settings import db_credentials
@@ -24,46 +23,39 @@ class DatabaseProvider(SingletonBase):
         self._engine = create_async_engine(db_credentials().build_url(use_sync_driver=False))
         self._session_maker = async_sessionmaker(bind=self._engine)
 
-    async def select_one(self, query: Select) -> Row | None:
-        """Returns one selected record from database by the given `query`."""
-        async with self._session_maker() as session:
-            cursor = await session.execute(query)
-            return cursor.fetchone()
+    @overload
+    async def select(self, query: Select, fetch_all: Literal[True]) -> Sequence[Row]:
+        ...
 
-    async def select_all(self, query: Select) -> Sequence[Row]:
-        """Returns all selected records from database by the given `query`."""
-        async with self._session_maker() as session:
-            cursor = await session.execute(query)
-            return cursor.fetchall()
+    @overload
+    async def select(self, query: Select, fetch_all: Literal[False]) -> Row | None:
+        ...
 
-    async def insert(self, query: Insert) -> bool:
-        """Executes given `query` to insert new record to database.
+    async def select(self, query: Select, fetch_all: bool) -> Sequence[Row] | Row | None:
+        """Returns selected records from database.
 
-        Returns:
-            bool: True if insertion is successful, otherwise False.
+        Args:
+            query (Select): Select query to execute.
+            fetch_all (bool): Whether to fetch all matching records or just one.
 
         """
         async with self._session_maker() as session:
-            try:
-                await session.execute(query)
-                await session.commit()
-            except IntegrityError:
-                return False
-        return True
+            cursor = await session.execute(query)
+            return cursor.fetchall() if fetch_all else cursor.fetchone()
 
-    async def insert_with_returning(self, query: ReturningInsert) -> Row | None:
+    async def insert(self, query: Insert) -> int | None:
         """Executes given `query` to insert new record to database.
 
         Returns:
-            Row: Returned result after executing query.
-            None: If error occurred while inserting.
+            int: Id of the inserted record.
+            None: If insertion was unsuccessful.
 
         """
         async with self._session_maker() as session:
             try:
                 cursor = await session.execute(query)
                 await session.commit()
-                return cursor.fetchone()
+                return cursor.inserted_primary_key
             except IntegrityError:
                 return None
 

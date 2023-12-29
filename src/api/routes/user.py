@@ -21,7 +21,7 @@ async def read_user(telegram_id: int, db_provider: DatabaseProvider = Depends(Da
 
     """
     query = select(UserModel).where(UserModel.telegram_id == telegram_id)
-    if user := await db_provider.select_one(query):
+    if user := await db_provider.select(query, fetch_all=False):
         return User.model_validate(user[0])
     raise HTTPException(status.HTTP_404_NOT_FOUND, f"User with Telegram ID {telegram_id} not found")
 
@@ -41,7 +41,8 @@ async def create_user(user: UserCreate, db_provider: DatabaseProvider = Depends(
 
     """
     query = insert(UserModel).values(user.model_dump())
-    if await db_provider.insert(query):
+    user_id = await db_provider.insert(query)
+    if user_id is not None:
         return await read_user(telegram_id=user.telegram_id, db_provider=db_provider)
     raise HTTPException(status.HTTP_409_CONFLICT, f"User with Telegram ID {user.telegram_id} already exists")
 

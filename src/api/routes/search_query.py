@@ -25,7 +25,7 @@ async def read_search_query(id: int, db_provider: DatabaseProvider = Depends(Dat
 
     """
     query = select(SearchQueryModel).where(UserModel.id == id)
-    if search_query := await db_provider.select_one(query):
+    if search_query := await db_provider.select(query, fetch_all=False):
         return SearchQuery.model_validate(search_query[0])
     raise HTTPException(status.HTTP_404_NOT_FOUND, f"Search query with ID {id} not found")
 
@@ -45,7 +45,7 @@ async def read_search_queries(
         .join(UserModel, UserModel.id == SearchQueryModel.user_id)
         .where(UserModel.telegram_id == user_telegram_id)
     )
-    search_queries = await db_provider.select_all(query)
+    search_queries = await db_provider.select(query, fetch_all=True)
     return [SearchQuery.model_validate(search_query[0]) for search_query in search_queries]
 
 
@@ -69,8 +69,9 @@ async def create_search_query(
     search_query_values["user_id"] = (await read_user(search_query.user_telegram_id, db_provider)).id
 
     query = insert(SearchQueryModel).values(search_query_values).returning(SearchQueryModel.id)
-    if search_query_id := await db_provider.insert_with_returning(query):
-        return await read_search_query(search_query_id[0], db_provider)
+    search_query_id = await db_provider.insert(query)
+    if search_query_id is not None:
+        return await read_search_query(search_query_id, db_provider)
 
     raise HTTPException(
         status.HTTP_409_CONFLICT,
