@@ -1,4 +1,4 @@
-from sqlalchemy import Insert, Row, Select
+from sqlalchemy import Insert, Row, Select, Update
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -35,6 +35,12 @@ class DatabaseProvider(SingletonBase):
                 return False
             await session.commit()
         return True
+
+    async def update(self, query: Update) -> None:
+        """Executes given `query` to update record in the database."""
+        async with self._session_maker() as session:
+            await session.execute(query)
+            await session.commit()
 
     async def select_one(self, query: Select) -> Row | None:
         """Returns selected record from database by the given `query`."""

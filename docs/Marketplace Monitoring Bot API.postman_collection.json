@@ -45,6 +45,35 @@
                     }
                 }
             }
+        },
+        {
+            "name": "Update User",
+            "request": {
+                "method": "PATCH",
+                "url": {
+                    "raw": "{{api_url}}/user/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/user/",
+                    "query": [
+                        {
+                            "key": "telegram_id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"example_name\",\n    \"language\": \"en\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
         }
     ],
     "auth": {

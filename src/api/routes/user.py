@@ -1,11 +1,11 @@
 """Routes for the interacting with user entities."""
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.dialects.postgresql import insert
 
 from api.dependencies import DatabaseProvider
-from api.schemas import User, UserCreate
+from api.schemas import User, UserCreate, UserUpdate
 from database.models import User as UserModel
 
 
@@ -46,7 +46,27 @@ async def create_user(user: UserCreate, db_provider: DatabaseProvider = Depends(
     raise HTTPException(status.HTTP_409_CONFLICT, f"User with Telegram ID {user.telegram_id} already exists")
 
 
+async def update_user(
+    telegram_id: int, user: UserUpdate, db_provider: DatabaseProvider = Depends(DatabaseProvider)
+) -> User:
+    """Updates user in the database.
+
+    Args:
+        telegram_id (int): Telegram id of the user to update.
+        user (UserUpdate): User data to update.
+        db_provider (DatabaseProvider): Provider for database.
+
+    Returns:
+        User: Updated user.
+
+    """
+    query = update(UserModel).where(UserModel.telegram_id == telegram_id).values(user.model_dump(exclude_none=True))
+    await db_provider.update(query)
+    return await read_user(telegram_id=telegram_id, db_provider=db_provider)
+
+
 def setup(router: APIRouter) -> None:
     """Adds user routes for the FastAPI `router`."""
     router.add_api_route("/user/", read_user, methods=["GET"], response_model=User)
     router.add_api_route("/user/", create_user, methods=["POST"], response_model=User)
+    router.add_api_route("/user/", update_user, methods=["PATCH"], response_model=User)

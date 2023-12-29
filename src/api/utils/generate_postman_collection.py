@@ -8,7 +8,6 @@ To customize name of the postman collection (default is `Marketplace Monitoring 
 
 """
 
-import inspect
 import json
 from argparse import ArgumentParser
 from pathlib import Path
@@ -18,31 +17,30 @@ from typing import Any
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 
+from api.dependencies import DatabaseProvider
 from api.schemas.base import SchemaWithExample
 from api.utils import create_app
 
 URL_TEMPLATE = Template("{{api_url}}$path")
 
 
-def get_post_request_body(route: APIRoute) -> dict[str, Any] | None:
-    """Returns example body for the POST `route`."""
-    post_arg_type = next(iter(route.endpoint.__annotations__.values()))
-
-    if issubclass(post_arg_type, SchemaWithExample):
-        return {
-            "mode": "raw",
-            "raw": post_arg_type.example().model_dump_json(indent=4),
-            "options": {"raw": {"language": "json"}},
-        }
-
+def get_example_payload(route: APIRoute) -> dict[str, Any] | None:
+    """Returns example payload for the `route` if it exists."""
+    for parameter_type in route.endpoint.__annotations__.values():
+        if issubclass(parameter_type, SchemaWithExample):
+            return {
+                "mode": "raw",
+                "raw": parameter_type.example().model_dump_json(indent=4),
+                "options": {"raw": {"language": "json"}},
+            }
     return None
 
 
 def get_query_parameters(route: APIRoute) -> list[dict[str, Any]]:
     """Returns query parameters for `route`."""
     query_parameters = []
-    for parameter in inspect.signature(route.endpoint).parameters:
-        if parameter not in ["db_provider"]:
+    for parameter, parameter_type in route.endpoint.__annotations__.items():
+        if parameter != "return" and not issubclass(parameter_type, (DatabaseProvider, SchemaWithExample)):
             query_parameters.append(
                 {
                     "key": parameter,
@@ -81,10 +79,10 @@ def get_route_items(app: FastAPI) -> list[dict[str, Any]]:
             },
         }
 
-        if method in ["POST", "PATCH"] and (body := get_post_request_body(route)):
-            item["request"]["body"] = body
-        elif query_parameters := get_query_parameters(route):
+        if query_parameters := get_query_parameters(route):
             item["request"]["url"]["query"] = query_parameters
+        if payload := get_example_payload(route):
+            item["request"]["body"] = payload
 
         items.append(item)
 
