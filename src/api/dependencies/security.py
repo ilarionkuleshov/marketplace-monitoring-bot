@@ -12,7 +12,7 @@ async def validate_api_key(api_key: str | None = Security(api_key_header)) -> No
     """Checks that `api_key` is valid.
 
     Raises:
-        HTTPException: Provided `api_key` is invalid.
+        HTTPException (401): Provided `api_key` is invalid.
 
     """
     if api_key != str(api_settings().API_KEY):

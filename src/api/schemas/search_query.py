@@ -1,11 +1,12 @@
 """Schemas for search query entity."""
 
 from datetime import datetime
-from typing import Self
+from typing import Any, Self
 
-from pydantic import BaseModel, ConfigDict, Field, HttpUrl
+from pydantic import BaseModel, ConfigDict, Field, HttpUrl, root_validator
 
 from api.schemas.base import SchemaWithExample
+from api.utils import check_only_one_parameter_not_none
 from utils.enums import MarketplaceSpiders
 
 
@@ -29,7 +30,8 @@ class SearchQuery(BaseModel):
 class SearchQueryCreate(SchemaWithExample):
     """Schema to create search query."""
 
-    user_telegram_id: int
+    user_id: int | None = None
+    user_telegram_id: int | None = None
     name: str = Field(..., max_length=100)
     url: HttpUrl
     marketplace: str
@@ -37,6 +39,13 @@ class SearchQueryCreate(SchemaWithExample):
     is_active: bool = True
 
     model_config = ConfigDict(from_attributes=True)
+
+    # pylint: disable=E0213
+    @root_validator(pre=True)
+    def validate_user_ids(cls, values: dict[str, Any]) -> dict[str, Any]:
+        """Returns field `values` after validation user ids."""
+        check_only_one_parameter_not_none(user_id=values["user_id"], user_telegram_id=values["user_telegram_id"])
+        return values
 
     @classmethod
     def example(cls) -> Self:
