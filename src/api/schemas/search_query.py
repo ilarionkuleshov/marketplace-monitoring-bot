@@ -34,7 +34,7 @@ class SearchQueryCreate(SchemaWithExample):
     user_telegram_id: int | None = None
     name: str = Field(..., max_length=100)
     url: HttpUrl
-    marketplace: str
+    marketplace: MarketplaceSpiders
     crawl_interval: int = Field(..., ge=15)
     is_active: bool = True
 
