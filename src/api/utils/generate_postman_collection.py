@@ -8,6 +8,7 @@ To customize name of the postman collection (default is `Marketplace Monitoring 
 
 """
 
+import inspect
 import json
 from argparse import ArgumentParser
 from pathlib import Path
@@ -27,7 +28,7 @@ URL_TEMPLATE = Template("{{api_url}}$path")
 def get_example_payload(route: APIRoute) -> dict[str, Any] | None:
     """Returns example payload for the `route` if it exists."""
     for parameter_type in route.endpoint.__annotations__.values():
-        if issubclass(parameter_type, SchemaWithExample):
+        if inspect.isclass(parameter_type) and issubclass(parameter_type, SchemaWithExample):
             return {
                 "mode": "raw",
                 "raw": parameter_type.example().model_dump_json(indent=4),
@@ -40,7 +41,9 @@ def get_query_parameters(route: APIRoute) -> list[dict[str, Any]]:
     """Returns query parameters for `route`."""
     query_parameters = []
     for parameter, parameter_type in route.endpoint.__annotations__.items():
-        if parameter != "return" and not issubclass(parameter_type, (DatabaseProvider, SchemaWithExample)):
+        if parameter == "return":
+            continue
+        if not inspect.isclass(parameter_type) or not issubclass(parameter_type, (DatabaseProvider, SchemaWithExample)):
             query_parameters.append(
                 {
                     "key": parameter,

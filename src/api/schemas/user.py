@@ -6,7 +6,7 @@ from typing import Any, Self
 from pydantic import BaseModel, ConfigDict, root_validator
 
 from api.schemas.base import SchemaWithExample
-from api.utils import check_at_least_one_parameter_not_none
+from api.utils.validators import check_at_least_one_parameter_not_none
 from utils.enums import BotLanguages
 
 

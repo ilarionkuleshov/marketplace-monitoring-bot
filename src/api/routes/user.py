@@ -8,7 +8,7 @@ from sqlalchemy.dialects.postgresql import insert
 
 from api.dependencies import DatabaseProvider
 from api.schemas import User, UserCreate, UserUpdate
-from api.utils import check_only_one_parameter_not_none
+from api.utils.validators import check_only_one_parameter_not_none
 from database.models import User as UserModel
 
 

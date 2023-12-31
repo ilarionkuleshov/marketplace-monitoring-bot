@@ -5,6 +5,19 @@
     },
     "item": [
         {
+            "name": "Read Users",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{api_url}}/users/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/users/"
+                }
+            }
+        },
+        {
             "name": "Read User",
             "request": {
                 "method": "GET",
@@ -15,6 +28,11 @@
                     ],
                     "path": "/user/",
                     "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        },
                         {
                             "key": "telegram_id",
                             "value": null,
@@ -58,6 +76,11 @@
                     "path": "/user/",
                     "query": [
                         {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        },
+                        {
                             "key": "telegram_id",
                             "value": null,
                             "disabled": true
@@ -67,6 +90,209 @@
                 "body": {
                     "mode": "raw",
                     "raw": "{\n    \"name\": \"example_name\",\n    \"language\": \"en\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Delete User",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "{{api_url}}/user/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/user/",
+                    "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        },
+                        {
+                            "key": "telegram_id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Read Search Queries",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{api_url}}/search_queries/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_queries/",
+                    "query": [
+                        {
+                            "key": "user_id",
+                            "value": null,
+                            "disabled": true
+                        },
+                        {
+                            "key": "user_telegram_id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Read Search Query",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{api_url}}/search_query/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_query/",
+                    "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Search Query",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "{{api_url}}/search_query/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_query/"
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"user_id\": null,\n    \"user_telegram_id\": 123456,\n    \"name\": \"example_name\",\n    \"url\": \"https://example.com/\",\n    \"marketplace\": \"shafa\",\n    \"crawl_interval\": 15,\n    \"is_active\": true\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Update Search Query",
+            "request": {
+                "method": "PATCH",
+                "url": {
+                    "raw": "{{api_url}}/search_query/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_query/",
+                    "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"example_name\",\n    \"crawl_interval\": 25,\n    \"is_active\": false\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                }
+            }
+        },
+        {
+            "name": "Delete Search Query",
+            "request": {
+                "method": "DELETE",
+                "url": {
+                    "raw": "{{api_url}}/search_query/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_query/",
+                    "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Read Search Tasks",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{api_url}}/search_tasks/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_tasks/",
+                    "query": [
+                        {
+                            "key": "search_query_id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Read Search Task",
+            "request": {
+                "method": "GET",
+                "url": {
+                    "raw": "{{api_url}}/search_task/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_task/",
+                    "query": [
+                        {
+                            "key": "id",
+                            "value": null,
+                            "disabled": true
+                        }
+                    ]
+                }
+            }
+        },
+        {
+            "name": "Create Search Task",
+            "request": {
+                "method": "POST",
+                "url": {
+                    "raw": "{{api_url}}/search_task/",
+                    "host": [
+                        "{{api_url}}"
+                    ],
+                    "path": "/search_task/"
+                },
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"search_query_id\": 1\n}",
                     "options": {
                         "raw": {
                             "language": "json"

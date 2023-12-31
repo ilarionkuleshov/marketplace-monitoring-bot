@@ -9,7 +9,7 @@ from sqlalchemy.dialects.postgresql import insert
 from api.dependencies import DatabaseProvider
 from api.routes.user import read_user
 from api.schemas import SearchQuery, SearchQueryCreate, SearchQueryUpdate
-from api.utils import check_zero_or_one_parameter_not_none
+from api.utils.validators import check_zero_or_one_parameter_not_none
 from database.models import SearchQuery as SearchQueryModel
 from database.models import User as UserModel
 

@@ -6,7 +6,7 @@ from typing import Any, Self
 from pydantic import BaseModel, ConfigDict, Field, HttpUrl, root_validator
 
 from api.schemas.base import SchemaWithExample
-from api.utils import check_only_one_parameter_not_none
+from api.utils.validators import check_only_one_parameter_not_none
 from utils.enums import MarketplaceSpiders
 
 
@@ -44,7 +44,9 @@ class SearchQueryCreate(SchemaWithExample):
     @root_validator(pre=True)
     def validate_user_ids(cls, values: dict[str, Any]) -> dict[str, Any]:
         """Returns field `values` after validation user ids."""
-        check_only_one_parameter_not_none(user_id=values["user_id"], user_telegram_id=values["user_telegram_id"])
+        check_only_one_parameter_not_none(
+            user_id=values.get("user_id"), user_telegram_id=values.get("user_telegram_id")
+        )
         return values
 
     @classmethod

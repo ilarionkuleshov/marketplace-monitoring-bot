@@ -1,7 +1,7 @@
 """Schemas for search task entity."""
 
 from datetime import datetime
-from typing import Any
+from typing import Any, Self
 
 from pydantic import BaseModel
 
@@ -24,3 +24,8 @@ class SearchTaskCreate(SchemaWithExample):
     """Schema to create search task."""
 
     search_query_id: int
+
+    @classmethod
+    def example(cls) -> Self:
+        """See `SchemaWithExample` class."""
+        return cls(search_query_id=1)
