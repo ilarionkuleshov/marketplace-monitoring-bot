@@ -17,7 +17,7 @@ class SearchQuery(BaseModel):
     user_id: int
     name: str
     url: str
-    marketplace: MarketplaceSpiders
+    marketplace: str
     last_crawl_time: datetime | None
     crawl_interval: int
     is_active: bool

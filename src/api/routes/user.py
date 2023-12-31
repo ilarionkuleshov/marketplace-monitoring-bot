@@ -7,7 +7,7 @@ from sqlalchemy import delete, select, update
 from sqlalchemy.dialects.postgresql import insert
 
 from api.dependencies import DatabaseProvider
-from api.schemas import User, UserCreate, UserUpdate
+from api.schemas import Detail, User, UserCreate, UserUpdate
 from api.utils.validators import check_only_one_parameter_not_none
 from database.models import User as UserModel
 
@@ -19,7 +19,7 @@ async def read_users(db_provider: DatabaseProvider = Depends(DatabaseProvider)) 
         db_provider (DatabaseProvider): Provider for database.
 
     """
-    query = select(UserModel)
+    query = select(UserModel).order_by(UserModel.id.asc())
     users = await db_provider.select(query, fetch_all=True)
     return [User.model_validate(user[0]) for user in users]
 
@@ -63,7 +63,7 @@ async def create_user(user: UserCreate, db_provider: DatabaseProvider = Depends(
     query = insert(UserModel).values(user.model_dump())
     user_id = await db_provider.insert(query)
     if user_id is not None:
-        return await read_user(telegram_id=user.telegram_id, db_provider=db_provider)
+        return await read_user(id=user_id, db_provider=db_provider)
     raise HTTPException(status.HTTP_409_CONFLICT, f"User with telegram id {user.telegram_id} already exists")
 
 
@@ -93,12 +93,12 @@ async def update_user(
         .values(user.model_dump(exclude_none=True))
     )
     await db_provider.execute(query)
-    return await read_user(telegram_id=telegram_id, db_provider=db_provider)
+    return await read_user(id=id, telegram_id=telegram_id, db_provider=db_provider)
 
 
 async def delete_user(
     id: int | None = None, telegram_id: int | None = None, db_provider: DatabaseProvider = Depends(DatabaseProvider)
-) -> None:
+) -> Detail:
     """Deletes user from the database.
 
     Args:
@@ -106,10 +106,15 @@ async def delete_user(
         telegram_id (int | None): Telegram id of the user to delete. Default is None.
         db_provider (DatabaseProvider): Provider for database.
 
+    Raises:
+        HTTPException (409): There are records associated with the user in the database.
+
     """
     check_only_one_parameter_not_none(id=id, telegram_id=telegram_id)
     query = delete(UserModel).where((UserModel.id == id) if id is not None else (UserModel.telegram_id == telegram_id))
-    await db_provider.execute(query)
+    if await db_provider.execute(query):
+        return Detail(detail="User deleted")
+    raise HTTPException(status.HTTP_409_CONFLICT, "First delete associated records with user")
 
 
 def setup(router: APIRouter) -> None:
@@ -118,4 +123,4 @@ def setup(router: APIRouter) -> None:
     router.add_api_route("/user/", read_user, methods=["GET"], response_model=User)
     router.add_api_route("/user/", create_user, methods=["POST"], response_model=User)
     router.add_api_route("/user/", update_user, methods=["PATCH"], response_model=User)
-    router.add_api_route("/user/", delete_user, methods=["DELETE"], response_model=None)
+    router.add_api_route("/user/", delete_user, methods=["DELETE"], response_model=Detail)

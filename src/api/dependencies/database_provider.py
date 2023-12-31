@@ -55,12 +55,21 @@ class DatabaseProvider(SingletonBase):
             try:
                 cursor = await session.execute(query)
                 await session.commit()
-                return cursor.inserted_primary_key
+                return cursor.inserted_primary_key[0] if cursor.inserted_primary_key else None
             except IntegrityError:
                 return None
 
-    async def execute(self, query: Update | Delete) -> None:
-        """Executes given `query` in the database."""
+    async def execute(self, query: Update | Delete) -> bool:
+        """Executes given `query` in the database.
+
+        Returns:
+            bool: True if ok, otherwise False.
+
+        """
         async with self._session_maker() as session:
-            await session.execute(query)
-            await session.commit()
+            try:
+                await session.execute(query)
+                await session.commit()
+                return True
+            except IntegrityError:
+                return False

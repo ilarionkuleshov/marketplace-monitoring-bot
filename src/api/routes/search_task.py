@@ -24,6 +24,7 @@ async def read_search_tasks(
     query = select(SearchTaskModel)
     if search_query_id is not None:
         query = query.where(SearchTaskModel.search_query_id == search_query_id)
+    query = query.order_by(SearchTaskModel.id.asc())
 
     search_tasks = await db_provider.select(query, fetch_all=True)
     return [SearchTask.model_validate(search_task[0]) for search_task in search_tasks]

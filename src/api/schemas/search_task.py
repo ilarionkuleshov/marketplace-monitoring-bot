@@ -3,7 +3,7 @@
 from datetime import datetime
 from typing import Any, Self
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 from api.schemas.base import SchemaWithExample
 
@@ -13,11 +13,13 @@ class SearchTask(BaseModel):
 
     id: int
     search_query_id: int
-    log_file: str
-    statistics: dict[str, Any]
+    log_file: str | None
+    statistics: dict[str, Any] | None
     status: int
     created_at: datetime
     updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 class SearchTaskCreate(SchemaWithExample):
