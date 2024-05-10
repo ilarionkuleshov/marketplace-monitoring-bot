@@ -1,0 +1,23 @@
+name: Build, lint and test
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Build
+      run: docker build -t online-monitoring-bot .
+
+    - name: Lint
+      run: docker run online-monitoring-bot poetry run bash ./scripts/lint.sh
+
+    - name: Test
+      run: docker run online-monitoring-bot poetry run pytest tests/
