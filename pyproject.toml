@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "marketplace-monitoring-bot"
+version = "0.1.0"
+description = "Bot for monitoring new adverts on marketplaces."
+authors = ["ilarionkuleshov <ilarion.kuleshov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
