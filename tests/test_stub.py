@@ -1,6 +1,6 @@
 """Stub test."""
 
 
-def test() -> None:
+def test_stub() -> None:
     """Stub test."""
     assert True
