@@ -12,7 +12,7 @@ class UserSettings(BaseModel):
     __tablename__ = "user_settings"
 
     id: Mapped[int] = mapped_column(BIGINT(), primary_key=True)
-    user_id: Mapped[int] = mapped_column(BIGINT(), ForeignKey("users.id"))
+    user_id: Mapped[int] = mapped_column(BIGINT(), ForeignKey("users.id"), unique=True)
     language: Mapped[UserLanguage] = mapped_column(
-        ENUM(UserLanguage), index=True, server_default=text(UserLanguage.EN.value)
+        ENUM(UserLanguage), index=True, server_default=text(f"'{UserLanguage.EN.value}'")
     )
