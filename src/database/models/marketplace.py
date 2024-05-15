@@ -10,5 +10,5 @@ class Marketplace(BaseModel):
     __tablename__ = "marketplaces"
 
     id: Mapped[int] = mapped_column(BIGINT(), primary_key=True)
-    nameid: Mapped[str] = mapped_column(VARCHAR(50), unique=True)
+    name: Mapped[str] = mapped_column(VARCHAR(50), unique=True)
     url: Mapped[str] = mapped_column(VARCHAR(100), unique=True)
