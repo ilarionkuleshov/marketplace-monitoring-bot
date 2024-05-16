@@ -15,8 +15,8 @@ class MonitoringRun(BaseModel):
 
     id: Mapped[int] = mapped_column(BIGINT(), primary_key=True)
     monitoring_id: Mapped[int] = mapped_column(BIGINT(), ForeignKey("monitorings.id"))
-    log_file: Mapped[str] = mapped_column(VARCHAR(100))
+    log_file: Mapped[str | None] = mapped_column(VARCHAR(100), nullable=True)
     status: Mapped[RunStatus] = mapped_column(
-        ENUM(RunStatus), index=True, server_default=text(RunStatus.SCHEDULED.value)
+        ENUM(*RunStatus.values(), name="run_status"), index=True, server_default=text(f"'{RunStatus.SCHEDULED}'")
     )
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), index=True, server_default=text("now()"))
