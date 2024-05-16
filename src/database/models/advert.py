@@ -21,7 +21,7 @@ class Advert(BaseModel):
     description: Mapped[str | None] = mapped_column(VARCHAR(200), nullable=True)
     price: Mapped[float | None] = mapped_column(FLOAT(), nullable=True)
     max_price: Mapped[float | None] = mapped_column(FLOAT(), nullable=True)
-    currency: Mapped[str] = mapped_column(VARCHAR(3))
+    currency: Mapped[str | None] = mapped_column(VARCHAR(3), nullable=True)
     created_at: Mapped[datetime] = mapped_column(TIMESTAMP(timezone=True), index=True, server_default=text("now()"))
 
     __table_args__ = (UniqueConstraint("monitoring_id", "external_id"),)
