@@ -1,4 +1,4 @@
-"""create users table
+"""Creates `users` table.
 
 Revision ID: 30024b96ee2a
 Revises: 4eabf72ee590
