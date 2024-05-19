@@ -13,6 +13,7 @@ sqlalchemy = "^2.0.30"
 alembic = "^1.13.1"
 psycopg2-binary = "^2.9.9"
 alembic-postgresql-enum = "^1.2.0"
+fastapi = "^0.111.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.2.0"
