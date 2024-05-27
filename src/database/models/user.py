@@ -13,8 +13,7 @@ class User(BaseModel):
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BIGINT(), primary_key=True)
-    telegram_id: Mapped[int] = mapped_column(BIGINT(), unique=True)
+    id: Mapped[int] = mapped_column(BIGINT(), primary_key=True, autoincrement=False)
     language: Mapped[UserLanguage] = mapped_column(
         ENUM(*UserLanguage.values(), name="user_language"), index=True, server_default=text(f"'{UserLanguage.EN}'")
     )

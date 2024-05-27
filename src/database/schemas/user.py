@@ -10,7 +10,6 @@ class UserRead(BaseSchema):
     """User read schema."""
 
     id: int
-    telegram_id: int
     language: UserLanguage
     created_at: datetime
 
@@ -18,7 +17,7 @@ class UserRead(BaseSchema):
 class UserCreate(BaseSchema):
     """User create schema."""
 
-    telegram_id: int
+    id: int
     language: UserLanguage | None = None
 
 

@@ -25,8 +25,7 @@ def upgrade() -> None:
     sa.Enum("en", "ru", "uk", name="user_language").create(op.get_bind())
     op.create_table(
         "users",
-        sa.Column("id", sa.BIGINT(), nullable=False),
-        sa.Column("telegram_id", sa.BIGINT(), nullable=False),
+        sa.Column("id", sa.BIGINT(), nullable=False, autoincrement=False),
         sa.Column(
             "language",
             postgresql.ENUM("en", "ru", "uk", name="user_language", create_type=False),
@@ -35,7 +34,6 @@ def upgrade() -> None:
         ),
         sa.Column("created_at", postgresql.TIMESTAMP(timezone=True), server_default=sa.text("now()"), nullable=False),
         sa.PrimaryKeyConstraint("id"),
-        sa.UniqueConstraint("telegram_id"),
     )
     op.create_index(op.f("ix_users_created_at"), "users", ["created_at"], unique=False)
     op.create_index(op.f("ix_users_language"), "users", ["language"], unique=False)
