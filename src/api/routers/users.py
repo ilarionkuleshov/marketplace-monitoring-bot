@@ -4,11 +4,12 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from api.dependencies import verify_api_key
 from database import DatabaseProvider
 from database.models import User
 from database.schemas import UserCreate, UserRead, UserUpdate
 
-router = APIRouter(prefix="/users")
+router = APIRouter(prefix="/users", dependencies=[Depends(verify_api_key)])
 
 
 @router.get("/")
