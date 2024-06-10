@@ -12,7 +12,7 @@ from database.schemas import UserCreate, UserRead, UserUpdate
 router = APIRouter(prefix="/users", dependencies=[Depends(verify_api_key)])
 
 
-@router.get("/")
+@router.get("")
 async def read_users(database: Annotated[DatabaseProvider, Depends()]) -> list[UserRead]:
     """Returns all users.
 
@@ -40,7 +40,7 @@ async def read_user(user_id: int, database: Annotated[DatabaseProvider, Depends(
     raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
 
 
-@router.post("/")
+@router.post("")
 async def create_user(user: UserCreate, database: Annotated[DatabaseProvider, Depends()]) -> UserRead:
     """Creates user.
 

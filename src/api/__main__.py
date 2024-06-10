@@ -5,7 +5,7 @@ import logging
 import uvicorn
 from fastapi import FastAPI
 
-from api.routers import users_router
+from api.routers import marketplaces_router, users_router
 from settings import ApiSettings, GeneralSettings
 
 
@@ -13,6 +13,7 @@ def create_app() -> FastAPI:
     """Returns configured FastAPI application."""
     fastapi_app = FastAPI()
     fastapi_app.include_router(users_router)
+    fastapi_app.include_router(marketplaces_router)
     return fastapi_app
 
 
