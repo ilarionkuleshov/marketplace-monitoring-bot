@@ -22,3 +22,12 @@ class Marketplace(BaseStrEnum):
     """Supported marketplaces."""
 
     OLX_UA: str = "olx_ua"
+
+
+class RunStatus(BaseStrEnum):
+    """Statuses for the runs."""
+
+    SCHEDULED: str = "scheduled"
+    RUNNING: str = "running"
+    SUCCESS: str = "success"
+    FAILED: str = "failed"
