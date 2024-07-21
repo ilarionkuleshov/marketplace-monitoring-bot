@@ -13,7 +13,15 @@ class PostgresCredentials(BaseSettings):
 
     model_config = SettingsConfigDict(env_file=find_dotenv(), extra="ignore", env_prefix="postgres_")
 
-    def get_url(self) -> str:
-        """Returns connection url for the postgres database."""
-        template = "postgresql://{user}:{password}@{host}:{port}/{database}"
-        return template.format(**self.model_dump())
+    def get_url(self, use_sync_driver: bool = True) -> str:
+        """Returns connection url for the postgres database.
+
+        Args:
+            use_sync_driver (bool): Whether to use sync driver. Default is True.
+
+        """
+        template = "{driver}://{user}:{password}@{host}:{port}/{database}"
+        return template.format(
+            driver="postgresql" if use_sync_driver else "postgresql+asyncpg",
+            **self.model_dump(),
+        )
