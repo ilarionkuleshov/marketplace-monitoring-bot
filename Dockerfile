@@ -1,0 +1,23 @@
+FROM python:3.12.4-slim
+
+ARG USERNAME=nonroot
+ARG UID=1000
+ARG GID=1000
+ARG POETRY_INSTALL_DEV=False
+
+RUN apt update
+RUN apt install -y sudo python3-poetry
+RUN groupadd --gid $GID $USERNAME
+RUN useradd --uid $UID --gid $GID -m $USERNAME
+RUN echo $USERNAME ALL=\(root\) NOPASSWD:ALL > /etc/sudoers.d/$USERNAME
+RUN chmod 0440 /etc/sudoers.d/$USERNAME
+
+USER $USERNAME
+
+WORKDIR /marketplace-monitoring-bot
+COPY pyproject.toml poetry.lock ./
+COPY src ./src
+
+RUN poetry env use python3.12
+
+RUN if [ "$POETRY_INSTALL_DEV" = "False" ]; then poetry install --without dev; else poetry install; fi
