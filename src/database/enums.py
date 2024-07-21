@@ -16,3 +16,9 @@ class UserLanguage(BaseStrEnum):
     EN: str = "en"
     RU: str = "ru"
     UK: str = "uk"
+
+
+class Marketplace(BaseStrEnum):
+    """Supported marketplaces."""
+
+    OLX_UA: str = "olx_ua"
