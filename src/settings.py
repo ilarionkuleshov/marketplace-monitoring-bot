@@ -11,9 +11,9 @@ class PostgresCredentials(BaseSettings):
     password: str
     database: str
 
-    model_config = SettingsConfigDict(env_file=find_dotenv(), env_prefix="postgres_")
+    model_config = SettingsConfigDict(env_file=find_dotenv(), extra="ignore", env_prefix="postgres_")
 
     def get_url(self) -> str:
         """Returns connection url for the postgres database."""
         template = "postgresql://{user}:{password}@{host}:{port}/{database}"
-        return template.format(self.model_dump())
+        return template.format(**self.model_dump())
