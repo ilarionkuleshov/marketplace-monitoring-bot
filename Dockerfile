@@ -17,6 +17,7 @@ USER $USERNAME
 WORKDIR /marketplace-monitoring-bot
 COPY pyproject.toml poetry.lock ./
 COPY src ./src
+COPY scripts ./scripts
 
 RUN poetry env use python3.12
 
