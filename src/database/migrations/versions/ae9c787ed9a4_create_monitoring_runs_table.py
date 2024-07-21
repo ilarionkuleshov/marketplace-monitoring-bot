@@ -1,4 +1,4 @@
-"""create monitoring_runs table
+"""Creates `monitoring_runs` table.
 
 Revision ID: ae9c787ed9a4
 Revises: a5ec1d44761d
