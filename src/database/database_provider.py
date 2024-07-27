@@ -1,13 +1,12 @@
 from typing import Self
 
-from sqlalchemy import delete
+from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
     async_sessionmaker,
     create_async_engine,
 )
-from sqlalchemy.future import select
 from sqlalchemy.orm import DeclarativeMeta
 from sqlalchemy.sql import ColumnExpressionArgument
 
@@ -36,56 +35,112 @@ class DatabaseProvider:
 
     async def get[
         T: BaseSchema
-    ](self, model: type[DeclarativeMeta], *, conditions: list[ColumnExpressionArgument], schema: type[T]) -> T | None:
+    ](self, *, model: type[DeclarativeMeta], conditions: list[ColumnExpressionArgument], return_schema: type[T]) -> (
+        T | None
+    ):
         """Returns one extracted record from the database.
 
         Args:
             model (type[DeclarativeMeta]): Database model to get from.
             conditions (list[ColumnExpressionArgument]): Conditions for extraction.
-            schema (type[T]): Schema for the extracted record.
+            return_schema (type[T]): Schema for the extracted record.
 
         """
         async with self._session_maker() as session:
             statement = select(model).where(*conditions)
-            result = await session.execute(statement)
-            if row := result.fetchone():
-                return schema.model_validate(row[0])
+            cursor = await session.execute(statement)
+            if record := cursor.fetchone():
+                return return_schema.model_validate(record[0])
             return None
 
     async def get_all[
         T: BaseSchema
-    ](self, model: type[DeclarativeMeta], *, conditions: list[ColumnExpressionArgument], schema: type[T]) -> list[T]:
+    ](
+        self,
+        *,
+        model: type[DeclarativeMeta],
+        conditions: list[ColumnExpressionArgument] | None = None,
+        return_schema: type[T],
+    ) -> list[T]:
         """Returns all extracted records from the database.
 
         Args:
             model (type[DeclarativeMeta]): Database model to get from.
-            conditions (list[ColumnExpressionArgument]): Conditions for extraction.
-            schema (type[T]): Schema for the extracted records.
+            conditions (list[ColumnExpressionArgument] | None): Conditions for extraction. Default is None.
+            return_schema (type[T]): Schema for the extracted records.
 
         """
+        if conditions is None:
+            conditions = []
+
         async with self._session_maker() as session:
             statement = select(model).where(*conditions)
-            result = await session.execute(statement)
-            return [schema.model_validate(row[0]) for row in result.fetchall()]
+            cursor = await session.execute(statement)
+            return [return_schema.model_validate(record[0]) for record in cursor.fetchall()]
 
-    async def create[T: BaseSchema](self, record: DeclarativeMeta, *, schema: type[T]) -> T:
+    async def create[
+        T: BaseSchema
+    ](self, *, model: type[DeclarativeMeta], data: BaseSchema, return_schema: type[T]) -> T:
         """Creates record in the database.
 
         Args:
-            record (DeclarativeMeta): Record to create.
-            schema (type[T]): Schema for the created record.
+            model (type[DeclarativeMeta]): Database model for creation.
+            data (BaseSchema): Data for the model.
+            return_schema (type[T]): Schema for the created record.
 
         Returns:
             T: Created record in the database.
 
         """
         async with self._session_maker() as session:
+            record = model(**data.model_dump(exclude_none=True))
             session.add(record)
             await session.commit()
             await session.refresh(record)
-            return schema.model_validate(record)
+            return return_schema.model_validate(record)
 
-    async def delete(self, model: type[DeclarativeMeta], *, conditions: list[ColumnExpressionArgument]) -> None:
+    async def update[
+        T: BaseSchema
+    ](
+        self,
+        *,
+        model: type[DeclarativeMeta],
+        data: BaseSchema,
+        conditions: list[ColumnExpressionArgument],
+        return_schema: type[T],
+    ) -> T:
+        """Updates record in the database.
+
+        Args:
+            model (type[DeclarativeMeta]): Database model for updating.
+            data (BaseSchema): Data for the model.
+            conditions (list[ColumnExpressionArgument]): Conditions for updating.
+            return_schema (type[T]): Schema for the updated record.
+
+        Returns:
+            T: Updated record in the database.
+
+        Raises:
+            ValueError: Number of records retrieved does not equal one.
+
+        """
+        async with self._session_maker() as session:
+            select_statement = select(model).where(*conditions)
+            cursor = await session.execute(select_statement)
+
+            records = cursor.fetchall()
+            if len(records) != 1:
+                raise ValueError(f"Number of records retrieved ({len(records)}) does not equal one")
+            record = records[0][0]
+
+            update_statement = update(model).where(*conditions).values(data.model_dump(exclude_none=True))
+            await session.execute(update_statement)
+            await session.commit()
+
+            await session.refresh(record)
+            return return_schema.model_validate(record)
+
+    async def delete(self, *, model: type[DeclarativeMeta], conditions: list[ColumnExpressionArgument]) -> None:
         """Deletes records from the database.
 
         Args:

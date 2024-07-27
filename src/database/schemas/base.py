@@ -1,10 +1,12 @@
 from typing import Any
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class BaseSchema(BaseModel):
     """Base for all schemas."""
+
+    model_config = ConfigDict(from_attributes=True)
 
 
 def validate_at_least_one_field_not_none(values: dict[str, Any]) -> dict[str, Any]:
