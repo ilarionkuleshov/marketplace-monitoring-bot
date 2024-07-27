@@ -2,7 +2,10 @@
     "name": "Marketplace Monitoring Bot",
     "build": {
         "context": "..",
-        "dockerfile": "../Dockerfile"
+        "dockerfile": "../Dockerfile",
+        "args": {
+            "POETRY_INSTALL_DEV": "True"
+        }
     },
     "features": {
         "ghcr.io/devcontainers/features/git:1": {}
