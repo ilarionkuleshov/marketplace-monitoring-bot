@@ -121,24 +121,18 @@ class DatabaseProvider:
             T: Updated record in the database.
 
         Raises:
-            ValueError: Number of records retrieved does not equal one.
+            ValueError: Number of records to update does not equal one.
 
         """
         async with self._session_maker() as session:
-            select_statement = select(model).where(*conditions)
-            cursor = await session.execute(select_statement)
+            statement = update(model).where(*conditions).values(data.model_dump(exclude_none=True))
+            cursor = await session.execute(statement)
 
-            records = cursor.fetchall()
-            if len(records) != 1:
-                raise ValueError(f"Number of records retrieved ({len(records)}) does not equal one")
-            record = records[0][0]
+            if cursor.rowcount != 1:
+                raise ValueError(f"Number of records to update ({cursor.rowcount}) does not equal one")
 
-            update_statement = update(model).where(*conditions).values(data.model_dump(exclude_none=True))
-            await session.execute(update_statement)
             await session.commit()
-
-            await session.refresh(record)
-            return return_schema.model_validate(record)
+            return await self.get(model=model, conditions=conditions, return_schema=return_schema)
 
     async def delete(self, *, model: type[DeclarativeMeta], conditions: list[ColumnExpressionArgument]) -> None:
         """Deletes records from the database.
@@ -147,8 +141,14 @@ class DatabaseProvider:
             model (type[DeclarativeMeta]): Database model to delete from.
             conditions (list[ColumnExpressionArgument]): Conditions for deletion.
 
+        Raises:
+            ValueError: Number of records to delete does not equal one.
+
         """
         async with self._session_maker() as session:
             statement = delete(model).where(*conditions)
-            await session.execute(statement)
+            cursor = await session.execute(statement)
+
+            if cursor.rowcount != 1:
+                raise ValueError(f"Number of records to delete ({cursor.rowcount}) does not equal one")
             await session.commit()

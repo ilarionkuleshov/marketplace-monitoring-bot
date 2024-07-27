@@ -25,3 +25,11 @@ class PostgresCredentials(BaseSettings):
             driver="postgresql" if use_sync_driver else "postgresql+asyncpg",
             **self.model_dump(),
         )
+
+
+class ApiConfig(BaseSettings):
+    """Config for the API."""
+
+    security_key: str
+
+    model_config = SettingsConfigDict(env_file=find_dotenv(), extra="ignore", env_prefix="api_")

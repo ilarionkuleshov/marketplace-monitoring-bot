@@ -14,6 +14,7 @@ sqlalchemy = "^2.0.31"
 alembic-postgresql-enum = "^1.3.0"
 psycopg2-binary = "^2.9.9"
 asyncpg = "^0.29.0"
+fastapi = "^0.111.1"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
