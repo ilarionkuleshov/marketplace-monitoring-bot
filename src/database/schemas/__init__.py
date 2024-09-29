@@ -1,3 +1,4 @@
+from .advert import AdvertCreate, AdvertRead
 from .base import DatabaseSchema
 from .marketplace import MarketplaceRead
 from .monitoring import MonitoringCreate, MonitoringRead, MonitoringUpdate
