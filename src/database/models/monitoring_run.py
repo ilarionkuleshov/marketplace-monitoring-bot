@@ -1,10 +1,10 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import text, BigInteger, DateTime, String, Interval, Boolean, ForeignKey, UniqueConstraint, Enum
+from sqlalchemy import BigInteger, DateTime, Enum, ForeignKey, Interval, String, text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.models.base import DatabaseModel
 from database.enums import MonitoringRunStatus
+from database.models.base import DatabaseModel
 
 
 class MonitoringRun(DatabaseModel):

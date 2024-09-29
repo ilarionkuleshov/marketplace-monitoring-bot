@@ -1,10 +1,17 @@
-from datetime import datetime, timedelta
+from datetime import datetime
 
-from sqlalchemy import text, BigInteger, DateTime, String, Interval, Boolean, ForeignKey, UniqueConstraint, Enum, Float
+from sqlalchemy import (
+    BigInteger,
+    DateTime,
+    Float,
+    ForeignKey,
+    String,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database.models.base import DatabaseModel
-from database.enums import MonitoringRunStatus
 
 
 class Advert(DatabaseModel):

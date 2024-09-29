@@ -1,6 +1,15 @@
 from datetime import datetime, timedelta
 
-from sqlalchemy import text, BigInteger, DateTime, String, Interval, Boolean, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    DateTime,
+    ForeignKey,
+    Interval,
+    String,
+    UniqueConstraint,
+    text,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from database.models.base import DatabaseModel

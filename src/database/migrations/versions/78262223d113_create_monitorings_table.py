@@ -6,6 +6,8 @@ Create Date: 2024-09-29 19:41:10.664782
 
 """
 
+# pylint: disable=C0103
+
 from typing import Sequence
 
 import sqlalchemy as sa

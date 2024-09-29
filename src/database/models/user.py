@@ -1,10 +1,10 @@
 from datetime import datetime
 
-from sqlalchemy import text, DateTime, Enum, BigInteger
+from sqlalchemy import BigInteger, DateTime, Enum, text
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.models.base import DatabaseModel
 from database.enums import UserLanguage
+from database.models.base import DatabaseModel
 
 
 class User(DatabaseModel):
