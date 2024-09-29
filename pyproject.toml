@@ -12,6 +12,7 @@ pydantic-settings = "^2.5.2"
 alembic = "^1.13.3"
 sqlalchemy = "^2.0.35"
 alembic-postgresql-enum = "^1.3.0"
+psycopg2-binary = "^2.9.9"
 
 [tool.poetry.group.dev.dependencies]
 isort = "^5.13.2"
@@ -49,7 +50,7 @@ init-hook = "import sys; sys.path.extend(['src']);"
 py-version = "3.12"
 max-line-length = "120"
 disable="C0114,R0903"
-ignored-modules = ["alembic.context"]
+ignored-modules = ["alembic.context", "alembic.op"]
 
 [tool.mypy]
 mypy_path = "src"
