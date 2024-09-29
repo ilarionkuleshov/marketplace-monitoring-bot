@@ -4,7 +4,7 @@ import alembic_postgresql_enum  # noqa  # pylint: disable=W0611
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from database.models import BaseModel
+from database.models import DatabaseModel
 from settings import PostgresCredentials
 
 # this is the Alembic Config object, which provides
@@ -20,7 +20,7 @@ if config.config_file_name is not None:
 # for 'autogenerate' support
 # from myapp import mymodel
 # target_metadata = mymodel.Base.metadata
-target_metadata = BaseModel.metadata
+target_metadata = DatabaseModel.metadata
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:

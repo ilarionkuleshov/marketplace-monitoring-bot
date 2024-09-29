@@ -1,10 +1,10 @@
 from sqlalchemy import BigInteger, String
 from sqlalchemy.orm import Mapped, mapped_column
 
-from database.models.base import BaseModel
+from database.models.base import DatabaseModel
 
 
-class Marketplace(BaseModel):
+class Marketplace(DatabaseModel):
     """Marketplace model."""
 
     __tablename__ = "marketplaces"
