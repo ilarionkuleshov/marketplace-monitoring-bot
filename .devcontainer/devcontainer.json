@@ -1,0 +1,30 @@
+{
+    "name": "Marketplace Monitoring Bot",
+    "build": {
+        "context": "..",
+        "dockerfile": "../Dockerfile",
+        "args": {
+            "POETRY_INSTALL_DEV": "True"
+        }
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/git:1": {}
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ms-python.python",
+                "ms-python.vscode-pylance"
+            ]
+        }
+    },
+    "containerEnv": {
+        "SHELL": "/bin/bash"
+    },
+    "workspaceMount": "source=${localWorkspaceFolder},target=/marketplace-monitoring-bot,type=bind",
+    "workspaceFolder": "/marketplace-monitoring-bot",
+    "remoteUser": "app",
+    "runArgs": [
+        "--network=host"
+    ]
+}
