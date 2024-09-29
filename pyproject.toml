@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "marketplace-monitoring-bot"
+version = "0.1.0"
+description = "Bot for monitoring new adverts on marketplaces."
+authors = ["ilarionkuleshov <ilarion.kuleshov@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pydantic = "^2.9.2"
+pydantic-settings = "^2.5.2"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+autoflake = "^2.3.1"
+black = "^24.8.0"
+flake8 = "^7.1.1"
+flake8-pyproject = "^1.2.3"
+pylint = "^3.3.1"
+mypy = "^1.11.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+src_paths = ["src"]
+
+[tool.autoflake]
+remove-all-unused-imports = true
+recursive = true
+remove-unused-variables = true
+ignore-init-module-imports = true
+in-place = true
+
+[tool.black]
+line-length = 120
+
+[tool.flake8]
+max-line-length = 120
+per-file-ignores = "__init__.py:F401"
+
+[tool.pylint]
+init-hook = "import sys; sys.path.extend(['src']);"
+py-version = "3.12"
+max-line-length = "120"
+disable="C0114,R0903"
+
+[tool.mypy]
+mypy_path = "src"
+explicit_package_bases = true
+plugins = "pydantic.mypy"
