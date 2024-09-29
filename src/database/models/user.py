@@ -12,7 +12,7 @@ class User(DatabaseModel):
 
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(BigInteger, primary_key=True, autoincrement=False)
+    id: Mapped[int] = mapped_column(BigInteger(), primary_key=True, autoincrement=False)
     language: Mapped[UserLanguage] = mapped_column(
         Enum(*UserLanguage.values(), name="user_language"), index=True, server_default=text(f"'{UserLanguage.EN}'")
     )
