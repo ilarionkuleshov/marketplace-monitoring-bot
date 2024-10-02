@@ -2,7 +2,12 @@ from datetime import datetime
 
 from pydantic import Field
 
-from database.schemas.base import DatabaseCreateSchema, DatabaseReadSchema, StrHttpUrl
+from database.schemas.base import (
+    DatabaseCreateSchema,
+    DatabaseReadSchema,
+    DatabaseUpdateSchema,
+    StrHttpUrl,
+)
 
 
 class AdvertRead(DatabaseReadSchema):
@@ -26,6 +31,17 @@ class AdvertCreate(DatabaseCreateSchema):
     monitoring_id: int
     url: StrHttpUrl = Field(max_length=2000)
     title: str = Field(max_length=100)
+    description: str | None = Field(default=None, max_length=300)
+    image: str | None = Field(default=None, max_length=2000)
+    price: float | None = None
+    max_price: float | None = None
+    currency: str | None = Field(default=None, min_length=3, max_length=3)
+
+
+class AdvertUpdate(DatabaseUpdateSchema):
+    """Advert schema for updating."""
+
+    title: str | None = Field(default=None, max_length=100)
     description: str | None = Field(default=None, max_length=300)
     image: str | None = Field(default=None, max_length=2000)
     price: float | None = None
