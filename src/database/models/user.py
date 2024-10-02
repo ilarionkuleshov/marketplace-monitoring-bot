@@ -17,3 +17,4 @@ class User(DatabaseModel):
         Enum(*UserLanguage.values(), name="user_language"), index=True, server_default=text(f"'{UserLanguage.EN}'")
     )
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, server_default=text("now()"))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, server_default=text("now()"))

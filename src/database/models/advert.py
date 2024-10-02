@@ -29,5 +29,6 @@ class Advert(DatabaseModel):
     max_price: Mapped[float | None] = mapped_column(Float(), nullable=True)
     currency: Mapped[str | None] = mapped_column(String(3), nullable=True)
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, server_default=text("now()"))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), index=True, server_default=text("now()"))
 
     __table_args__ = (UniqueConstraint("monitoring_id", "url"),)
