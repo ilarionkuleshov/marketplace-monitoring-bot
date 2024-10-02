@@ -1,12 +1,16 @@
 from datetime import datetime, timedelta
 
-from pydantic import Field, model_validator
+from pydantic import Field
 
 from database.enums import MonitoringRunStatus
-from database.schemas.base import DatabaseSchema, validate_update_data
+from database.schemas.base import (
+    DatabaseCreateSchema,
+    DatabaseReadSchema,
+    DatabaseUpdateSchema,
+)
 
 
-class MonitoringRunRead(DatabaseSchema):
+class MonitoringRunRead(DatabaseReadSchema):
     """Monitoring run schema for reading."""
 
     id: int
@@ -17,7 +21,7 @@ class MonitoringRunRead(DatabaseSchema):
     created_at: datetime
 
 
-class MonitoringRunCreate(DatabaseSchema):
+class MonitoringRunCreate(DatabaseCreateSchema):
     """Monitoring run schema for creation."""
 
     monitoring_id: int
@@ -26,11 +30,9 @@ class MonitoringRunCreate(DatabaseSchema):
     status: MonitoringRunStatus | None = None
 
 
-class MonitoringRunUpdate(DatabaseSchema):
+class MonitoringRunUpdate(DatabaseUpdateSchema):
     """Monitoring run schema for updating."""
 
     log_file: str | None = Field(default=None, max_length=200)
     duration: timedelta | None = None
     status: MonitoringRunStatus | None = None
-
-    _validate_update_data = model_validator(mode="before")(validate_update_data)

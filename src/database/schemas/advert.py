@@ -1,11 +1,11 @@
 from datetime import datetime
 
-from pydantic import AnyHttpUrl, Field
+from pydantic import Field
 
-from database.schemas.base import DatabaseSchema
+from database.schemas.base import DatabaseCreateSchema, DatabaseReadSchema, StrHttpUrl
 
 
-class AdvertRead(DatabaseSchema):
+class AdvertRead(DatabaseReadSchema):
     """Advert schema for reading."""
 
     id: int
@@ -20,11 +20,11 @@ class AdvertRead(DatabaseSchema):
     created_at: datetime
 
 
-class AdvertCreate(DatabaseSchema):
+class AdvertCreate(DatabaseCreateSchema):
     """Advert schema for creation."""
 
     monitoring_id: int
-    url: AnyHttpUrl = Field(max_length=2000)
+    url: StrHttpUrl = Field(max_length=2000)
     title: str = Field(max_length=100)
     description: str | None = Field(default=None, max_length=300)
     image: str | None = Field(default=None, max_length=2000)

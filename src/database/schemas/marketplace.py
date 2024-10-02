@@ -1,7 +1,7 @@
-from database.schemas.base import DatabaseSchema
+from database.schemas.base import DatabaseReadSchema
 
 
-class MarketplaceRead(DatabaseSchema):
+class MarketplaceRead(DatabaseReadSchema):
     """Marketplace schema for reading."""
 
     id: int

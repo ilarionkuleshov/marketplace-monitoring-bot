@@ -20,5 +20,5 @@ class PostgresCredentials(BaseSettings):
             async_driver (bool): Whether to use an async driver.
 
         """
-        driver = "asyncpg" if async_driver else "postgresql"
+        driver = "postgresql+asyncpg" if async_driver else "postgresql"
         return f"{driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
