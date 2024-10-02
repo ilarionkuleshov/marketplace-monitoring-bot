@@ -1,0 +1,27 @@
+x-postgres-common:
+  &postgres-common
+  image: postgres:17.0
+  environment:
+    - POSTGRES_USER=${POSTGRES_USER}
+    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    - POSTGRES_DB=${POSTGRES_DATABASE}
+  volumes:
+    - ./docker_volumes/postgres:/var/lib/postgresql/data
+  healthcheck:
+    test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+    interval: 10s
+    retries: 5
+    start_period: 5s
+  restart: always
+
+
+services:
+  postgres-dev:
+    <<: *postgres-common
+    profiles:
+      - dev
+    ports:
+      - "${POSTGRES_PORT}:5432"
+
+  postgres:
+    <<: *postgres-common
