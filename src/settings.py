@@ -30,5 +30,6 @@ class ApiSettings(BaseSettings):
     log_level: str
     host: str
     port: int
+    security_key: str
 
     model_config = SettingsConfigDict(env_prefix="api_", env_file=find_dotenv(), extra="ignore")
