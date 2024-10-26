@@ -22,3 +22,13 @@ class PostgresCredentials(BaseSettings):
         """
         driver = "postgresql+asyncpg" if async_driver else "postgresql"
         return f"{driver}://{self.user}:{self.password}@{self.host}:{self.port}/{self.database}"
+
+
+class ApiSettings(BaseSettings):
+    """Settings for the FastAPI application."""
+
+    log_level: str
+    host: str
+    port: int
+
+    model_config = SettingsConfigDict(env_prefix="api_", env_file=find_dotenv(), extra="ignore")
