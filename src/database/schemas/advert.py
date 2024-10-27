@@ -23,6 +23,7 @@ class AdvertRead(DatabaseReadSchema):
     max_price: float | None
     currency: str | None
     created_at: datetime
+    updated_at: datetime
 
 
 class AdvertCreate(DatabaseCreateSchema):
