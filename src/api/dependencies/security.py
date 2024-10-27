@@ -1,8 +1,7 @@
 from typing import Annotated
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from fastapi.security import APIKeyHeader
-from starlette.status import HTTP_403_FORBIDDEN
 
 from settings import ApiSettings
 
@@ -20,4 +19,4 @@ def verify_api_key(api_key: Annotated[str | None, Depends(api_key_header)]) -> N
 
     """
     if api_key is None or api_key != ApiSettings().security_key:
-        raise HTTPException(HTTP_403_FORBIDDEN, "Missing or invalid API key")
+        raise HTTPException(status.HTTP_403_FORBIDDEN, "Missing or invalid API key")
