@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 
 from database import DatabaseProvider
 from database.models import Monitoring
@@ -49,11 +50,25 @@ async def create_monitoring(
         monitoring (MonitoringCreate): Data to create the monitoring.
         database (DatabaseProvider): Provider for the database.
 
+    Raises:
+        HTTPException (400): If the monitoring already exists.
+        HTTPException (404): If the user or marketplace is not found.
+
     Returns:
         MonitoringRead: Created monitoring.
 
     """
-    return await database.create(model=Monitoring, data=monitoring, read_schema=MonitoringRead)
+    try:
+        return await database.create(model=Monitoring, data=monitoring, read_schema=MonitoringRead)
+    except IntegrityError as error:
+        error_str = str(error.orig)
+        if "UniqueViolationError" in error_str:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Monitoring already exists")
+        if "user_id" in error_str:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
+        if "marketplace_id" in error_str:
+            raise HTTPException(status.HTTP_404_NOT_FOUND, "Marketplace not found")
+        raise
 
 
 @router.patch("/{monitoring_id}")
