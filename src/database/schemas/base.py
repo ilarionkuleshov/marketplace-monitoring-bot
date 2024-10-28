@@ -25,8 +25,8 @@ class DatabaseUpdateSchema(BaseModel, ABC):
         """Returns the data to update."""
         return self.model_dump(exclude_none=True)
 
-    @classmethod
     @model_validator(mode="before")
+    @classmethod
     def validate_data(cls, data: dict[str, Any]) -> dict[str, Any]:
         """Returns `data` after validation.
 
