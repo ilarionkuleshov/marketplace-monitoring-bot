@@ -82,12 +82,22 @@ async def update_user(user_id: int, user: UserUpdate, database: Annotated[Databa
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, database: Annotated[DatabaseProvider, Depends()]) -> None:
+async def delete_user(user_id: int, database: Annotated[DatabaseProvider, Depends()]) -> dict[str, str]:
     """Deletes a user.
 
     Args:
         user_id (int): The id of the user.
         database (DatabaseProvider): Provider for the database.
 
+    Raises:
+        HTTPException (404): If the user is not found.
+
+    Returns:
+        dict[str, str]: The message that the user was deleted.
+
     """
-    await database.delete(model=User, filters=[User.id == user_id])
+    try:
+        await database.delete(model=User, filters=[User.id == user_id])
+        return {"message": "User deleted successfully"}
+    except ValueError:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")

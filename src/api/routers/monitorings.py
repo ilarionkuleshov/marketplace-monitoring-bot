@@ -100,12 +100,22 @@ async def update_monitoring(
 
 
 @router.delete("/{monitoring_id}")
-async def delete_monitoring(monitoring_id: int, database: Annotated[DatabaseProvider, Depends()]) -> None:
+async def delete_monitoring(monitoring_id: int, database: Annotated[DatabaseProvider, Depends()]) -> dict[str, str]:
     """Deletes a monitoring by its ID.
 
     Args:
         monitoring_id (int): ID of the monitoring.
         database (DatabaseProvider): Provider for the database.
 
+    Raises:
+        HTTPException (404): If the monitoring is not found.
+
+    Returns:
+        dict[str, str]: The message that the monitoring was deleted.
+
     """
-    await database.delete(model=Monitoring, filters=[Monitoring.id == monitoring_id])
+    try:
+        await database.delete(model=Monitoring, filters=[Monitoring.id == monitoring_id])
+        return {"detail": "Monitoring deleted successfully"}
+    except ValueError:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Monitoring not found")
