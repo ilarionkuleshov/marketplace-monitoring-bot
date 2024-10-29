@@ -1,6 +1,7 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 
 from database import DatabaseProvider
 from database.models import MonitoringRun
@@ -51,8 +52,14 @@ async def create_monitoring_run(
         monitoring_run (MonitoringRunCreate): The monitoring run to create.
         database (DatabaseProvider): Provider for the database.
 
+    Raises:
+        HTTPException (404): If the monitoring is not found.
+
     Returns:
         MonitoringRunRead: The created monitoring run.
 
     """
-    return await database.create(model=MonitoringRun, data=monitoring_run, read_schema=MonitoringRunRead)
+    try:
+        return await database.create(model=MonitoringRun, data=monitoring_run, read_schema=MonitoringRunRead)
+    except IntegrityError:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, "Monitoring not found")
