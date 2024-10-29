@@ -125,8 +125,13 @@ class DatabaseProvider:
             model (DatabaseModelType): The database model for the query.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
 
+        Raises:
+            ValueError: If no rows to delete.
+
         """
         async with self._session_maker() as session:
             query = delete(model).where(*filters)
-            await session.execute(query)
+            cursor = await session.execute(query)
+            if cursor.rowcount == 0:
+                raise ValueError("No rows to delete")
             await session.commit()

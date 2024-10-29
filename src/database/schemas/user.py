@@ -14,6 +14,7 @@ class UserRead(DatabaseReadSchema):
     id: int
     language: UserLanguage
     created_at: datetime
+    updated_at: datetime
 
 
 class UserCreate(DatabaseCreateSchema):

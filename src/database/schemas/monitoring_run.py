@@ -19,6 +19,7 @@ class MonitoringRunRead(DatabaseReadSchema):
     duration: timedelta | None
     status: MonitoringRunStatus
     created_at: datetime
+    updated_at: datetime
 
 
 class MonitoringRunCreate(DatabaseCreateSchema):

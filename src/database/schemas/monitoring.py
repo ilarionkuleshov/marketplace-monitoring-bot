@@ -21,6 +21,7 @@ class MonitoringRead(DatabaseReadSchema):
     run_interval: timedelta
     enabled: bool
     created_at: datetime
+    updated_at: datetime
 
 
 class MonitoringCreate(DatabaseCreateSchema):
