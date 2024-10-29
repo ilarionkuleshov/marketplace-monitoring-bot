@@ -1,3 +1,4 @@
+from .adverts import router as adverts_router
 from .health import router as health_router
 from .marketplaces import router as marketplaces_router
 from .monitoring_runs import router as monitoring_runs_router
