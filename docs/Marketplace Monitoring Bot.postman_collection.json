@@ -1,0 +1,1959 @@
+{
+	"info": {
+		"_postman_id": "b8187e77-8ab8-4cc4-a151-6738572d92ea",
+		"name": "Marketplace Monitoring Bot",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "27536072"
+	},
+	"item": [
+		{
+			"name": "Health",
+			"item": [
+				{
+					"name": "Check health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/health/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"health",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/health/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"health",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:00:28 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "15"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"ok\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Marketplaces",
+			"item": [
+				{
+					"name": "Read marketplaces",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/marketplaces/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"marketplaces",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/marketplaces/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"marketplaces",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:00:18 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "56"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"name\": \"Example\",\n        \"url\": \"https://example.com/\"\n    }\n]"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Users",
+			"item": [
+				{
+					"name": "Read users",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:54:59 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "227"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 234,\n        \"language\": \"en\",\n        \"created_at\": \"2024-10-27T12:16:17.177724Z\",\n        \"updated_at\": \"2024-10-27T12:16:17.177724Z\"\n    },\n    {\n        \"id\": 123,\n        \"language\": \"en\",\n        \"created_at\": \"2024-10-02T18:37:37.420793Z\",\n        \"updated_at\": \"2024-10-27T12:24:16.034613Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Read user by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:user_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "123"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:56:29 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "112"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 123,\n    \"language\": \"en\",\n    \"created_at\": \"2024-10-02T18:37:37.420793Z\",\n    \"updated_at\": \"2024-10-27T12:24:16.034613Z\"\n}"
+						},
+						{
+							"name": "[404] User not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "1234"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:56:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "27"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"User not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create user",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"id\": 345,\n    \"language\": \"en\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 345,\n    \"language\": \"en\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:58:06 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "112"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 345,\n    \"language\": \"en\",\n    \"created_at\": \"2024-10-29T15:58:07.093676Z\",\n    \"updated_at\": \"2024-10-29T15:58:07.093676Z\"\n}"
+						},
+						{
+							"name": "[409] User with this ID already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": 345,\n    \"language\": \"en\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										""
+									]
+								}
+							},
+							"status": "Conflict",
+							"code": 409,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:58:15 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "45"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"User with this ID already exists\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update user",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"language\": \"en\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/users/:user_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"language\": \"en\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "123"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:58:57 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "112"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 123,\n    \"language\": \"en\",\n    \"created_at\": \"2024-10-02T18:37:37.420793Z\",\n    \"updated_at\": \"2024-10-29T15:58:58.963385Z\"\n}"
+						},
+						{
+							"name": "[404] User not found",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"language\": \"en\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "1234"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:58:33 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "27"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"User not found\"\n}"
+						},
+						{
+							"name": "[422] No data to update",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "123"
+										}
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 15:59:12 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "140"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": [\n        {\n            \"type\": \"value_error\",\n            \"loc\": [\n                \"body\"\n            ],\n            \"msg\": \"Value error, All values are None, no data to update\",\n            \"input\": {},\n            \"ctx\": {\n                \"error\": {}\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/users/:user_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"users",
+								":user_id"
+							],
+							"variable": [
+								{
+									"key": "user_id",
+									"value": "234"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "234"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:15:57 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "39"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"message\": \"User deleted successfully\"\n}"
+						},
+						{
+							"name": "[404] User not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/users/:user_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"users",
+										":user_id"
+									],
+									"variable": [
+										{
+											"key": "user_id",
+											"value": "345"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:10:48 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "27"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"User not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Monitorings",
+			"item": [
+				{
+					"name": "Read monitorings",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monitorings/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitorings",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitorings/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:01:18 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "210"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"user_id\": 123,\n        \"marketplace_id\": 1,\n        \"name\": \"Wasd\",\n        \"url\": \"https://example.com/\",\n        \"run_interval\": \"PT5M\",\n        \"enabled\": false,\n        \"created_at\": \"2024-10-02T18:43:17.589028Z\",\n        \"updated_at\": \"2024-10-28T18:45:37.756130Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Read monitoring by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monitorings/:monitoring_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitorings",
+								":monitoring_id"
+							],
+							"variable": [
+								{
+									"key": "monitoring_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:01:27 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "208"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/\",\n    \"run_interval\": \"PT5M\",\n    \"enabled\": false,\n    \"created_at\": \"2024-10-02T18:43:17.589028Z\",\n    \"updated_at\": \"2024-10-28T18:45:37.756130Z\"\n}"
+						},
+						{
+							"name": "[404] Monitoring not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "123"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:01:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "33"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create monitoring",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/2\",\n    \"run_interval\": \"PT5M\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/monitorings/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitorings",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/2\",\n    \"run_interval\": \"PT5M\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:02:07 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "209"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 22,\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/2\",\n    \"run_interval\": \"PT5M\",\n    \"enabled\": true,\n    \"created_at\": \"2024-10-29T16:02:08.661857Z\",\n    \"updated_at\": \"2024-10-29T16:02:08.661857Z\"\n}"
+						},
+						{
+							"name": "[400] Monitoring already exists",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/2\",\n    \"run_interval\": \"PT5M\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										""
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:02:16 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "38"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring already exists\"\n}"
+						},
+						{
+							"name": "[404] User not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 12345,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/2\",\n    \"run_interval\": \"PT5M\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										""
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:02:31 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "27"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"User not found\"\n}"
+						},
+						{
+							"name": "[404] Marketplace not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"user_id\": 123,\n    \"marketplace_id\": 12,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/3\",\n    \"run_interval\": \"PT5M\"\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										""
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:02:55 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "34"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Marketplace not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Update monitoring",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"enabled\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/monitorings/:monitoring_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitorings",
+								":monitoring_id"
+							],
+							"variable": [
+								{
+									"key": "monitoring_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"enabled\": false\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:03:32 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "208"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"user_id\": 123,\n    \"marketplace_id\": 1,\n    \"name\": \"Wasd\",\n    \"url\": \"https://example.com/\",\n    \"run_interval\": \"PT5M\",\n    \"enabled\": false,\n    \"created_at\": \"2024-10-02T18:43:17.589028Z\",\n    \"updated_at\": \"2024-10-29T16:03:32.933540Z\"\n}"
+						},
+						{
+							"name": "[422] No data to update",
+							"originalRequest": {
+								"method": "PATCH",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "Unprocessable Entity",
+							"code": 422,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:03:44 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "140"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": [\n        {\n            \"type\": \"value_error\",\n            \"loc\": [\n                \"body\"\n            ],\n            \"msg\": \"Value error, All values are None, no data to update\",\n            \"input\": {},\n            \"ctx\": {\n                \"error\": {}\n            }\n        }\n    ]\n}"
+						}
+					]
+				},
+				{
+					"name": "Delete monitoring",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monitorings/:monitoring_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitorings",
+								":monitoring_id"
+							],
+							"variable": [
+								{
+									"key": "monitoring_id",
+									"value": "22"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "22"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:16:17 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "44"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring deleted successfully\"\n}"
+						},
+						{
+							"name": "[404] Monitoring not found",
+							"originalRequest": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitorings/:monitoring_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitorings",
+										":monitoring_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_id",
+											"value": "21"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:11:50 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "33"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Monitoring runs",
+			"item": [
+				{
+					"name": "Read monitoring runs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monitoring_runs/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitoring_runs",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitoring_runs/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitoring_runs",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:07:08 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "333"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 3,\n        \"monitoring_id\": 1,\n        \"log_file\": null,\n        \"duration\": null,\n        \"status\": \"scheduled\",\n        \"created_at\": \"2024-10-29T15:44:25.917832Z\",\n        \"updated_at\": \"2024-10-29T15:44:25.917832Z\"\n    },\n    {\n        \"id\": 4,\n        \"monitoring_id\": 1,\n        \"log_file\": null,\n        \"duration\": null,\n        \"status\": \"scheduled\",\n        \"created_at\": \"2024-10-29T15:44:30.996336Z\",\n        \"updated_at\": \"2024-10-29T15:44:30.996336Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Read monitoring run by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/monitoring_runs/:monitoring_run_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitoring_runs",
+								":monitoring_run_id"
+							],
+							"variable": [
+								{
+									"key": "monitoring_run_id",
+									"value": "4"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitoring_runs/:monitoring_run_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitoring_runs",
+										":monitoring_run_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_run_id",
+											"value": "4"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:07:18 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "165"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 4,\n    \"monitoring_id\": 1,\n    \"log_file\": null,\n    \"duration\": null,\n    \"status\": \"scheduled\",\n    \"created_at\": \"2024-10-29T15:44:30.996336Z\",\n    \"updated_at\": \"2024-10-29T15:44:30.996336Z\"\n}"
+						},
+						{
+							"name": "[404] Monitoring run not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/monitoring_runs/:monitoring_run_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitoring_runs",
+										":monitoring_run_id"
+									],
+									"variable": [
+										{
+											"key": "monitoring_run_id",
+											"value": "45"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:07:26 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "37"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring run not found\"\n}"
+						}
+					]
+				},
+				{
+					"name": "Create monitoring run",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"monitoring_id\": 1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_url}}/monitoring_runs/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"monitoring_runs",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"monitoring_id\": 1\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitoring_runs/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitoring_runs",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:07:38 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "165"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 5,\n    \"monitoring_id\": 1,\n    \"log_file\": null,\n    \"duration\": null,\n    \"status\": \"scheduled\",\n    \"created_at\": \"2024-10-29T16:07:38.911508Z\",\n    \"updated_at\": \"2024-10-29T16:07:38.911508Z\"\n}"
+						},
+						{
+							"name": "[404] Monitoring not found",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"monitoring_id\": 13\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{base_url}}/monitoring_runs/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"monitoring_runs",
+										""
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:07:53 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "33"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Monitoring not found\"\n}"
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Adverts",
+			"item": [
+				{
+					"name": "Read adverts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/adverts/",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"adverts",
+								""
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/adverts/",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"adverts",
+										""
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:08:07 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "239"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "[\n    {\n        \"id\": 1,\n        \"monitoring_id\": 1,\n        \"url\": \"https://example.com/\",\n        \"title\": \"Example\",\n        \"description\": null,\n        \"image\": null,\n        \"price\": null,\n        \"max_price\": null,\n        \"currency\": null,\n        \"created_at\": \"2024-10-02T18:44:06.825082Z\",\n        \"updated_at\": \"2024-10-02T18:44:06.825082Z\"\n    }\n]"
+						}
+					]
+				},
+				{
+					"name": "Read advert by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/adverts/:advert_id",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"adverts",
+								":advert_id"
+							],
+							"variable": [
+								{
+									"key": "advert_id",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "[200] Ok",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/adverts/:advert_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"adverts",
+										":advert_id"
+									],
+									"variable": [
+										{
+											"key": "advert_id",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"status": "OK",
+							"code": 200,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:08:13 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "237"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"id\": 1,\n    \"monitoring_id\": 1,\n    \"url\": \"https://example.com/\",\n    \"title\": \"Example\",\n    \"description\": null,\n    \"image\": null,\n    \"price\": null,\n    \"max_price\": null,\n    \"currency\": null,\n    \"created_at\": \"2024-10-02T18:44:06.825082Z\",\n    \"updated_at\": \"2024-10-02T18:44:06.825082Z\"\n}"
+						},
+						{
+							"name": "[404] Advert not found",
+							"originalRequest": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{base_url}}/adverts/:advert_id",
+									"host": [
+										"{{base_url}}"
+									],
+									"path": [
+										"adverts",
+										":advert_id"
+									],
+									"variable": [
+										{
+											"key": "advert_id",
+											"value": "13"
+										}
+									]
+								}
+							},
+							"status": "Not Found",
+							"code": 404,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "date",
+									"value": "Tue, 29 Oct 2024 16:08:19 GMT"
+								},
+								{
+									"key": "server",
+									"value": "uvicorn"
+								},
+								{
+									"key": "content-length",
+									"value": "29"
+								},
+								{
+									"key": "content-type",
+									"value": "application/json"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"detail\": \"Advert not found\"\n}"
+						}
+					]
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "value",
+				"value": "f2c6ff32-0424-4f0e-9b58-4f47a7b91560",
+				"type": "string"
+			},
+			{
+				"key": "key",
+				"value": "X-API-Key",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://127.0.0.1:8000",
+			"type": "string"
+		}
+	]
+}
