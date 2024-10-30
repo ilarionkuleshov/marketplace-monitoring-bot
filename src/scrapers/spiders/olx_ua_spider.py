@@ -1,8 +1,8 @@
 import json
 from typing import Any, Iterator
 
-from scrapy import Spider, Request
-from scrapy.http import HtmlResponse
+from scrapy import Request, Spider
+from scrapy.http import HtmlResponse, Response
 
 from database.schemas import AdvertCreate
 from scrapers.utils import crop_str
@@ -82,5 +82,8 @@ class OlxUaSpider(Spider):
         if not raw_data:
             raise ValueError("Advert data not found")
 
-        raw_data = raw_data.replace('\\"', '"').replace(r'\\"', r'\"')
+        raw_data = raw_data.replace('\\"', '"').replace(r'\\"', r"\"")
         return ((json.loads(raw_data).get("listing") or {}).get("listing") or {}).get("ads") or []
+
+    def parse(self, response: Response, **kwargs: Any) -> Any:
+        """Just a stub."""

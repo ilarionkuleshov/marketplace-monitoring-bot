@@ -60,3 +60,9 @@ ignored-modules = ["alembic.context", "alembic.op"]
 mypy_path = "src"
 explicit_package_bases = true
 plugins = "pydantic.mypy"
+
+[[tool.mypy.overrides]]
+module = [
+    "scrapy.*",
+]
+ignore_missing_imports = true

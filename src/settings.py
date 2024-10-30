@@ -41,14 +41,5 @@ class ScrapersSettings(BaseSettings):
     log_level: str
     user_agent: str
     concurrent_requests: int
-    bot_name: str = "scraper"
-    spider_modules: list[str] = ["scraper.spiders"]
-    robotstxt_obey: bool = False
-    request_fingerprinter_implementation: str = "2.7"
-    twisted_reactor: str = "twisted.internet.asyncioreactor.AsyncioSelectorReactor"
-    feed_export_encoding: str = "utf-8"
 
     model_config = SettingsConfigDict(env_prefix="scrapers_", env_file=find_dotenv(), extra="ignore")
-
-
-scrapers_settings = ScrapersSettings()
