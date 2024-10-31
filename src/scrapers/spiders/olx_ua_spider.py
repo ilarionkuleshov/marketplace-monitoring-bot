@@ -1,34 +1,18 @@
 import json
 from typing import Any, Iterator
 
-from scrapy import Request, Spider
-from scrapy.http import HtmlResponse, Response
+from scrapy import Request
+from scrapy.http import HtmlResponse
 
 from database.schemas import AdvertCreate
+from scrapers.spiders.base_spider import BaseSpider
 from scrapers.utils import crop_str
 
 
-class OlxUaSpider(Spider):
-    """Spider for scraping `olx.ua`.
-
-    Args:
-        monitoring_id (int): Monitoring ID.
-        monitoring_url (str): Monitoring URL to start scraping from.
-
-    Attributes:
-        See `Args` section.
-
-    """
+class OlxUaSpider(BaseSpider):
+    """Spider for scraping `olx.ua`."""
 
     name: str = "olx_ua"
-
-    monitoring_id: int
-    monitoring_url: str
-
-    def __init__(self, monitoring_id: int, monitoring_url: str, **kwargs) -> None:
-        super().__init__(**kwargs)
-        self.monitoring_id = monitoring_id
-        self.monitoring_url = monitoring_url
 
     def start_requests(self) -> Iterator[Request]:
         """Yields a request to start scraping."""
@@ -84,6 +68,3 @@ class OlxUaSpider(Spider):
 
         raw_data = raw_data.replace('\\"', '"').replace(r'\\"', r"\"")
         return ((json.loads(raw_data).get("listing") or {}).get("listing") or {}).get("ads") or []
-
-    def parse(self, response: Response, **kwargs: Any) -> Any:
-        """Just a stub."""
