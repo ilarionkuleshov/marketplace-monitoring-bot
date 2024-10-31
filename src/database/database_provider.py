@@ -13,7 +13,7 @@ from database.schemas import (
     DatabaseReadSchema,
     DatabaseUpdateSchema,
 )
-from settings import PostgresCredentials
+from settings import DatabaseSettings
 
 
 # mypy: disable-error-code="valid-type, name-defined"
@@ -24,7 +24,7 @@ class DatabaseProvider:
     _session_maker: async_sessionmaker[AsyncSession]
 
     def __init__(self) -> None:
-        self._engine = create_async_engine(url=PostgresCredentials().get_url())
+        self._engine = create_async_engine(url=DatabaseSettings().get_url())
         self._session_maker = async_sessionmaker(bind=self._engine)
 
     async def get[

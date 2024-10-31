@@ -2,13 +2,13 @@ x-postgres-common:
   &postgres-common
   image: postgres:17.0
   environment:
-    - POSTGRES_USER=${POSTGRES_USER}
-    - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-    - POSTGRES_DB=${POSTGRES_DATABASE}
+    - POSTGRES_USER=${DATABASE_USER}
+    - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+    - POSTGRES_DB=${DATABASE_NAME}
   volumes:
     - ./docker_volumes/postgres:/var/lib/postgresql/data
   healthcheck:
-    test: ["CMD", "pg_isready", "-U", "${POSTGRES_USER}"]
+    test: ["CMD", "pg_isready", "-U", "${DATABASE_USER}"]
     interval: 10s
     retries: 5
     start_period: 5s
@@ -21,7 +21,7 @@ services:
     profiles:
       - dev
     ports:
-      - "${POSTGRES_PORT}:5432"
+      - "${DATABASE_PORT}:5432"
 
   postgres:
     <<: *postgres-common
