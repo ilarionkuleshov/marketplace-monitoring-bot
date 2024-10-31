@@ -4,7 +4,7 @@ from typing import Any
 from scrapy import Spider
 from scrapy.http import Response
 
-from scrapers.pipelines import DebugSaveAdvertPipeline
+from scrapers.pipelines import DebugSaveAdvertPipeline, FilterDuplicateAdvertPipeline
 
 
 class BaseSpider(Spider, ABC):
@@ -22,6 +22,7 @@ class BaseSpider(Spider, ABC):
 
     custom_settings: dict | None = {
         "ITEM_PIPELINES": {
+            FilterDuplicateAdvertPipeline: 400,
             DebugSaveAdvertPipeline: 500,
         },
     }
