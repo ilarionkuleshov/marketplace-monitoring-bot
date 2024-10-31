@@ -5,7 +5,7 @@ from alembic import context
 from sqlalchemy import engine_from_config, pool
 
 from database.models import DatabaseModel
-from settings import PostgresCredentials
+from settings import DatabaseSettings
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -26,7 +26,7 @@ target_metadata = DatabaseModel.metadata
 # can be acquired:
 # my_important_option = config.get_main_option("my_important_option")
 # ... etc.
-config.set_main_option("sqlalchemy.url", PostgresCredentials().get_url(async_driver=False))
+config.set_main_option("sqlalchemy.url", DatabaseSettings().get_url(async_driver=False))
 
 
 def run_migrations_offline() -> None:

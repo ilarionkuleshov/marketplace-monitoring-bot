@@ -2,3 +2,6 @@
 
 __pycache__/
 .mypy_cache/
+
+src/storage/*
+!src/storage/.gitkeep
