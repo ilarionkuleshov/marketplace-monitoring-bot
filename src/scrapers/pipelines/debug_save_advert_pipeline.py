@@ -51,6 +51,6 @@ class DebugSaveAdvertPipeline:
 
         advert_id = hashlib.md5(str(item.url).encode()).hexdigest()
         advert_path = self.storage_path / f"{advert_id}.json"
-        advert_path.write_text(item.model_dump_json(indent=4))
+        advert_path.write_text(item.model_dump_json(indent=4), encoding="utf-8")
 
         return item
