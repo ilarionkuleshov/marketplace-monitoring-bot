@@ -41,5 +41,6 @@ class ScrapersSettings(BaseSettings):
     log_level: str
     user_agent: str
     concurrent_requests: int
+    debug_mode: bool
 
     model_config = SettingsConfigDict(env_prefix="scrapers_", env_file=find_dotenv(), extra="ignore")

@@ -4,6 +4,8 @@ from typing import Any
 from scrapy import Spider
 from scrapy.http import Response
 
+from scrapers.pipelines import DebugSaveAdvertPipeline
+
 
 class BaseSpider(Spider, ABC):
     """Base for all spiders.
@@ -17,6 +19,12 @@ class BaseSpider(Spider, ABC):
         See `Args` section.
 
     """
+
+    custom_settings: dict | None = {
+        "ITEM_PIPELINES": {
+            DebugSaveAdvertPipeline: 500,
+        },
+    }
 
     monitoring_id: int
     monitoring_url: str
