@@ -66,5 +66,7 @@ class OlxUaSpider(BaseSpider):
         if not raw_data:
             raise ValueError("Advert data not found")
 
-        raw_data = raw_data.replace("\\\\", "\\").replace(r'\"', '"')
+        raw_data = raw_data.replace("\\\\", "\\").replace(r"\"", '"')
+        raw_data = json.dumps(json.loads(raw_data), ensure_ascii=False)
+        raw_data = raw_data.replace("<br />", "")
         return ((json.loads(raw_data).get("listing") or {}).get("listing") or {}).get("ads") or []
