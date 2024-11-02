@@ -47,7 +47,7 @@ class ScrapersSettings(BaseSettings):
 
 
 class TasksSettings(BaseSettings):
-    """Settings for the Celery tasks."""
+    """Settings for the tasks."""
 
     log_level: str
     broker_host: str
@@ -60,7 +60,7 @@ class TasksSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="tasks_", env_file=find_dotenv(), extra="ignore")
 
     def get_url(self) -> str:
-        """Returns the connection URL for the Celery broker."""
+        """Returns the connection URL for the tasks broker."""
         return (
             f"amqp://{self.broker_user}:{self.broker_password}"
             f"@{self.broker_host}:{self.broker_port}/{self.broker_vhost}"
