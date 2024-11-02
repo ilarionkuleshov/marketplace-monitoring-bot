@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class DatabaseSettings(BaseSettings):
-    """Settings for the database connection."""
+    """Settings for the PostgreSQL database."""
 
     host: str
     port: int
@@ -14,7 +14,7 @@ class DatabaseSettings(BaseSettings):
     model_config = SettingsConfigDict(env_prefix="database_", env_file=find_dotenv(), extra="ignore")
 
     def get_url(self, async_driver: bool = True) -> str:
-        """Returns the connection URL for the database.
+        """Returns the connection URL for the PostgreSQL database.
 
         Args:
             async_driver (bool): Whether to use an async driver.
@@ -36,7 +36,7 @@ class ApiSettings(BaseSettings):
 
 
 class ScrapersSettings(BaseSettings):
-    """Settings for the scrapers."""
+    """Settings for the Scrapy scrapers."""
 
     log_level: str
     user_agent: str
@@ -44,3 +44,24 @@ class ScrapersSettings(BaseSettings):
     debug_mode: bool
 
     model_config = SettingsConfigDict(env_prefix="scrapers_", env_file=find_dotenv(), extra="ignore")
+
+
+class TasksSettings(BaseSettings):
+    """Settings for the Celery tasks."""
+
+    log_level: str
+    broker_host: str
+    broker_port: int
+    broker_management_port: int
+    broker_user: str
+    broker_password: str
+    broker_vhost: str
+
+    model_config = SettingsConfigDict(env_prefix="tasks_", env_file=find_dotenv(), extra="ignore")
+
+    def get_url(self) -> str:
+        """Returns the connection URL for the Celery broker."""
+        return (
+            f"amqp://{self.broker_user}:{self.broker_password}"
+            f"@{self.broker_host}:{self.broker_port}/{self.broker_vhost}"
+        )
