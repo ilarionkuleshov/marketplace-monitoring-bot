@@ -47,7 +47,7 @@ class ScrapersSettings(BaseSettings):
 
 
 class TasksSettings(BaseSettings):
-    """Settings for the tasks."""
+    """Settings for the FastStream background tasks."""
 
     log_level: str
     broker_host: str
@@ -59,8 +59,8 @@ class TasksSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="tasks_", env_file=find_dotenv(), extra="ignore")
 
-    def get_url(self) -> str:
-        """Returns the connection URL for the tasks broker."""
+    def get_broker_url(self) -> str:
+        """Returns the connection URL for the RabbitMQ broker."""
         return (
             f"amqp://{self.broker_user}:{self.broker_password}"
             f"@{self.broker_host}:{self.broker_port}/{self.broker_vhost}"
