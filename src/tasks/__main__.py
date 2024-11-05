@@ -11,7 +11,7 @@ from taskiq_faststream import BrokerWrapper, StreamScheduler
 
 from settings import TasksSettings
 from tasks.queues import MONITORING_CHECK_TASKS_QUEUE
-from tasks.routers import monitoring_router
+from tasks.routers import monitoring_router, scraping_router
 
 
 async def get_broker(settings: TasksSettings) -> RabbitBroker:
@@ -23,6 +23,7 @@ async def run_worker(settings: TasksSettings) -> None:
     """Runs the FastStream worker."""
     broker = await get_broker(settings)
     broker.include_router(monitoring_router)
+    broker.include_router(scraping_router)
 
     app = FastStream(broker)
     await app.run(log_level=logging.getLevelName(settings.log_level))
