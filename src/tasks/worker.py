@@ -8,7 +8,7 @@ from settings import TasksSettings
 
 
 async def main() -> None:
-    """Runs the FastStream worker."""
+    """Runs the FastStream application (worker)."""
     settings = TasksSettings()
 
     broker = RabbitBroker(settings.get_broker_url())
