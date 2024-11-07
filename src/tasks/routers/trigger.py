@@ -2,7 +2,7 @@ from typing import Annotated
 
 from faststream import Depends, Logger
 from faststream.rabbit import RabbitRouter
-from sqlalchemy import exists, func, not_, select
+from sqlalchemy import exists, func, not_, or_, select
 from sqlalchemy.sql import literal
 
 from database import DatabaseProvider
@@ -45,13 +45,16 @@ async def handle_trigger_scraping_task(
                     )
                 )
             ),
-            (
-                select(func.max(MonitoringRun.created_at))
-                .where(MonitoringRun.monitoring_id == Monitoring.id)
-                .as_scalar()
-                + Monitoring.run_interval
-            )
-            <= func.now(),  # pylint: disable=E1102
+            or_(
+                not_(exists(select(literal(1)).where(MonitoringRun.monitoring_id == Monitoring.id))),
+                (
+                    select(func.max(MonitoringRun.created_at))
+                    .where(MonitoringRun.monitoring_id == Monitoring.id)
+                    .as_scalar()
+                    + Monitoring.run_interval
+                )
+                <= func.now(),  # pylint: disable=E1102
+            ),
         ],
     )
 
