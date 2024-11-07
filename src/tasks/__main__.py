@@ -10,8 +10,8 @@ from taskiq.schedule_sources import LabelScheduleSource
 from taskiq_faststream import BrokerWrapper, StreamScheduler
 
 from settings import TasksSettings
-from tasks.queues import MONITORING_CHECK_TASKS_QUEUE
-from tasks.routers import monitoring_router, scraping_router
+from tasks.queues import TRIGGER_SCRAPING_TASKS_QUEUE
+from tasks.routers import scraping_router, trigger_router
 
 
 async def get_broker(settings: TasksSettings) -> RabbitBroker:
@@ -22,7 +22,7 @@ async def get_broker(settings: TasksSettings) -> RabbitBroker:
 async def run_worker(settings: TasksSettings) -> None:
     """Runs the FastStream worker."""
     broker = await get_broker(settings)
-    broker.include_router(monitoring_router)
+    broker.include_router(trigger_router)
     broker.include_router(scraping_router)
 
     app = FastStream(broker)
@@ -35,7 +35,7 @@ async def run_scheduler(settings: TasksSettings) -> None:
 
     taskiq_broker = BrokerWrapper(broker)
     taskiq_broker.task(
-        queue=MONITORING_CHECK_TASKS_QUEUE,
+        queue=TRIGGER_SCRAPING_TASKS_QUEUE,
         schedule=[{"cron": "* * * * *"}],
     )
 

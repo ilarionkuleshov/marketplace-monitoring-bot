@@ -15,17 +15,17 @@ from database.schemas import (
     MonitoringRunUpdate,
 )
 from tasks.messages import ScrapingTask
-from tasks.queues import MONITORING_CHECK_TASKS_QUEUE, SCRAPING_TASKS_QUEUE
+from tasks.queues import SCRAPING_TASKS_QUEUE, TRIGGER_SCRAPING_TASKS_QUEUE
 
 router = RabbitRouter()
 scraping_task_publisher = router.publisher(SCRAPING_TASKS_QUEUE, persist=True)
 
 
-@router.subscriber(MONITORING_CHECK_TASKS_QUEUE)
-async def handle_monitoring_check_task(
+@router.subscriber(TRIGGER_SCRAPING_TASKS_QUEUE)
+async def handle_trigger_scraping_task(
     logger: Logger, database: Annotated[DatabaseProvider, Depends(DatabaseProvider)]
 ) -> None:
-    """Handles monitoring check task.
+    """Handles trigger scraping task.
 
     Args:
         logger (Logger): FastStream logger.
