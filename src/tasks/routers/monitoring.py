@@ -18,7 +18,7 @@ from tasks.messages import ScrapingTask
 from tasks.queues import MONITORING_CHECK_TASKS_QUEUE, SCRAPING_TASKS_QUEUE
 
 router = RabbitRouter()
-scraping_task_publisher = router.publisher(SCRAPING_TASKS_QUEUE)
+scraping_task_publisher = router.publisher(SCRAPING_TASKS_QUEUE, persist=True)
 
 
 @router.subscriber(MONITORING_CHECK_TASKS_QUEUE)
