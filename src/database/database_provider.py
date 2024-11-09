@@ -1,6 +1,3 @@
-from threading import Lock
-from typing import Optional
-
 from sqlalchemy import delete, select, update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -26,18 +23,7 @@ class DatabaseProvider:
     _engine: AsyncEngine
     _session_maker: async_sessionmaker[AsyncSession]
 
-    _instance: Optional["DatabaseProvider"] = None
-    _lock: Lock = Lock()
-
-    def __new__(cls) -> "DatabaseProvider":
-        with cls._lock:
-            if cls._instance is None:
-                cls._instance = super().__new__(cls)
-                cls._instance._init()
-        return cls._instance
-
-    def _init(self) -> None:
-        """Initializes the database engine and session maker."""
+    def __init__(self) -> None:
         self._engine = create_async_engine(url=DatabaseSettings().get_url())
         self._session_maker = async_sessionmaker(bind=self._engine)
 
