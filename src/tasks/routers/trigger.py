@@ -5,7 +5,7 @@ from faststream.rabbit import RabbitRouter
 from sqlalchemy import exists, func, not_, or_, select
 from sqlalchemy.sql import literal
 
-from database import DatabaseProvider
+from database import DatabaseProvider, get_database_provider
 from database.enums import MonitoringRunStatus
 from database.models import Monitoring, MonitoringRun
 from database.schemas import (
@@ -23,7 +23,7 @@ scraping_task_publisher = router.publisher(SCRAPING_TASKS_QUEUE, persist=True)
 
 @router.subscriber(TRIGGER_SCRAPING_TASKS_QUEUE)
 async def handle_trigger_scraping_task(
-    logger: Logger, database: Annotated[DatabaseProvider, Depends(DatabaseProvider)]
+    logger: Logger, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
 ) -> None:
     """Handles trigger scraping task.
 

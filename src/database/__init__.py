@@ -1,1 +1,2 @@
+from .database_dependency import get_database_provider
 from .database_provider import DatabaseProvider

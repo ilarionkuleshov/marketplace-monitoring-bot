@@ -2,7 +2,7 @@ from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
-from database import DatabaseProvider
+from database import DatabaseProvider, get_database_provider
 from database.models import Advert
 from database.schemas import AdvertRead
 
@@ -10,7 +10,7 @@ router = APIRouter(prefix="/adverts")
 
 
 @router.get("/")
-async def read_adverts(database: Annotated[DatabaseProvider, Depends()]) -> list[AdvertRead]:
+async def read_adverts(database: Annotated[DatabaseProvider, Depends(get_database_provider)]) -> list[AdvertRead]:
     """Returns all adverts.
 
     Args:
@@ -21,7 +21,9 @@ async def read_adverts(database: Annotated[DatabaseProvider, Depends()]) -> list
 
 
 @router.get("/{advert_id}")
-async def read_advert(advert_id: int, database: Annotated[DatabaseProvider, Depends()]) -> AdvertRead:
+async def read_advert(
+    advert_id: int, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+) -> AdvertRead:
     """Returns an advert by ID.
 
     Args:

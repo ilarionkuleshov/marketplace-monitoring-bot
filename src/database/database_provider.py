@@ -1,10 +1,5 @@
 from sqlalchemy import delete, select, update
-from sqlalchemy.ext.asyncio import (
-    AsyncEngine,
-    AsyncSession,
-    async_sessionmaker,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql import ColumnExpressionArgument
 
 from database.models import DatabaseModelType
@@ -13,19 +8,21 @@ from database.schemas import (
     DatabaseReadSchema,
     DatabaseUpdateSchema,
 )
-from settings import DatabaseSettings
 
 
 # mypy: disable-error-code="valid-type, name-defined"
 class DatabaseProvider:
-    """Provider for the database."""
+    """Provider for the database.
 
-    _engine: AsyncEngine
-    _session_maker: async_sessionmaker[AsyncSession]
+    Args:
+        session (AsyncSession): The session to use for the database.
 
-    def __init__(self) -> None:
-        self._engine = create_async_engine(url=DatabaseSettings().get_url())
-        self._session_maker = async_sessionmaker(bind=self._engine)
+    """
+
+    _session: AsyncSession
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
 
     async def get[
         T: DatabaseReadSchema
@@ -38,12 +35,11 @@ class DatabaseProvider:
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
 
         """
-        async with self._session_maker() as session:
-            query = select(model).where(*filters)
-            cursor = await session.execute(query)
-            if row := cursor.scalars().first():
-                return read_schema.model_validate(row)
-            return None
+        query = select(model).where(*filters)
+        cursor = await self._session.execute(query)
+        if row := cursor.scalars().first():
+            return read_schema.model_validate(row)
+        return None
 
     async def get_all[
         T: DatabaseReadSchema
@@ -58,12 +54,11 @@ class DatabaseProvider:
             filters (list[ColumnExpressionArgument] | None): The conditions to filter the query. Default is None.
 
         """
-        async with self._session_maker() as session:
-            query = select(model)
-            if filters:
-                query = query.where(*filters)
-            cursor = await session.execute(query)
-            return [read_schema.model_validate(row) for row in cursor.scalars().all()]
+        query = select(model)
+        if filters:
+            query = query.where(*filters)
+        cursor = await self._session.execute(query)
+        return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
     async def create[
         T: DatabaseReadSchema
@@ -76,12 +71,11 @@ class DatabaseProvider:
             read_schema (type[T]): The schema to validate the result.
 
         """
-        async with self._session_maker() as session:
-            row = model(**data.model_dump_for_insert())
-            session.add(row)
-            await session.commit()
-            await session.refresh(row)
-            return read_schema.model_validate(row)
+        row = model(**data.model_dump_for_insert())
+        self._session.add(row)
+        await self._session.flush()
+        await self._session.refresh(row)
+        return read_schema.model_validate(row)
 
     async def update[
         T: DatabaseReadSchema
@@ -102,21 +96,20 @@ class DatabaseProvider:
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
 
         """
-        async with self._session_maker() as session:
-            select_query = select(model).where(*filters)
-            select_cursor = await session.execute(select_query)
+        select_query = select(model).where(*filters)
+        select_cursor = await self._session.execute(select_query)
 
-            rows = select_cursor.scalars().all()
-            if len(rows) != 1:
-                raise ValueError(f"Number of rows to update ({len(rows)}) does not equal one")
-            row = rows[0]
+        rows = select_cursor.scalars().all()
+        if len(rows) != 1:
+            raise ValueError(f"Number of rows to update ({len(rows)}) does not equal one")
+        row = rows[0]
 
-            update_query = update(model).where(*filters).values(data.model_dump_for_update())
-            await session.execute(update_query)
-            await session.commit()
+        update_query = update(model).where(*filters).values(data.model_dump_for_update())
+        await self._session.execute(update_query)
+        await self._session.flush()
 
-            await session.refresh(row)
-            return read_schema.model_validate(row)
+        await self._session.refresh(row)
+        return read_schema.model_validate(row)
 
     async def delete(self, *, model: DatabaseModelType, filters: list[ColumnExpressionArgument]) -> None:
         """Deletes rows from the database.
@@ -129,9 +122,8 @@ class DatabaseProvider:
             ValueError: If no rows to delete.
 
         """
-        async with self._session_maker() as session:
-            query = delete(model).where(*filters)
-            cursor = await session.execute(query)
-            if cursor.rowcount == 0:
-                raise ValueError("No rows to delete")
-            await session.commit()
+        query = delete(model).where(*filters)
+        cursor = await self._session.execute(query)
+        if cursor.rowcount == 0:
+            raise ValueError("No rows to delete")
+        await self._session.flush()

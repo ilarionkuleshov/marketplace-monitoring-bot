@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
-from database import DatabaseProvider
+from database import DatabaseProvider, get_database_provider
 from database.models import User
 from database.schemas import UserCreate, UserRead, UserUpdate
 
@@ -11,7 +11,7 @@ router = APIRouter(prefix="/users")
 
 
 @router.get("/")
-async def read_users(database: Annotated[DatabaseProvider, Depends()]) -> list[UserRead]:
+async def read_users(database: Annotated[DatabaseProvider, Depends(get_database_provider)]) -> list[UserRead]:
     """Returns a list of all users.
 
     Args:
@@ -22,7 +22,7 @@ async def read_users(database: Annotated[DatabaseProvider, Depends()]) -> list[U
 
 
 @router.get("/{user_id}")
-async def read_user(user_id: int, database: Annotated[DatabaseProvider, Depends()]) -> UserRead:
+async def read_user(user_id: int, database: Annotated[DatabaseProvider, Depends(get_database_provider)]) -> UserRead:
     """Returns a user by id.
 
     Args:
@@ -39,7 +39,9 @@ async def read_user(user_id: int, database: Annotated[DatabaseProvider, Depends(
 
 
 @router.post("/")
-async def create_user(user: UserCreate, database: Annotated[DatabaseProvider, Depends()]) -> UserRead:
+async def create_user(
+    user: UserCreate, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+) -> UserRead:
     """Creates a new user.
 
     Args:
@@ -60,7 +62,9 @@ async def create_user(user: UserCreate, database: Annotated[DatabaseProvider, De
 
 
 @router.patch("/{user_id}")
-async def update_user(user_id: int, user: UserUpdate, database: Annotated[DatabaseProvider, Depends()]) -> UserRead:
+async def update_user(
+    user_id: int, user: UserUpdate, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+) -> UserRead:
     """Updates a user.
 
     Args:
@@ -82,7 +86,9 @@ async def update_user(user_id: int, user: UserUpdate, database: Annotated[Databa
 
 
 @router.delete("/{user_id}")
-async def delete_user(user_id: int, database: Annotated[DatabaseProvider, Depends()]) -> dict[str, str]:
+async def delete_user(
+    user_id: int, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+) -> dict[str, str]:
     """Deletes a user.
 
     Args:
