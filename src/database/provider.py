@@ -35,13 +35,13 @@ class DatabaseProvider:
 
     async def get[
         T: DatabaseReadSchema
-    ](self, *, model: DatabaseModelType, read_schema: type[T], filters: list[ColumnExpressionArgument]) -> T | None:
+    ](self, *, model: DatabaseModelType, filters: list[ColumnExpressionArgument], read_schema: type[T]) -> T | None:
         """Returns a single row from the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
-            read_schema (type[T]): The schema to validate the result.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
+            read_schema (type[T]): The schema to validate the result.
 
         """
         query = select(model).where(*filters)
@@ -53,14 +53,14 @@ class DatabaseProvider:
     async def get_all[
         T: DatabaseReadSchema
     ](
-        self, *, model: DatabaseModelType, read_schema: type[T], filters: list[ColumnExpressionArgument] | None = None
+        self, *, model: DatabaseModelType, filters: list[ColumnExpressionArgument] | None = None, read_schema: type[T]
     ) -> list[T]:
         """Returns all rows from the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
-            read_schema (type[T]): The schema to validate the result.
             filters (list[ColumnExpressionArgument] | None): The conditions to filter the query. Default is None.
+            read_schema (type[T]): The schema to validate the result.
 
         """
         query = select(model)
@@ -70,39 +70,50 @@ class DatabaseProvider:
         return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
     async def create[
-        T: DatabaseReadSchema
-    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T]) -> T:
+        T: DatabaseReadSchema | None
+    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T] = type(None)) -> T:
         """Creates a new row in the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseCreateSchema): The data to insert.
             read_schema (type[T]): The schema to validate the result.
+                If not provided, returns None. Default is NoneType.
+
+        Returns:
+            T: Created row or None if read_schema not provided.
 
         """
         row = model(**data.model_dump_for_insert())
         self._session.add(row)
         await self._session.flush()
+
+        if read_schema is type(None):
+            return None
         await self._session.refresh(row)
         return read_schema.model_validate(row)
 
     async def update[
-        T: DatabaseReadSchema
+        T: DatabaseReadSchema | None
     ](
         self,
         *,
         model: DatabaseModelType,
         data: DatabaseUpdateSchema,
-        read_schema: type[T],
         filters: list[ColumnExpressionArgument],
+        read_schema: type[T] = type(None),
     ) -> T:
         """Updates a row in the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseUpdateSchema): The data to update.
-            read_schema (type[T]): The schema to validate the result.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
+            read_schema (type[T]): The schema to validate the result.
+                If not provided, returns None. Default is NoneType.
+
+        Returns:
+            T: Updated row or None if read_schema not provided.
 
         """
         select_query = select(model).where(*filters)
@@ -117,6 +128,8 @@ class DatabaseProvider:
         await self._session.execute(update_query)
         await self._session.flush()
 
+        if read_schema is type(None):
+            return None
         await self._session.refresh(row)
         return read_schema.model_validate(row)
 

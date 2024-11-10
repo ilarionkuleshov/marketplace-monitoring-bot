@@ -32,7 +32,6 @@ async def handle_trigger_scraping_task(logger: Logger) -> None:
     async with get_database() as database:
         monitorings = await database.get_all(
             model=Monitoring,
-            read_schema=MonitoringRead,
             filters=[
                 Monitoring.enabled.is_(True),
                 not_(
@@ -54,30 +53,29 @@ async def handle_trigger_scraping_task(logger: Logger) -> None:
                     <= func.now(),  # pylint: disable=E1102
                 ),
             ],
+            read_schema=MonitoringRead,
         )
 
         for monitoring in monitorings:
             await database.create(
                 model=MonitoringRun,
                 data=MonitoringRunCreate(monitoring_id=monitoring.id),
-                read_schema=MonitoringRunRead,
             )
 
         monitoring_runs = await database.get_all(
             model=MonitoringRun,
-            read_schema=MonitoringRunRead,
             filters=[MonitoringRun.status == MonitoringRunStatus.SCHEDULED],
+            read_schema=MonitoringRunRead,
         )
 
         for monitoring_run in monitoring_runs:
             monitoring = await database.get(
-                model=Monitoring, read_schema=MonitoringRead, filters=[Monitoring.id == monitoring_run.monitoring_id]
+                model=Monitoring, filters=[Monitoring.id == monitoring_run.monitoring_id], read_schema=MonitoringRead
             )
             await database.update(
                 model=MonitoringRun,
                 data=MonitoringRunUpdate(status=MonitoringRunStatus.QUEUED),
                 filters=[MonitoringRun.id == monitoring_run.id],
-                read_schema=MonitoringRunRead,
             )
             scraping_tasks.append(
                 ScrapingTask(
