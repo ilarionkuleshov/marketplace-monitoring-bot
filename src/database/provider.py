@@ -1,5 +1,13 @@
+from contextlib import asynccontextmanager
+from typing import AsyncIterator
+
 from sqlalchemy import delete, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import (
+    AsyncEngine,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 from sqlalchemy.sql import ColumnExpressionArgument
 
 from database.models import DatabaseModelType
@@ -8,6 +16,7 @@ from database.schemas import (
     DatabaseReadSchema,
     DatabaseUpdateSchema,
 )
+from settings import DatabaseSettings
 
 
 # mypy: disable-error-code="valid-type, name-defined"
@@ -127,3 +136,27 @@ class DatabaseProvider:
         if cursor.rowcount == 0:
             raise ValueError("No rows to delete")
         await self._session.flush()
+
+
+engine: AsyncEngine = create_async_engine(url=DatabaseSettings().get_url())
+session_maker: async_sessionmaker[AsyncSession] = async_sessionmaker(bind=engine, autocommit=False, autoflush=False)
+
+
+@asynccontextmanager
+async def get_database() -> AsyncIterator[DatabaseProvider]:
+    """Yields database provider."""
+    session = session_maker()
+    try:
+        yield DatabaseProvider(session)
+        await session.commit()
+    except Exception:
+        await session.rollback()
+        raise
+    finally:
+        await session.close()
+
+
+async def get_database_dep() -> AsyncIterator[DatabaseProvider]:
+    """Yields database provider for dependency injection."""
+    async with get_database() as database:
+        yield database

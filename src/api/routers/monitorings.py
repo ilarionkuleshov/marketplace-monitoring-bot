@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
-from database import DatabaseProvider, get_database_provider
+from database import DatabaseProvider, get_database_dep
 from database.models import Monitoring
 from database.schemas import MonitoringCreate, MonitoringRead, MonitoringUpdate
 
@@ -11,9 +11,7 @@ router = APIRouter(prefix="/monitorings")
 
 
 @router.get("/")
-async def read_monitorings(
-    database: Annotated[DatabaseProvider, Depends(get_database_provider)]
-) -> list[MonitoringRead]:
+async def read_monitorings(database: Annotated[DatabaseProvider, Depends(get_database_dep)]) -> list[MonitoringRead]:
     """Returns all monitorings.
 
     Args:
@@ -25,7 +23,7 @@ async def read_monitorings(
 
 @router.get("/{monitoring_id}")
 async def read_monitoring(
-    monitoring_id: int, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+    monitoring_id: int, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
 ) -> MonitoringRead:
     """Returns a monitoring by its ID.
 
@@ -46,7 +44,7 @@ async def read_monitoring(
 
 @router.post("/")
 async def create_monitoring(
-    monitoring: MonitoringCreate, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+    monitoring: MonitoringCreate, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
 ) -> MonitoringRead:
     """Creates a new monitoring.
 
@@ -79,7 +77,7 @@ async def create_monitoring(
 async def update_monitoring(
     monitoring_id: int,
     monitoring: MonitoringUpdate,
-    database: Annotated[DatabaseProvider, Depends(get_database_provider)],
+    database: Annotated[DatabaseProvider, Depends(get_database_dep)],
 ) -> MonitoringRead:
     """Updates a monitoring by its ID.
 
@@ -105,7 +103,7 @@ async def update_monitoring(
 
 @router.delete("/{monitoring_id}")
 async def delete_monitoring(
-    monitoring_id: int, database: Annotated[DatabaseProvider, Depends(get_database_provider)]
+    monitoring_id: int, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
 ) -> dict[str, str]:
     """Deletes a monitoring by its ID.
 
