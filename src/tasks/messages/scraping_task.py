@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class ScrapingTask(BaseModel):
@@ -7,3 +7,5 @@ class ScrapingTask(BaseModel):
     monitoring_id: int
     monitoring_url: str
     monitoring_run_id: int
+
+    model_config = ConfigDict(from_attributes=True)

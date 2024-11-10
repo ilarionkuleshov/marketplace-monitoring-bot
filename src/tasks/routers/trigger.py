@@ -6,12 +6,7 @@ from sqlalchemy.sql import literal
 from database import get_database
 from database.enums import MonitoringRunStatus
 from database.models import Monitoring, MonitoringRun
-from database.schemas import (
-    MonitoringRead,
-    MonitoringRunCreate,
-    MonitoringRunRead,
-    MonitoringRunUpdate,
-)
+from database.schemas import MonitoringRead, MonitoringRunCreate, MonitoringRunUpdate
 from tasks.messages import ScrapingTask
 from tasks.queues import SCRAPING_TASKS_QUEUE, TRIGGER_SCRAPING_TASKS_QUEUE
 
@@ -27,8 +22,6 @@ async def handle_trigger_scraping_task(logger: Logger) -> None:
         logger (Logger): FastStream logger.
 
     """
-    scraping_tasks = []
-
     async with get_database() as database:
         monitorings = await database.get_all(
             model=Monitoring,
@@ -62,25 +55,22 @@ async def handle_trigger_scraping_task(logger: Logger) -> None:
                 data=MonitoringRunCreate(monitoring_id=monitoring.id),
             )
 
-        monitoring_runs = await database.get_all(
-            model=MonitoringRun,
-            filters=[MonitoringRun.status == MonitoringRunStatus.SCHEDULED],
-            read_schema=MonitoringRunRead,
+        scraping_tasks = await database.get_all_by_query(
+            query=select(
+                Monitoring.id.label("monitoring_id"),
+                Monitoring.url.label("monitoring_url"),
+                MonitoringRun.id.label("monitoring_run_id"),
+            )
+            .join(MonitoringRun, MonitoringRun.monitoring_id == Monitoring.id)
+            .where(MonitoringRun.status == MonitoringRunStatus.SCHEDULED),
+            read_schema=ScrapingTask,
         )
 
-        for monitoring_run in monitoring_runs:
-            monitoring = await database.get(
-                model=Monitoring, filters=[Monitoring.id == monitoring_run.monitoring_id], read_schema=MonitoringRead
-            )
+        for scraping_task in scraping_tasks:
             await database.update(
                 model=MonitoringRun,
                 data=MonitoringRunUpdate(status=MonitoringRunStatus.QUEUED),
-                filters=[MonitoringRun.id == monitoring_run.id],
-            )
-            scraping_tasks.append(
-                ScrapingTask(
-                    monitoring_id=monitoring.id, monitoring_url=monitoring.url, monitoring_run_id=monitoring_run.id
-                )
+                filters=[MonitoringRun.id == scraping_task.monitoring_run_id],
             )
 
     for scraping_task in scraping_tasks:

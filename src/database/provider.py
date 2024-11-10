@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator
 
-from sqlalchemy import delete, select, update
+from pydantic import BaseModel as PydanticModel
+from sqlalchemy import Select, delete, select, update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -69,6 +70,22 @@ class DatabaseProvider:
         cursor = await self._session.execute(query)
         return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
+    async def get_all_by_query[
+        T: DatabaseReadSchema | PydanticModel | dict
+    ](self, *, query: Select, read_schema: type[T] = dict) -> list[T]:
+        """Returns all rows from the database by query.
+
+        Args:
+            query (Select): The query to execute.
+            read_schema (type[T]): The schema to validate the result.
+                If not provided, list of dictionaries will be returned. Default is dict.
+
+        """
+        cursor = await self._session.execute(query)
+        if read_schema is dict:
+            return [dict(row._mapping) for row in cursor]  # pylint: disable=W0212
+        return [read_schema.model_validate(row) for row in cursor]
+
     async def create[
         T: DatabaseReadSchema | None
     ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T] = type(None)) -> T:
@@ -78,7 +95,7 @@ class DatabaseProvider:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseCreateSchema): The data to insert.
             read_schema (type[T]): The schema to validate the result.
-                If not provided, returns None. Default is NoneType.
+                If not provided, None will be returned. Default is NoneType.
 
         Returns:
             T: Created row or None if read_schema not provided.
@@ -110,7 +127,7 @@ class DatabaseProvider:
             data (DatabaseUpdateSchema): The data to update.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
             read_schema (type[T]): The schema to validate the result.
-                If not provided, returns None. Default is NoneType.
+                If not provided, None will be returned. Default is NoneType.
 
         Returns:
             T: Updated row or None if read_schema not provided.
