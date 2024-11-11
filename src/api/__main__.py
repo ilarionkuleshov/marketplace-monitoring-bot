@@ -24,7 +24,7 @@ def main() -> None:
     app.include_router(adverts_router)
 
     settings = ApiSettings()
-    uvicorn.run(app, host=settings.host, port=settings.port, log_level=settings.log_level)
+    uvicorn.run(app, host=settings.host, port=settings.port, log_level=settings.log_level.lower())
 
 
 if __name__ == "__main__":

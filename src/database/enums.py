@@ -20,6 +20,7 @@ class MonitoringRunStatus(DatabaseEnum):
     """Monitoring run statuses."""
 
     SCHEDULED: str = "scheduled"
+    QUEUED: str = "queued"
     RUNNING: str = "running"
     SUCCESS: str = "success"
     FAILED: str = "failed"

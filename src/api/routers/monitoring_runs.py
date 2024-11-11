@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
 
-from database import DatabaseProvider
+from database import DatabaseProvider, get_database_dep
 from database.models import MonitoringRun
 from database.schemas import MonitoringRunCreate, MonitoringRunRead
 
@@ -11,7 +11,9 @@ router = APIRouter(prefix="/monitoring_runs")
 
 
 @router.get("/")
-async def read_monitoring_runs(database: Annotated[DatabaseProvider, Depends()]) -> list[MonitoringRunRead]:
+async def read_monitoring_runs(
+    database: Annotated[DatabaseProvider, Depends(get_database_dep)]
+) -> list[MonitoringRunRead]:
     """Returns a list of all monitoring runs.
 
     Args:
@@ -23,7 +25,7 @@ async def read_monitoring_runs(database: Annotated[DatabaseProvider, Depends()])
 
 @router.get("/{monitoring_run_id}")
 async def read_monitoring_run(
-    monitoring_run_id: int, database: Annotated[DatabaseProvider, Depends()]
+    monitoring_run_id: int, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
 ) -> MonitoringRunRead:
     """Returns a single monitoring run.
 
@@ -44,7 +46,7 @@ async def read_monitoring_run(
 
 @router.post("/")
 async def create_monitoring_run(
-    monitoring_run: MonitoringRunCreate, database: Annotated[DatabaseProvider, Depends()]
+    monitoring_run: MonitoringRunCreate, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
 ) -> MonitoringRunRead:
     """Creates a new monitoring run.
 

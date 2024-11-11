@@ -2,6 +2,7 @@
 
 __pycache__/
 .mypy_cache/
+.docker_volumes/
 
 src/storage/*
 !src/storage/.gitkeep
