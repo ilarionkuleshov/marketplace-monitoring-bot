@@ -2,11 +2,7 @@ from typing import Any
 
 from httpx import URL
 from httpx._types import (
-    AsyncByteStream,
     HeaderTypes,
-    ResponseContent,
-    ResponseExtensions,
-    SyncByteStream,
 )
 from pydantic import BaseModel
 
@@ -19,11 +15,8 @@ class Response(BaseModel):
     url: URL
     status_code: int
     headers: HeaderTypes | None = None
-    content: ResponseContent | None = None
     text: str | None = None
     html: str | None = None
-    json: Any | None = None
-    stream: SyncByteStream | AsyncByteStream | None = None
+    json_data: Any | None = None
     request: Request | None = None
-    extensions: ResponseExtensions | None = None
     encoding: str | None = None
