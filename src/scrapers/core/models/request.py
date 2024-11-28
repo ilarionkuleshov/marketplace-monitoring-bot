@@ -1,35 +1,22 @@
-from typing import Any
+from typing import Any, Callable
 
 from httpx import URL, Timeout
-from httpx._types import (
-    AuthTypes,
-    CertTypes,
-    CookieTypes,
-    HeaderTypes,
-    ProxyTypes,
-    QueryParamTypes,
-    RequestData,
-    RequestFiles,
-    TimeoutTypes,
-    VerifyTypes,
-)
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class Request(BaseModel):
     """Request model."""
 
     url: URL | str
+    callback: Callable  # TODO: complete type hint
     method: str = "GET"
-    params: QueryParamTypes | None = None
-    headers: HeaderTypes | None = None
-    cookies: CookieTypes | None = None
-    form_data: RequestData | None = None
+    params: dict[str, str] | None = None
+    headers: dict[str, str] | None = None
+    cookies: dict[str, str] | None = None
+    form_data: dict[str, Any] | None = None
     json_data: Any | None = None
-    files: RequestFiles | None = None
-    auth: AuthTypes | None = None
-    proxy: ProxyTypes | None = None
-    timeout: TimeoutTypes = Timeout(10.0)
+    auth: tuple[str, str] | None = None
+    timeout: Timeout = Timeout(10.0)
     follow_redirects: bool = True
-    verify: VerifyTypes = True
-    cert: CertTypes | None = None
+
+    model_config = ConfigDict(arbitrary_types_allowed=True)
