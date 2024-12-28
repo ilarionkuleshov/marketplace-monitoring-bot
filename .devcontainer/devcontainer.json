@@ -4,6 +4,8 @@
         "context": "..",
         "dockerfile": "../Dockerfile",
         "args": {
+            "USERNAME": "vscode",
+            "WORKING_DIR": "${containerWorkspaceFolder}",
             "POETRY_INSTALL_DEV": "True"
         }
     },
@@ -21,9 +23,7 @@
     "containerEnv": {
         "SHELL": "/bin/bash"
     },
-    "workspaceMount": "source=${localWorkspaceFolder},target=/marketplace-monitoring-bot,type=bind",
-    "workspaceFolder": "/marketplace-monitoring-bot",
-    "remoteUser": "app",
+    "remoteUser": "vscode",
     "runArgs": [
         "--network=host"
     ]

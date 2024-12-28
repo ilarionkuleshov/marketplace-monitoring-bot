@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
-from typing import AsyncIterator
+from typing import AsyncIterator, overload
 
-from pydantic import BaseModel as PydanticModel
 from sqlalchemy import Select, delete, select, update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -20,7 +19,6 @@ from database.schemas import (
 from settings import DatabaseSettings
 
 
-# mypy: disable-error-code="valid-type, name-defined"
 class DatabaseProvider:
     """Provider for the database.
 
@@ -70,67 +68,96 @@ class DatabaseProvider:
         cursor = await self._session.execute(query)
         return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
-    async def get_all_by_query[
-        T: DatabaseReadSchema | PydanticModel | dict
-    ](self, *, query: Select, read_schema: type[T] = dict) -> list[T]:
+    async def get_all_by_query[T: DatabaseReadSchema](self, *, query: Select, read_schema: type[T]) -> list[T]:
         """Returns all rows from the database by query.
 
         Args:
             query (Select): The query to execute.
             read_schema (type[T]): The schema to validate the result.
-                If not provided, list of dictionaries will be returned. Default is dict.
 
         """
         cursor = await self._session.execute(query)
-        if read_schema is dict:
-            return [dict(row._mapping) for row in cursor]  # pylint: disable=W0212
         return [read_schema.model_validate(row) for row in cursor]
 
+    @overload
     async def create[
-        T: DatabaseReadSchema | None
-    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T] = type(None)) -> T:
+        T: DatabaseReadSchema
+    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T]) -> T: ...
+
+    @overload
+    async def create(
+        self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: None = None
+    ) -> None: ...
+
+    async def create[
+        T: DatabaseReadSchema
+    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T] | None = None) -> T | None:
         """Creates a new row in the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseCreateSchema): The data to insert.
-            read_schema (type[T]): The schema to validate the result.
-                If not provided, None will be returned. Default is NoneType.
+            read_schema (type[T] | None): The schema to validate the result.
+                If not provided, None will be returned. Default is None.
 
         Returns:
-            T: Created row or None if read_schema not provided.
+            T: Created row.
+            None: If read_schema not provided.
 
         """
         row = model(**data.model_dump_for_insert())
         self._session.add(row)
         await self._session.flush()
 
-        if read_schema is type(None):
+        if read_schema is None:
             return None
         await self._session.refresh(row)
         return read_schema.model_validate(row)
 
+    @overload
     async def update[
-        T: DatabaseReadSchema | None
+        T: DatabaseReadSchema
     ](
         self,
         *,
         model: DatabaseModelType,
         data: DatabaseUpdateSchema,
         filters: list[ColumnExpressionArgument],
-        read_schema: type[T] = type(None),
-    ) -> T:
+        read_schema: type[T],
+    ) -> T: ...
+
+    @overload
+    async def update(
+        self,
+        *,
+        model: DatabaseModelType,
+        data: DatabaseUpdateSchema,
+        filters: list[ColumnExpressionArgument],
+        read_schema: None = None,
+    ) -> None: ...
+
+    async def update[
+        T: DatabaseReadSchema
+    ](
+        self,
+        *,
+        model: DatabaseModelType,
+        data: DatabaseUpdateSchema,
+        filters: list[ColumnExpressionArgument],
+        read_schema: type[T] | None = None,
+    ) -> (T | None):
         """Updates a row in the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseUpdateSchema): The data to update.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
-            read_schema (type[T]): The schema to validate the result.
-                If not provided, None will be returned. Default is NoneType.
+            read_schema (type[T] | None): The schema to validate the result.
+                If not provided, None will be returned. Default is None.
 
         Returns:
-            T: Updated row or None if read_schema not provided.
+            T: Updated row.
+            None: If read_schema not provided.
 
         """
         select_query = select(model).where(*filters)
@@ -145,7 +172,7 @@ class DatabaseProvider:
         await self._session.execute(update_query)
         await self._session.flush()
 
-        if read_schema is type(None):
+        if read_schema is None:
             return None
         await self._session.refresh(row)
         return read_schema.model_validate(row)

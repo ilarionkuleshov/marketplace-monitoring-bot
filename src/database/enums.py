@@ -13,14 +13,14 @@ class DatabaseEnum(StrEnum):
 class UserLanguage(DatabaseEnum):
     """Supported user languages."""
 
-    EN: str = "en"
+    EN = "en"
 
 
 class MonitoringRunStatus(DatabaseEnum):
     """Monitoring run statuses."""
 
-    SCHEDULED: str = "scheduled"
-    QUEUED: str = "queued"
-    RUNNING: str = "running"
-    SUCCESS: str = "success"
-    FAILED: str = "failed"
+    SCHEDULED = "scheduled"
+    QUEUED = "queued"
+    RUNNING = "running"
+    SUCCESS = "success"
+    FAILED = "failed"

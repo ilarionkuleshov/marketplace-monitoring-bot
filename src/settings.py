@@ -36,11 +36,11 @@ class ApiSettings(BaseSettings):
 
 
 class ScrapersSettings(BaseSettings):
-    """Settings for the Scrapy scrapers."""
+    """Settings for the FastCrawl scrapers."""
 
     log_level: str
     user_agent: str
-    concurrent_requests: int
+    concurrency: int
     debug_mode: bool
 
     model_config = SettingsConfigDict(env_prefix="scrapers_", env_file=find_dotenv(), extra="ignore")
