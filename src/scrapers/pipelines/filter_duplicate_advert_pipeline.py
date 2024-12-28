@@ -1,13 +1,9 @@
-from typing import Any
-
-from scrapy import Spider
-from scrapy.exceptions import DropItem
+from fastcrawl import BasePipeline
 
 from database.schemas import AdvertCreate
 
 
-# pylint: disable=W0613
-class FilterDuplicateAdvertPipeline:
+class FilterDuplicateAdvertPipeline(BasePipeline[AdvertCreate]):
     """Pipeline to filter duplicate adverts.
 
     Attributes:
@@ -18,16 +14,26 @@ class FilterDuplicateAdvertPipeline:
     unique_advert_urls: set[str]
 
     def __init__(self) -> None:
+        super().__init__()
         self.unique_advert_urls = set()
 
-    def process_item(self, item: Any, spider: Spider) -> Any:
-        """Filters duplicate adverts based on the advert's url."""
+    async def process_item(self, item: AdvertCreate) -> AdvertCreate | None:
+        """Filters duplicate adverts based on the advert's url.
+
+        Args:
+            item (AdvertCreate): The advert to filter.
+
+        Returns:
+            AdvertCreate: The advert if it is not a duplicate.
+            None: If the advert is a duplicate.
+
+        """
         if not isinstance(item, AdvertCreate):
             return item
 
         advert_url = str(item.url)
         if advert_url in self.unique_advert_urls:
-            raise DropItem(f"Duplicate advert found: {advert_url}")
+            return None
 
         self.unique_advert_urls.add(advert_url)
         return item
