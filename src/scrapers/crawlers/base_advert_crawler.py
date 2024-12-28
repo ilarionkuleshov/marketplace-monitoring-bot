@@ -30,7 +30,7 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
         scrapers_settings = ScrapersSettings()
         crawler_settings = CrawlerSettings(
             workers=scrapers_settings.concurrency,
-            pipelines=[FilterDuplicateAdvertPipeline],
+            pipelines=[FilterDuplicateAdvertPipeline()],
             logging=CrawlerLoggingSettings(level=scrapers_settings.log_level),
             http_client=CrawlerHttpClientSettings(headers={"User-Agent": scrapers_settings.user_agent}),
         )
