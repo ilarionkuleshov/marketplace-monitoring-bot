@@ -1,11 +1,9 @@
-from pydantic import BaseModel, ConfigDict
+from database.schemas import DatabaseReadSchema
 
 
-class ScrapingTask(BaseModel):
+class ScrapingTask(DatabaseReadSchema):
     """Scraping task message."""
 
     monitoring_id: int
     monitoring_url: str
     monitoring_run_id: int
-
-    model_config = ConfigDict(from_attributes=True)

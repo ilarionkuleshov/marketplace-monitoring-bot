@@ -1,7 +1,6 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, overload
 
-from pydantic import BaseModel as PydanticModel
 from sqlalchemy import Select, delete, select, update
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
@@ -69,7 +68,7 @@ class DatabaseProvider:
         cursor = await self._session.execute(query)
         return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
-    async def get_all_by_query[T: PydanticModel](self, *, query: Select, read_schema: type[T]) -> list[T]:
+    async def get_all_by_query[T: DatabaseReadSchema](self, *, query: Select, read_schema: type[T]) -> list[T]:
         """Returns all rows from the database by query.
 
         Args:
