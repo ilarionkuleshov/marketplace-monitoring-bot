@@ -3,7 +3,11 @@ from pathlib import Path
 
 from fastcrawl import BaseCrawler, CrawlerSettings, HttpClientSettings, LogSettings
 
-from scrapers.pipelines import DebugSaveAdvertPipeline, FilterDuplicateAdvertPipeline
+from scrapers.pipelines import (
+    DebugSaveAdvertPipeline,
+    FilterDuplicateAdvertPipeline,
+    PublishAdvertPipeline,
+)
 from settings import ScrapersSettings
 
 
@@ -37,6 +41,8 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
         )
         if scrapers_settings.debug_mode:
             crawler_settings.pipelines.append(DebugSaveAdvertPipeline)
+        else:
+            crawler_settings.pipelines.append(PublishAdvertPipeline)
 
         super().__init__(settings=crawler_settings)
         self.monitoring_id = monitoring_id
