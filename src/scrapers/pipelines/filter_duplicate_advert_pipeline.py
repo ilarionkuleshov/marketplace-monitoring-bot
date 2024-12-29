@@ -8,13 +8,14 @@ class FilterDuplicateAdvertPipeline(BasePipeline[AdvertCreate]):
 
     Attributes:
         unique_advert_urls (set[str]): A set to store unique advert urls.
+        **kwargs: Keyword arguments to pass to the parent class.
 
     """
 
     unique_advert_urls: set[str]
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         self.unique_advert_urls = set()
 
     async def process_item(self, item: AdvertCreate) -> AdvertCreate | None:

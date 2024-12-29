@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import hashlib
-import re
 from datetime import datetime
 from pathlib import Path
 
@@ -14,7 +13,7 @@ class DebugSaveAdvertPipeline(BasePipeline[AdvertCreate]):
     """Pipeline to save adverts locally for debugging purposes.
 
     Args:
-        crawler_name (str): The name of the crawler.
+        **kwargs: Keyword arguments to pass to the parent class.
 
     Attributes:
         storage_path (Path): The path to save the adverts.
@@ -23,14 +22,11 @@ class DebugSaveAdvertPipeline(BasePipeline[AdvertCreate]):
 
     storage_path: Path
 
-    def __init__(self, crawler_name: str) -> None:
-        super().__init__()
+    def __init__(self, **kwargs) -> None:
+        super().__init__(**kwargs)
         current_datetime = datetime.now().replace(microsecond=0)
         self.storage_path = (
-            Path("./storage/adverts/")
-            / re.sub("([a-z0-9])([A-Z])", r"\1_\2", crawler_name).lower()
-            / current_datetime.date().isoformat()
-            / current_datetime.time().isoformat()
+            Path("./storage/adverts/") / current_datetime.date().isoformat() / current_datetime.time().isoformat()
         )
         self.storage_path.mkdir(parents=True, exist_ok=True)
 

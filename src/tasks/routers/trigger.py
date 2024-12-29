@@ -7,7 +7,7 @@ from sqlalchemy.sql import literal
 
 from database import get_database
 from database.enums import MonitoringRunStatus
-from database.models import Monitoring, MonitoringRun
+from database.models import Marketplace, Monitoring, MonitoringRun
 from database.schemas import MonitoringRead, MonitoringRunCreate, MonitoringRunUpdate
 from tasks.messages import ScrapingTask
 from tasks.queues import SCRAPING_TASKS_QUEUE, TRIGGER_SCRAPING_TASKS_QUEUE
@@ -18,8 +18,8 @@ lock = asyncio.Lock()
 
 
 @router.subscriber(TRIGGER_SCRAPING_TASKS_QUEUE)
-async def handle_trigger_scraping_task(logger: Logger) -> None:
-    """Handles trigger scraping task.
+async def trigger_scraping_task(logger: Logger) -> None:
+    """Triggers scraping task.
 
     Args:
         logger (Logger): FastStream logger.
@@ -64,7 +64,9 @@ async def handle_trigger_scraping_task(logger: Logger) -> None:
                     Monitoring.id.label("monitoring_id"),
                     Monitoring.url.label("monitoring_url"),
                     MonitoringRun.id.label("monitoring_run_id"),
+                    Marketplace.name.label("marketplace_name"),
                 )
+                .join(Marketplace, Marketplace.id == Monitoring.marketplace_id)
                 .join(MonitoringRun, MonitoringRun.monitoring_id == Monitoring.id)
                 .where(MonitoringRun.status == MonitoringRunStatus.SCHEDULED),
                 read_schema=ScrapingTask,
