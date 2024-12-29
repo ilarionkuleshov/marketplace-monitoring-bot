@@ -4,14 +4,15 @@ from pathlib import Path
 
 from faststream import Logger
 from faststream.rabbit import RabbitRouter
+from sqlalchemy.exc import IntegrityError
 
 from database import get_database
 from database.enums import MonitoringRunStatus
-from database.models import MonitoringRun
-from database.schemas import MonitoringRunUpdate
+from database.models import Advert, MonitoringRun
+from database.schemas import AdvertCreate, AdvertUpdate, MonitoringRunUpdate
 from scrapers.crawlers import BaseAdvertCrawler, OlxUaCrawler
 from tasks.messages import ScrapingTask
-from tasks.queues import SCRAPING_TASKS_QUEUE
+from tasks.queues import SCRAPING_RESULTS_QUEUE, SCRAPING_TASKS_QUEUE
 
 router = RabbitRouter()
 
@@ -60,3 +61,27 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
             ),
             filters=[MonitoringRun.id == scraping_task.monitoring_run_id],
         )
+
+
+@router.subscriber(SCRAPING_RESULTS_QUEUE)
+async def process_scraping_result(advert: AdvertCreate) -> None:
+    """Processes scraping result.
+
+    Args:
+        advert (AdvertCreate): Scraped advert.
+
+    """
+    async with get_database() as database:
+        try:
+            await database.create(model=Advert, data=advert)
+            new_advert = True
+        except IntegrityError:
+            await database.update(
+                model=Advert,
+                data=AdvertUpdate.model_validate(advert),
+                filters=[Advert.monitoring_id == advert.monitoring_id, Advert.url == advert.url],
+            )
+            new_advert = False
+
+    if new_advert:
+        ...
