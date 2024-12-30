@@ -29,5 +29,6 @@ class PublishAdvertPipeline(BasePipeline[AdvertCreate]):
             AdvertCreate: Published advert.
 
         """
-        await self._broker.publish(message=item, queue=SCRAPING_RESULTS_QUEUE, persist=True)
+        async with self._broker:
+            await self._broker.publish(message=item, queue=SCRAPING_RESULTS_QUEUE, persist=True)
         return item

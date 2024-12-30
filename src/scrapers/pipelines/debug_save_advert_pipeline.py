@@ -12,9 +12,6 @@ from database.schemas import AdvertCreate
 class DebugSaveAdvertPipeline(BasePipeline[AdvertCreate]):
     """Pipeline to save adverts locally for debugging purposes.
 
-    Args:
-        **kwargs: Keyword arguments to pass to the parent class.
-
     Attributes:
         storage_path (Path): The path to save the adverts.
 
@@ -22,8 +19,8 @@ class DebugSaveAdvertPipeline(BasePipeline[AdvertCreate]):
 
     storage_path: Path
 
-    def __init__(self, **kwargs) -> None:
-        super().__init__(**kwargs)
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         current_datetime = datetime.now().replace(microsecond=0)
         self.storage_path = (
             Path("./storage/adverts/") / current_datetime.date().isoformat() / current_datetime.time().isoformat()

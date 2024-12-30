@@ -32,7 +32,7 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
         crawler_settings = CrawlerSettings(
             workers=scrapers_settings.concurrency,
             pipelines=[FilterDuplicateAdvertPipeline],
-            logging=LogSettings(
+            log=LogSettings(
                 configure_globally=False,
                 level=scrapers_settings.log_level,
                 file=log_file,
