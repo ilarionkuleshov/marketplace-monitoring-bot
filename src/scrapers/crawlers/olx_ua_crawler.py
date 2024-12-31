@@ -36,6 +36,7 @@ class OlxUaCrawler(BaseAdvertCrawler):
             price_data = (raw_advert.get("price") or {}).get("regularPrice") or {}
             yield AdvertCreate(
                 monitoring_id=self.monitoring_id,
+                monitoring_run_id=self.monitoring_run_id,
                 url=raw_advert["url"],
                 title=self.crop_str(raw_advert["title"], 100),
                 description=self.crop_str(raw_advert["description"], 300) if raw_advert.get("description") else None,

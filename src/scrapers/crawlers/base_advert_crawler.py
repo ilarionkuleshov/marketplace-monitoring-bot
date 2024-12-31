@@ -16,6 +16,7 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
 
     Args:
         monitoring_id (int): Monitoring ID.
+        monitoring_run_id (int): Monitoring run ID.
         monitoring_url (str): Monitoring URL to start scraping from.
         log_file (Path): Path to the log file.
 
@@ -25,9 +26,10 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
     """
 
     monitoring_id: int
+    monitoring_run_id: int
     monitoring_url: str
 
-    def __init__(self, monitoring_id: int, monitoring_url: str, log_file: Path) -> None:
+    def __init__(self, monitoring_id: int, monitoring_run_id: int, monitoring_url: str, log_file: Path) -> None:
         scrapers_settings = ScrapersSettings()
         crawler_settings = CrawlerSettings(
             workers=scrapers_settings.concurrency,
@@ -46,6 +48,7 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
 
         super().__init__(settings=crawler_settings)
         self.monitoring_id = monitoring_id
+        self.monitoring_run_id = monitoring_run_id
         self.monitoring_url = monitoring_url
 
     @staticmethod
