@@ -4,12 +4,17 @@ from pathlib import Path
 
 from faststream import Logger
 from faststream.rabbit import RabbitRouter
-from sqlalchemy.exc import IntegrityError
 
 from database import get_database
 from database.enums import MonitoringRunStatus
 from database.models import Advert, MonitoringRun
-from database.schemas import AdvertCreate, AdvertUpdate, MonitoringRunUpdate
+from database.schemas import (
+    AdvertCreate,
+    AdvertRead,
+    AdvertUpdate,
+    MonitoringRunRead,
+    MonitoringRunUpdate,
+)
 from scrapers.crawlers import BaseAdvertCrawler, OlxUaCrawler
 from tasks.messages import ScrapingTask
 from tasks.queues import SCRAPING_RESULTS_QUEUE, SCRAPING_TASKS_QUEUE
@@ -33,12 +38,14 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
             filters=[MonitoringRun.id == scraping_task.monitoring_run_id],
         )
 
-    log_file = Path("./storage/logs/") / f"{scraping_task.monitoring_run_id}.log"
-    log_file.mkdir(parents=True, exist_ok=True)
+    log_file_dir = Path("./storage/logs/")
+    log_file_dir.mkdir(parents=True, exist_ok=True)
+    log_file = log_file_dir / f"{scraping_task.monitoring_run_id}.log"
 
     crawler_cls: type[BaseAdvertCrawler] = {"Olx UA": OlxUaCrawler}[scraping_task.marketplace_name]
     crawler = crawler_cls(
         monitoring_id=scraping_task.monitoring_id,
+        monitoring_run_id=scraping_task.monitoring_run_id,
         monitoring_url=scraping_task.monitoring_url,
         log_file=log_file,
     )
@@ -55,7 +62,7 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
         await database.update(
             model=MonitoringRun,
             data=MonitoringRunUpdate(
-                log_file=log_file,
+                log_file=str(log_file),
                 duration=datetime.now() - start_time,
                 status=status,
             ),
@@ -64,24 +71,35 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
 
 
 @router.subscriber(SCRAPING_RESULTS_QUEUE)
-async def process_scraping_result(advert: AdvertCreate) -> None:
+async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) -> None:
     """Processes scraping result.
 
     Args:
-        advert (AdvertCreate): Scraped advert.
+        scraped_advert (AdvertCreate): Scraped advert.
+        logger (Logger): FastStream logger.
 
     """
     async with get_database() as database:
-        try:
-            await database.create(model=Advert, data=advert)
-            new_advert = True
-        except IntegrityError:
-            await database.update(
-                model=Advert,
-                data=AdvertUpdate.model_validate(advert),
-                filters=[Advert.monitoring_id == advert.monitoring_id, Advert.url == advert.url],
-            )
-            new_advert = False
+        advert = await database.create(
+            model=Advert, data=scraped_advert, update_on_conflict=True, read_schema=AdvertRead
+        )
+        first_monitoring_run = await database.get(
+            model=MonitoringRun,
+            filters=[MonitoringRun.monitoring_id == advert.monitoring_id],
+            order_by=[MonitoringRun.created_at.asc()],
+            read_schema=MonitoringRunRead,
+        )
 
-    if new_advert:
+    if not first_monitoring_run:
+        logger.error(f"Monitoring run for advert {advert.id} not found")
+        return
+
+    if advert.monitoring_run_id != first_monitoring_run.id and not advert.sent_to_user:
         ...
+
+    async with get_database() as database:
+        await database.update(
+            model=Advert,
+            data=AdvertUpdate(sent_to_user=True),
+            filters=[Advert.id == advert.id],
+        )
