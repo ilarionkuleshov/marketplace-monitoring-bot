@@ -95,7 +95,7 @@ async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) 
         return
 
     if advert.monitoring_run_id != first_monitoring_run.id and not advert.sent_to_user:
-        ...
+        logger.info(f"Sending advert {advert.id} to user")
 
     async with get_database() as database:
         await database.update(
