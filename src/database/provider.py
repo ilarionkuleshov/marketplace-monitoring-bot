@@ -1,7 +1,8 @@
 from contextlib import asynccontextmanager
 from typing import AsyncIterator, overload
 
-from sqlalchemy import Select, delete, select, update
+from sqlalchemy import Select, UnaryExpression, delete, select, update
+from sqlalchemy.dialects.postgresql import insert
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -34,16 +35,27 @@ class DatabaseProvider:
 
     async def get[
         T: DatabaseReadSchema
-    ](self, *, model: DatabaseModelType, filters: list[ColumnExpressionArgument], read_schema: type[T]) -> T | None:
+    ](
+        self,
+        *,
+        model: DatabaseModelType,
+        filters: list[ColumnExpressionArgument],
+        order_by: list[UnaryExpression] | None = None,
+        read_schema: type[T],
+    ) -> (T | None):
         """Returns a single row from the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             filters (list[ColumnExpressionArgument]): The conditions to filter the query.
+            order_by (list[UnaryExpression] | None): The columns to order the query. Default is None.
             read_schema (type[T]): The schema to validate the result.
 
         """
         query = select(model).where(*filters)
+        if order_by:
+            query = query.order_by(*order_by)
+
         cursor = await self._session.execute(query)
         if row := cursor.scalars().first():
             return read_schema.model_validate(row)
@@ -52,19 +64,28 @@ class DatabaseProvider:
     async def get_all[
         T: DatabaseReadSchema
     ](
-        self, *, model: DatabaseModelType, filters: list[ColumnExpressionArgument] | None = None, read_schema: type[T]
+        self,
+        *,
+        model: DatabaseModelType,
+        filters: list[ColumnExpressionArgument] | None = None,
+        order_by: list[UnaryExpression] | None = None,
+        read_schema: type[T],
     ) -> list[T]:
         """Returns all rows from the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             filters (list[ColumnExpressionArgument] | None): The conditions to filter the query. Default is None.
+            order_by (list[UnaryExpression] | None): The columns to order the query. Default is None.
             read_schema (type[T]): The schema to validate the result.
 
         """
         query = select(model)
         if filters:
             query = query.where(*filters)
+        if order_by:
+            query = query.order_by(*order_by)
+
         cursor = await self._session.execute(query)
         return [read_schema.model_validate(row) for row in cursor.scalars().all()]
 
@@ -82,21 +103,41 @@ class DatabaseProvider:
     @overload
     async def create[
         T: DatabaseReadSchema
-    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T]) -> T: ...
+    ](
+        self,
+        *,
+        model: DatabaseModelType,
+        data: DatabaseCreateSchema,
+        update_on_conflict: bool = False,
+        read_schema: type[T],
+    ) -> T: ...
 
     @overload
     async def create(
-        self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: None = None
+        self,
+        *,
+        model: DatabaseModelType,
+        data: DatabaseCreateSchema,
+        update_on_conflict: bool = False,
+        read_schema: None = None,
     ) -> None: ...
 
     async def create[
         T: DatabaseReadSchema
-    ](self, *, model: DatabaseModelType, data: DatabaseCreateSchema, read_schema: type[T] | None = None) -> T | None:
+    ](
+        self,
+        *,
+        model: DatabaseModelType,
+        data: DatabaseCreateSchema,
+        update_on_conflict: bool = False,
+        read_schema: type[T] | None = None,
+    ) -> (T | None):
         """Creates a new row in the database.
 
         Args:
             model (DatabaseModelType): The database model for the query.
             data (DatabaseCreateSchema): The data to insert.
+            update_on_conflict (bool): Whether to update on conflict. Default is False.
             read_schema (type[T] | None): The schema to validate the result.
                 If not provided, None will be returned. Default is None.
 
@@ -105,13 +146,17 @@ class DatabaseProvider:
             None: If read_schema not provided.
 
         """
-        row = model(**data.model_dump_for_insert())
-        self._session.add(row)
-        await self._session.flush()
+        query = insert(model).values(**data.model_dump_for_insert())
+        if update_on_conflict:
+            query = query.on_conflict_do_update(
+                index_elements=data.unique_fields,
+                set_={el.name: el for el in query.excluded if el.name in data.update_fields},
+            )
+        cursor = await self._session.execute(query)
 
         if read_schema is None:
             return None
-        await self._session.refresh(row)
+        row = await self._session.get(model, cursor.inserted_primary_key)
         return read_schema.model_validate(row)
 
     @overload

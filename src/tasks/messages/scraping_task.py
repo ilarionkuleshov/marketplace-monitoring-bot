@@ -7,3 +7,4 @@ class ScrapingTask(DatabaseReadSchema):
     monitoring_id: int
     monitoring_url: str
     monitoring_run_id: int
+    marketplace_name: str

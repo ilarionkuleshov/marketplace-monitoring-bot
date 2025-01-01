@@ -1,13 +1,13 @@
 from abc import ABC
+from pathlib import Path
 
-from fastcrawl import (
-    BaseCrawler,
-    CrawlerHttpClientSettings,
-    CrawlerLoggingSettings,
-    CrawlerSettings,
+from fastcrawl import BaseCrawler, CrawlerSettings, HttpClientSettings, LogSettings
+
+from scrapers.pipelines import (
+    DebugSaveAdvertPipeline,
+    FilterDuplicateAdvertPipeline,
+    PublishAdvertPipeline,
 )
-
-from scrapers.pipelines import DebugSaveAdvertPipeline, FilterDuplicateAdvertPipeline
 from settings import ScrapersSettings
 
 
@@ -16,7 +16,9 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
 
     Args:
         monitoring_id (int): Monitoring ID.
+        monitoring_run_id (int): Monitoring run ID.
         monitoring_url (str): Monitoring URL to start scraping from.
+        log_file (Path): Path to the log file.
 
     Attributes:
         See `Args` section.
@@ -24,21 +26,29 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
     """
 
     monitoring_id: int
+    monitoring_run_id: int
     monitoring_url: str
 
-    def __init__(self, monitoring_id: int, monitoring_url: str) -> None:
+    def __init__(self, monitoring_id: int, monitoring_run_id: int, monitoring_url: str, log_file: Path) -> None:
         scrapers_settings = ScrapersSettings()
         crawler_settings = CrawlerSettings(
             workers=scrapers_settings.concurrency,
-            pipelines=[FilterDuplicateAdvertPipeline()],
-            logging=CrawlerLoggingSettings(level=scrapers_settings.log_level),
-            http_client=CrawlerHttpClientSettings(headers={"User-Agent": scrapers_settings.user_agent}),
+            pipelines=[FilterDuplicateAdvertPipeline],
+            log=LogSettings(
+                configure_globally=False,
+                level=scrapers_settings.log_level,
+                file=log_file,
+            ),
+            http_client=HttpClientSettings(headers={"User-Agent": scrapers_settings.user_agent}),
         )
         if scrapers_settings.debug_mode:
-            crawler_settings.pipelines.append(DebugSaveAdvertPipeline(self.__class__.__name__))
+            crawler_settings.pipelines.append(DebugSaveAdvertPipeline)
+        else:
+            crawler_settings.pipelines.append(PublishAdvertPipeline)
 
         super().__init__(settings=crawler_settings)
         self.monitoring_id = monitoring_id
+        self.monitoring_run_id = monitoring_run_id
         self.monitoring_url = monitoring_url
 
     @staticmethod

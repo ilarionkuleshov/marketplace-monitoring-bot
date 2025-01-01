@@ -351,14 +351,14 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "htt
 
 [[package]]
 name = "fastcrawl"
-version = "0.1.1"
+version = "0.2.0"
 description = "Fast and asynchronous web crawling and scraping library for Python."
 category = "main"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "fastcrawl-0.1.1-py3-none-any.whl", hash = "sha256:8a469a5615146673ed93c38f5f9e7d4f56ccc871ebe327894d173087041688e7"},
-    {file = "fastcrawl-0.1.1.tar.gz", hash = "sha256:0784afdd5ee22afb90d9e07401f85d1880df2b4b4fbaf95c477fff7cbf5f7cef"},
+    {file = "fastcrawl-0.2.0-py3-none-any.whl", hash = "sha256:365410769ac2752919f5500b57678354581221b3e0a4ae237a5e4cc01309cf49"},
+    {file = "fastcrawl-0.2.0.tar.gz", hash = "sha256:2ff2e8d79ece757eb9611201dc7f73c607ab36c4ab1c181a8421f84b33d24b61"},
 ]
 
 [package.dependencies]
@@ -2119,4 +2119,4 @@ type = ["pytest-mypy"]
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2a2ad8113c0d5c8fc9f656d76700dbe334eb01070bb9880433abefbb735c8d76"
+content-hash = "da7fd888930dfeabc54e8b61b692b88730e4b423b7fb32ac2cfe3a04fd562853"

@@ -13,8 +13,8 @@ class FilterDuplicateAdvertPipeline(BasePipeline[AdvertCreate]):
 
     unique_advert_urls: set[str]
 
-    def __init__(self) -> None:
-        super().__init__()
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
         self.unique_advert_urls = set()
 
     async def process_item(self, item: AdvertCreate) -> AdvertCreate | None:

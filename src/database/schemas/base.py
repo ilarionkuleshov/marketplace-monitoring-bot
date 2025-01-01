@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Annotated, Any
+from typing import Annotated, Any, ClassVar
 
 from pydantic import AnyHttpUrl, BaseModel, ConfigDict, PlainSerializer, model_validator
 
@@ -11,7 +11,16 @@ class DatabaseReadSchema(BaseModel, ABC):
 
 
 class DatabaseCreateSchema(BaseModel, ABC):
-    """Base for database create schemas."""
+    """Base for database create schemas.
+
+    Attributes:
+        unique_fields (list[str]): The fields that must be unique.
+        update_fields (list[str]): The fields that can be updated on unique fields conflict.
+
+    """
+
+    unique_fields: ClassVar[list[str]] = []
+    update_fields: ClassVar[list[str]] = []
 
     def model_dump_for_insert(self) -> dict[str, Any]:
         """Returns the data to insert."""
