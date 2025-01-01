@@ -34,6 +34,10 @@ class ApiSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="api_", env_file=find_dotenv(), extra="ignore")
 
+    def get_url(self) -> str:
+        """Returns the URL for the API."""
+        return f"http://{self.host}:{self.port}"
+
 
 class ScrapersSettings(BaseSettings):
     """Settings for the FastCrawl scrapers."""

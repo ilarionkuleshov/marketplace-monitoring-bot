@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
+from bot.middlewares import ApiProvider
 from bot.routers import start_router
 from settings import BotSettings
 
@@ -15,6 +16,7 @@ async def main() -> None:
     bot = Bot(token=bot_settings.token)
     dp = Dispatcher()
 
+    dp.message.middleware(ApiProvider())
     dp.include_routers(start_router)
 
     await dp.start_polling(bot)
