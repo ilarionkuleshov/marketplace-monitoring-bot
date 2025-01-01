@@ -1,3 +1,5 @@
+from typing import Any
+
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
 
 from bot.middlewares import ApiProvider
@@ -23,7 +25,7 @@ async def get_marketplaces_keyboard(
 
     keyboard_builder = InlineKeyboardBuilder()
     for marketplace in marketplaces:
-        kwargs = {"text": marketplace.name}
+        kwargs: dict[str, Any] = {"text": marketplace.name}
         if provide_id:
             kwargs["callback_data"] = str(marketplace.id)
         if provide_url:
