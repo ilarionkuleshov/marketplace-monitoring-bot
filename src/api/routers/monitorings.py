@@ -11,14 +11,20 @@ router = APIRouter(prefix="/monitorings")
 
 
 @router.get("/")
-async def read_monitorings(database: Annotated[DatabaseProvider, Depends(get_database_dep)]) -> list[MonitoringRead]:
+async def read_monitorings(
+    database: Annotated[DatabaseProvider, Depends(get_database_dep)], user_id: int | None = None
+) -> list[MonitoringRead]:
     """Returns all monitorings.
 
     Args:
         database (DatabaseProvider): Provider for the database.
+        user_id (int | None): ID of the user to filter the monitorings. Default is None.
 
     """
-    return await database.get_all(model=Monitoring, read_schema=MonitoringRead)
+    filters = [Monitoring.user_id == user_id] if user_id is not None else None
+    return await database.get_all(
+        model=Monitoring, filters=filters, read_schema=MonitoringRead  # type: ignore[arg-type]
+    )
 
 
 @router.get("/{monitoring_id}")
