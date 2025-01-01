@@ -56,7 +56,7 @@ per-file-ignores = "__init__.py:F401"
 init-hook = "import sys; sys.path.extend(['src']);"
 py-version = "3.12"
 max-line-length = "120"
-disable="C0114,R0903,W0707"
+disable="C0114,R0903,W0707,R0913"
 ignored-modules = ["alembic.context", "alembic.op"]
 
 [tool.mypy]

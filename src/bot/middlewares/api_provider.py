@@ -1,4 +1,4 @@
-from typing import Any, Awaitable, Callable, overload
+from typing import Any, Awaitable, Callable, Literal, overload
 
 from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
@@ -27,15 +27,40 @@ class ApiProvider(BaseMiddleware):
 
     @overload
     async def request(
-        self, method: str, url: str, *, json_data: PydanticModel | None = None, response_model: None = None
+        self,
+        method: str,
+        url: str,
+        *,
+        json_data: PydanticModel | None = None,
+        response_model: None = None,
+        response_as_list: bool = False,
     ) -> int: ...
 
     @overload
     async def request[
         T: PydanticModel
-    ](self, method: str, url: str, *, json_data: PydanticModel | None = None, response_model: type[T]) -> tuple[
-        int, T | None
-    ]: ...
+    ](
+        self,
+        method: str,
+        url: str,
+        *,
+        json_data: PydanticModel | None = None,
+        response_model: type[T],
+        response_as_list: Literal[False] = False,
+    ) -> tuple[int, T | None]: ...
+
+    @overload
+    async def request[
+        T: PydanticModel
+    ](
+        self,
+        method: str,
+        url: str,
+        *,
+        json_data: PydanticModel | None = None,
+        response_model: type[T],
+        response_as_list: Literal[True] = True,
+    ) -> tuple[int, list[T] | None]: ...
 
     async def request[
         T: PydanticModel
@@ -46,7 +71,8 @@ class ApiProvider(BaseMiddleware):
         *,
         json_data: PydanticModel | None = None,
         response_model: type[T] | None = None,
-    ) -> (int | tuple[int, T | None]):
+        response_as_list: bool = False,
+    ) -> (int | tuple[int, T | list[T] | None]):
         """Makes a request to the API.
 
         Args:
@@ -55,10 +81,13 @@ class ApiProvider(BaseMiddleware):
             json_data (PydanticModel | None): The data to send. Default is None.
             response_model (type[T] | None): The response model.
                 If not provided, the response will not be validated. Default is None.
+            response_as_list (bool): If the response should be treated as a list. Default is False.
 
         Returns:
             int: Only the status code if response model is not provided.
-            tuple[int, T | None]: The status code and the response model if the request was successful, otherwise None.
+            tuple[int, T | list[T] | None]: The status code and response item
+                or list of response items if `response_as_list` is True.
+                If the request failed, the response item(s) will be None.
 
         """
         kwargs: dict[str, Any] = {"method": method, "url": url}
@@ -71,4 +100,9 @@ class ApiProvider(BaseMiddleware):
 
         if response.status_code != 200:
             return response.status_code, None
-        return response.status_code, response_model.model_validate(response.json())
+
+        response_json = response.json()
+
+        if response_as_list:
+            return response.status_code, [response_model.model_validate(item) for item in response_json]
+        return response.status_code, response_model.model_validate(response_json)
