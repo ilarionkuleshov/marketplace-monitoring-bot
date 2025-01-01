@@ -53,7 +53,7 @@ async def create_monitoring(
         database (DatabaseProvider): Provider for the database.
 
     Raises:
-        HTTPException (400): If the monitoring already exists.
+        HTTPException (409): If the monitoring already exists.
         HTTPException (404): If the user or marketplace is not found.
 
     Returns:
@@ -65,7 +65,7 @@ async def create_monitoring(
     except IntegrityError as error:
         error_str = str(error.orig)
         if "UniqueViolationError" in error_str:
-            raise HTTPException(status.HTTP_400_BAD_REQUEST, "Monitoring already exists")
+            raise HTTPException(status.HTTP_409_CONFLICT, "Monitoring already exists")
         if "user_id" in error_str:
             raise HTTPException(status.HTTP_404_NOT_FOUND, "User not found")
         if "marketplace_id" in error_str:
