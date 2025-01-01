@@ -4,12 +4,7 @@ from aiogram import Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
-from aiogram.types import (
-    CallbackQuery,
-    InlineKeyboardButton,
-    InlineKeyboardMarkup,
-    Message,
-)
+from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from pydantic import ValidationError
 from pydantic.networks import AnyHttpUrl
@@ -60,15 +55,12 @@ async def choose_marketplace(message: Message, api: ApiProvider, state: FSMConte
         await message.answer("Something went wrong. Please try again later.")
         return
 
-    await message.answer(
-        "Choose the marketplace for monitoring:",
-        reply_markup=InlineKeyboardMarkup(
-            inline_keyboard=[
-                [InlineKeyboardButton(text=marketplace.name, callback_data=str(marketplace.id))]
-                for marketplace in marketplaces
-            ]
-        ),
-    )
+    keyboard_builder = InlineKeyboardBuilder()
+    for marketplace in marketplaces:
+        keyboard_builder.button(text=marketplace.name, callback_data=str(marketplace.id))
+    keyboard_builder.adjust(2)
+
+    await message.answer("Choose the marketplace for monitoring:", reply_markup=keyboard_builder.as_markup())
     await state.set_state(NewMonitoringState.marketplace)
 
 
@@ -114,10 +106,12 @@ async def choose_run_interval(message: Message, state: FSMContext) -> None:
         return
 
     await state.update_data(url=url)
-    keyboard_builder = InlineKeyboardBuilder(
-        markup=[[InlineKeyboardButton(text=interval, callback_data=interval)] for interval in RUN_INTERVALS]
-    )
+
+    keyboard_builder = InlineKeyboardBuilder()
+    for interval in RUN_INTERVALS:
+        keyboard_builder.button(text=interval, callback_data=interval)
     keyboard_builder.adjust(3)
+
     await message.answer("Choose monitoring interval:", reply_markup=keyboard_builder.as_markup())
     await state.set_state(NewMonitoringState.run_interval)
 
