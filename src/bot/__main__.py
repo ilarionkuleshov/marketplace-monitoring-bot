@@ -3,6 +3,7 @@ import logging
 
 from aiogram import Bot, Dispatcher
 
+from bot.routers import start_router
 from settings import BotSettings
 
 
@@ -14,7 +15,9 @@ async def main() -> None:
     bot = Bot(token=bot_settings.token)
     dp = Dispatcher()
 
-    await dp.start_polling(bot=bot)
+    dp.include_routers(start_router)
+
+    await dp.start_polling(bot)
 
 
 if __name__ == "__main__":
