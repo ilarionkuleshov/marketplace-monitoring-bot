@@ -65,3 +65,12 @@ class TasksSettings(BaseSettings):
             f"amqp://{self.broker_user}:{self.broker_password}"
             f"@{self.broker_host}:{self.broker_port}/{self.broker_vhost}"
         )
+
+
+class BotSettings(BaseSettings):
+    """Settings for the Aiogram bot."""
+
+    log_level: str
+    token: str
+
+    model_config = SettingsConfigDict(env_prefix="bot_", env_file=find_dotenv(), extra="ignore")
