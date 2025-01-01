@@ -4,7 +4,8 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from bot.middlewares import ApiProvider
-from database.schemas import MarketplaceRead, UserCreate
+from bot.utils import get_marketplaces_keyboard
+from database.schemas import UserCreate
 
 router = Router(name="common")
 
@@ -36,19 +37,11 @@ async def show_marketplaces(message: Message, api: ApiProvider) -> None:
         api (ApiProvider): Provider for the API.
 
     """
-    # pylint: disable=R0801
-    status, marketplaces = await api.request(
-        "GET", "/marketplaces/", response_model=MarketplaceRead, response_as_list=True
-    )
-    if status != 200 or not marketplaces:
+    marketplaces_keyboard = await get_marketplaces_keyboard(api, provide_id=False, provide_url=True)
+    if marketplaces_keyboard is None:
         await message.answer("Something went wrong. Please try again later.")
-        return
-    await message.answer(
-        text="Available marketplaces:\n"
-        + "\n".join([f"[*{marketplace.name}*]({marketplace.url})" for marketplace in marketplaces]),
-        parse_mode="MarkdownV2",
-        disable_web_page_preview=True,
-    )
+    else:
+        await message.answer("Available marketplaces:", reply_markup=marketplaces_keyboard)
 
 
 @router.message(Command("cancel"))

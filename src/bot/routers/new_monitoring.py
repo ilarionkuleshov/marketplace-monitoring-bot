@@ -10,7 +10,8 @@ from pydantic import ValidationError
 from pydantic.networks import AnyHttpUrl
 
 from bot.middlewares import ApiProvider
-from database.schemas import MarketplaceRead, MonitoringCreate
+from bot.utils import get_marketplaces_keyboard
+from database.schemas import MonitoringCreate
 
 router = Router(name="new_monitoring")
 
@@ -48,20 +49,12 @@ async def choose_marketplace(message: Message, api: ApiProvider, state: FSMConte
         state (FSMContext): State context.
 
     """
-    status, marketplaces = await api.request(
-        "GET", "/marketplaces/", response_model=MarketplaceRead, response_as_list=True
-    )
-    if status != 200 or not marketplaces:
-        await message.answer("Something went wrong. Please try again later.")
-        return
-
-    keyboard_builder = InlineKeyboardBuilder()
-    for marketplace in marketplaces:
-        keyboard_builder.button(text=marketplace.name, callback_data=str(marketplace.id))
-    keyboard_builder.adjust(2)
-
-    await message.answer("Choose the marketplace for monitoring:", reply_markup=keyboard_builder.as_markup())
-    await state.set_state(NewMonitoringState.marketplace)
+    marketplaces_keyboard = await get_marketplaces_keyboard(api, provide_id=True, provide_url=False)
+    if marketplaces_keyboard is None:
+        await message.answer("No marketplaces available. Please try again later.")
+    else:
+        await message.answer("Choose the marketplace for monitoring:", reply_markup=marketplaces_keyboard)
+        await state.set_state(NewMonitoringState.marketplace)
 
 
 @router.callback_query(NewMonitoringState.marketplace)
