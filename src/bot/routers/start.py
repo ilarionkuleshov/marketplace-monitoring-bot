@@ -9,8 +9,8 @@ router = Router(name="start")
 
 
 @router.message(CommandStart())
-async def cmd_start(message: Message, api: ApiProvider) -> None:
-    """Start command handler.
+async def register_user(message: Message, api: ApiProvider) -> None:
+    """Registers new user and sends a welcome message.
 
     Args:
         message (Message): Message object.

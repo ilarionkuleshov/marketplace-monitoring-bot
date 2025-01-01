@@ -9,14 +9,15 @@ router = Router(name="marketplaces")
 
 
 @router.message(Command("marketplaces"))
-async def cmd_marketplaces(message: Message, api: ApiProvider) -> None:
-    """Marketplaces command handler.
+async def show_marketplaces(message: Message, api: ApiProvider) -> None:
+    """Shows available marketplaces.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
 
     """
+    # pylint: disable=R0801
     status, marketplaces = await api.request(
         "GET", "/marketplaces/", response_model=MarketplaceRead, response_as_list=True
     )
