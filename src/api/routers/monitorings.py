@@ -23,7 +23,10 @@ async def read_monitorings(
     """
     filters = [Monitoring.user_id == user_id] if user_id is not None else None
     return await database.get_all(
-        model=Monitoring, filters=filters, read_schema=MonitoringRead  # type: ignore[arg-type]
+        model=Monitoring,
+        filters=filters,  # type: ignore[arg-type]
+        order_by=[Monitoring.name.asc()],
+        read_schema=MonitoringRead,
     )
 
 
