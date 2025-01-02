@@ -1,11 +1,18 @@
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import select
 from sqlalchemy.exc import IntegrityError
 
 from database import DatabaseProvider, get_database_dep
-from database.models import Monitoring
-from database.schemas import MonitoringCreate, MonitoringRead, MonitoringUpdate
+from database.enums import MonitoringRunStatus
+from database.models import Marketplace, Monitoring, MonitoringRun
+from database.schemas import (
+    MonitoringCreate,
+    MonitoringDetailsRead,
+    MonitoringRead,
+    MonitoringUpdate,
+)
 
 router = APIRouter(prefix="/monitorings")
 
@@ -48,6 +55,47 @@ async def read_monitoring(
         model=Monitoring, read_schema=MonitoringRead, filters=[Monitoring.id == monitoring_id]
     ):
         return monitoring
+    raise HTTPException(status.HTTP_404_NOT_FOUND, "Monitoring not found")
+
+
+@router.get("/{monitoring_id}/details")
+async def read_monitoring_details(
+    monitoring_id: int, database: Annotated[DatabaseProvider, Depends(get_database_dep)]
+) -> MonitoringDetailsRead:
+    """Returns the details of a monitoring by its ID.
+
+    Args:
+        monitoring_id (int): ID of the monitoring.
+        database (DatabaseProvider): Provider for the database.
+
+    Raises:
+        HTTPException (404): If the monitoring is not found.
+
+    """
+    query = (
+        select(
+            Monitoring.id,
+            Monitoring.user_id,
+            Monitoring.marketplace_id,
+            Monitoring.name,
+            Monitoring.url,
+            Monitoring.run_interval,
+            Monitoring.enabled,
+            Monitoring.created_at,
+            Monitoring.updated_at,
+            Marketplace.name.label("marketplace_name"),
+            select(MonitoringRun.created_at)
+            .where(MonitoringRun.monitoring_id == monitoring_id, MonitoringRun.status == MonitoringRunStatus.SUCCESS)
+            .order_by(MonitoringRun.created_at.desc())
+            .limit(1)
+            .label("last_successful_run"),
+        )
+        .where(Monitoring.id == monitoring_id)
+        .join(Marketplace, Marketplace.id == Monitoring.marketplace_id)
+    )
+
+    if monitoring_details := await database.get_by_query(query=query, read_schema=MonitoringDetailsRead):
+        return monitoring_details
     raise HTTPException(status.HTTP_404_NOT_FOUND, "Monitoring not found")
 
 
