@@ -19,10 +19,10 @@ router = Router(name="new_monitoring")
 class NewMonitoringState(StatesGroup):
     """New monitoring state group."""
 
-    marketplace = State()
-    url = State()
-    run_interval = State()
-    name = State()
+    choose_marketplace = State()
+    enter_url = State()
+    choose_run_interval = State()
+    enter_name = State()
 
 
 RUN_INTERVALS = {
@@ -54,10 +54,10 @@ async def choose_marketplace(message: Message, api: ApiProvider, state: FSMConte
         await message.answer("No marketplaces available. Please try again later.")
     else:
         await message.answer("Choose the marketplace for monitoring:", reply_markup=marketplaces_keyboard)
-        await state.set_state(NewMonitoringState.marketplace)
+        await state.set_state(NewMonitoringState.choose_marketplace)
 
 
-@router.callback_query(NewMonitoringState.marketplace)
+@router.callback_query(NewMonitoringState.choose_marketplace)
 async def enter_url(query: CallbackQuery, state: FSMContext) -> None:
     """Saves the marketplace ID and asks user to enter monitoring URL.
 
@@ -72,10 +72,10 @@ async def enter_url(query: CallbackQuery, state: FSMContext) -> None:
 
     await state.update_data(marketplace_id=int(query.data))
     await query.message.answer("Enter search URL on the marketplace to monitor")
-    await state.set_state(NewMonitoringState.url)
+    await state.set_state(NewMonitoringState.enter_url)
 
 
-@router.message(NewMonitoringState.url)
+@router.message(NewMonitoringState.enter_url)
 async def choose_run_interval(message: Message, state: FSMContext) -> None:
     """Saves the monitoring URL and asks user to choose monitoring run interval.
 
@@ -106,10 +106,10 @@ async def choose_run_interval(message: Message, state: FSMContext) -> None:
     keyboard_builder.adjust(3)
 
     await message.answer("Choose monitoring interval:", reply_markup=keyboard_builder.as_markup())
-    await state.set_state(NewMonitoringState.run_interval)
+    await state.set_state(NewMonitoringState.choose_run_interval)
 
 
-@router.callback_query(NewMonitoringState.run_interval)
+@router.callback_query(NewMonitoringState.choose_run_interval)
 async def enter_name(query: CallbackQuery, state: FSMContext) -> None:
     """Saves the monitoring run interval and asks user to enter monitoring name.
 
@@ -124,10 +124,10 @@ async def enter_name(query: CallbackQuery, state: FSMContext) -> None:
 
     await state.update_data(run_interval=RUN_INTERVALS[query.data])
     await query.message.answer("Enter monitoring name")
-    await state.set_state(NewMonitoringState.name)
+    await state.set_state(NewMonitoringState.enter_name)
 
 
-@router.message(NewMonitoringState.name)
+@router.message(NewMonitoringState.enter_name)
 async def create_monitoring(message: Message, api: ApiProvider, state: FSMContext) -> None:
     """Creates a new monitoring and sends a response to the user.
 
