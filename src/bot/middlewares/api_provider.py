@@ -31,6 +31,7 @@ class ApiProvider(BaseMiddleware):
         method: str,
         url: str,
         *,
+        query_params: dict[str, Any] | None = None,
         json_data: PydanticModel | None = None,
         response_model: None = None,
         response_as_list: bool = False,
@@ -44,6 +45,7 @@ class ApiProvider(BaseMiddleware):
         method: str,
         url: str,
         *,
+        query_params: dict[str, Any] | None = None,
         json_data: PydanticModel | None = None,
         response_model: type[T],
         response_as_list: Literal[False] = False,
@@ -57,6 +59,7 @@ class ApiProvider(BaseMiddleware):
         method: str,
         url: str,
         *,
+        query_params: dict[str, Any] | None = None,
         json_data: PydanticModel | None = None,
         response_model: type[T],
         response_as_list: Literal[True] = True,
@@ -69,6 +72,7 @@ class ApiProvider(BaseMiddleware):
         method: str,
         url: str,
         *,
+        query_params: dict[str, Any] | None = None,
         json_data: PydanticModel | None = None,
         response_model: type[T] | None = None,
         response_as_list: bool = False,
@@ -78,6 +82,7 @@ class ApiProvider(BaseMiddleware):
         Args:
             method (str): The HTTP method.
             url (str): The URL.
+            query_params (dict[str, Any] | None): The query parameters. Default is None.
             json_data (PydanticModel | None): The data to send. Default is None.
             response_model (type[T] | None): The response model.
                 If not provided, the response will not be validated. Default is None.
@@ -91,6 +96,8 @@ class ApiProvider(BaseMiddleware):
 
         """
         kwargs: dict[str, Any] = {"method": method, "url": url}
+        if query_params:
+            kwargs["params"] = query_params
         if json_data:
             kwargs["json"] = json_data.model_dump(mode="json")
         response = await self._client.request(**kwargs)
