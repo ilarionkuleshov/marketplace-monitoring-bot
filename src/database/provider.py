@@ -247,9 +247,7 @@ class DatabaseProvider:
 
         """
         query = delete(model).where(*filters)
-        cursor = await self._session.execute(query)
-        if cursor.rowcount == 0:
-            raise ValueError("No rows to delete")
+        await self._session.execute(query)
         await self._session.flush()
 
 
