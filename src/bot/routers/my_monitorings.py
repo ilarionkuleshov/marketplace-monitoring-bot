@@ -34,7 +34,7 @@ class MyMonitoringsDetailsCD(CallbackData, prefix="my_monitorings_details"):
 
 
 class MyMonitoringsUpdateEnabledCD(CallbackData, prefix="my_monitorings_update_enabled"):
-    """Callback data for updating monitoring enabled status."""
+    """Callback data for updating monitoring enabled."""
 
     monitoring_id: int
     enabled: bool
@@ -78,14 +78,14 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         return
     message, answer_method = message_and_answer_method
 
-    status, monitorings = await api.request(
+    response_status, monitorings = await api.request(
         "GET",
         "/monitorings/",
         query_params={"user_id": message.chat.id},
         response_model=MonitoringRead,
         response_as_list=True,
     )
-    if status != 200 or monitorings is None:
+    if response_status != 200 or monitorings is None:
         await message.answer("Something went wrong. Please try again later.")
         return
 
@@ -175,34 +175,34 @@ async def show_monitoring_details(
 
 @router.callback_query(MyMonitoringsUpdateEnabledCD.filter())
 async def update_monitoring_enabled(
-    query: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsUpdateEnabledCD
+    callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsUpdateEnabledCD
 ) -> None:
-    """Changes monitoring status.
+    """Updates monitoring enabled.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         callback_data (MyMonitoringsUpdateEnabledCD): Callback data.
 
     """
     status = await update_monitoring(api, callback_data.monitoring_id, MonitoringUpdate(enabled=callback_data.enabled))
     if status is False:
-        await query.answer("Something went wrong. Please try again later.")
+        await callback.answer("Something went wrong. Please try again later.")
         return
-    await show_monitoring_details(query, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
+    await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
 
 
 @router.callback_query(MyMonitoringsDeleteCD.filter(F.confirmed == False))  # noqa: E712  # pylint: disable=C0121
-async def confirm_monitoring_deletion(query: CallbackQuery, callback_data: MyMonitoringsDeleteCD) -> None:
+async def confirm_monitoring_deletion(callback: CallbackQuery, callback_data: MyMonitoringsDeleteCD) -> None:
     """Confirms monitoring deletion.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsDeleteCD): Callback data.
 
     """
-    if not isinstance(query.message, Message):
-        await query.answer("Something went wrong. Please try again later.")
+    if not isinstance(callback.message, Message):
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -211,39 +211,39 @@ async def confirm_monitoring_deletion(query: CallbackQuery, callback_data: MyMon
     )
     keyboard_builder.button(text="No", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
     keyboard_builder.adjust(1)
-    await query.message.edit_text(
+    await callback.message.edit_text(
         "Are you sure you want to delete this monitoring?", reply_markup=keyboard_builder.as_markup()
     )
 
 
 @router.callback_query(MyMonitoringsDeleteCD.filter(F.confirmed == True))  # noqa: E712  # pylint: disable=C0121
-async def delete_monitoring(query: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDeleteCD) -> None:
+async def delete_monitoring(callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDeleteCD) -> None:
     """Deletes monitoring.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         callback_data (MyMonitoringsDeleteCD): Callback data.
 
     """
     response_status = await api.request("DELETE", f"/monitorings/{callback_data.monitoring_id}")
     if response_status != 200:
-        await query.answer("Something went wrong. Please try again later.")
+        await callback.answer("Something went wrong. Please try again later.")
         return
-    await show_monitorings_list(query, api)
+    await show_monitorings_list(callback, api)
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field == None))  # noqa: E711  # pylint: disable=C0121
-async def show_update_fields(query: CallbackQuery, callback_data: MyMonitoringsUpdateCD) -> None:
+async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD) -> None:
     """Shows fields that can be updated.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsUpdateCD): Callback data.
 
     """
-    if not isinstance(query.message, Message):
-        await query.answer("Something went wrong. Please try again later.")
+    if not isinstance(callback.message, Message):
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -261,21 +261,23 @@ async def show_update_fields(query: CallbackQuery, callback_data: MyMonitoringsU
         text="<-- Back to monitoring", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
     )
     keyboard_builder.adjust(1)
-    await query.message.edit_text("What field do you want to update?", reply_markup=keyboard_builder.as_markup())
+    await callback.message.edit_text("What field do you want to update?", reply_markup=keyboard_builder.as_markup())
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field != None))  # noqa: E711  # pylint: disable=C0121
-async def enter_new_field_value(query: CallbackQuery, callback_data: MyMonitoringsUpdateCD, state: FSMContext) -> None:
+async def enter_new_field_value(
+    callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD, state: FSMContext
+) -> None:
     """Enters new field value.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsUpdateCD): Callback data.
         state (FSMContext): State context.
 
     """
-    if not isinstance(query.message, Message):
-        await query.answer("Something went wrong. Please try again later.")
+    if not isinstance(callback.message, Message):
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
     if callback_data.field == "name":
@@ -291,7 +293,7 @@ async def enter_new_field_value(query: CallbackQuery, callback_data: MyMonitorin
         reply_markup = get_run_intervals_keyboard()
         new_state = MyMonitoringUpdateState.choose_run_interval
 
-    await query.message.answer(text, reply_markup=reply_markup)
+    await callback.message.answer(text, reply_markup=reply_markup)
     await state.update_data(monitoring_id=callback_data.monitoring_id)
     await state.set_state(new_state)
 
@@ -355,25 +357,25 @@ async def update_monitoring_url(message: Message, api: ApiProvider, state: FSMCo
 
 
 @router.callback_query(MyMonitoringUpdateState.choose_run_interval)
-async def update_monitoring_run_interval(query: CallbackQuery, api: ApiProvider, state: FSMContext) -> None:
+async def update_monitoring_run_interval(callback: CallbackQuery, api: ApiProvider, state: FSMContext) -> None:
     """Updates monitoring run interval.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
 
     """
     monitoring_id = await state.get_value("monitoring_id")
-    if not isinstance(monitoring_id, int) or query.data is None:
-        await query.answer("Something went wrong. Please try again later.")
+    if not isinstance(monitoring_id, int) or callback.data is None:
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
-    run_interval = get_timedelta_from_callback_data(query.data)
+    run_interval = get_timedelta_from_callback_data(callback.data)
     status = await update_monitoring(api, monitoring_id, MonitoringUpdate(run_interval=run_interval))
     if status is False:
-        await query.answer("Something went wrong. Please try again later.")
+        await callback.answer("Something went wrong. Please try again later.")
         return
     await state.clear()
 
-    await show_monitoring_details(query, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
+    await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))

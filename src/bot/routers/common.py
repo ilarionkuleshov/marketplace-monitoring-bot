@@ -19,8 +19,8 @@ async def register_user(message: Message, api: ApiProvider) -> None:
         api (ApiProvider): Provider for the API.
 
     """
-    status = await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id))
-    if status in [200, 409]:
+    response_status = await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id))
+    if response_status in [200, 409]:
         await message.answer(
             "Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces."
         )

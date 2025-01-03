@@ -19,10 +19,10 @@ async def get_marketplaces_keyboard(
         provide_url (bool): Whether to provide marketplace URL.
 
     """
-    status, marketplaces = await api.request(
+    response_status, marketplaces = await api.request(
         "GET", "/marketplaces/", response_model=MarketplaceRead, response_as_list=True
     )
-    if status != 200 or not marketplaces:
+    if response_status != 200 or not marketplaces:
         return None
 
     keyboard_builder = InlineKeyboardBuilder()

@@ -41,20 +41,20 @@ async def choose_marketplace(message: Message, api: ApiProvider, state: FSMConte
 
 
 @router.callback_query(NewMonitoringState.choose_marketplace)
-async def enter_url(query: CallbackQuery, state: FSMContext) -> None:
+async def enter_url(callback: CallbackQuery, state: FSMContext) -> None:
     """Saves the marketplace ID and asks user to enter monitoring URL.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         state (FSMContext): State context.
 
     """
-    if query.data is None or query.message is None:
-        await query.answer("Something went wrong. Please try again later.")
+    if callback.data is None or callback.message is None:
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
-    await state.update_data(marketplace_id=int(query.data))
-    await query.message.answer("Enter search URL on the marketplace to monitor")
+    await state.update_data(marketplace_id=int(callback.data))
+    await callback.message.answer("Enter search URL on the marketplace to monitor")
     await state.set_state(NewMonitoringState.enter_url)
 
 
@@ -78,20 +78,20 @@ async def choose_run_interval(message: Message, state: FSMContext) -> None:
 
 
 @router.callback_query(NewMonitoringState.choose_run_interval)
-async def enter_name(query: CallbackQuery, state: FSMContext) -> None:
+async def enter_name(callback: CallbackQuery, state: FSMContext) -> None:
     """Saves the monitoring run interval and asks user to enter monitoring name.
 
     Args:
-        query (CallbackQuery): CallbackQuery object.
+        callback (CallbackQuery): CallbackQuery object.
         state (FSMContext): State context.
 
     """
-    if query.data is None or query.message is None:
-        await query.answer("Something went wrong. Please try again later.")
+    if callback.data is None or callback.message is None:
+        await callback.answer("Something went wrong. Please try again later.")
         return
 
-    await state.update_data(run_interval=get_timedelta_from_callback_data(query.data))
-    await query.message.answer("Enter monitoring name")
+    await state.update_data(run_interval=get_timedelta_from_callback_data(callback.data))
+    await callback.message.answer("Enter monitoring name")
     await state.set_state(NewMonitoringState.enter_name)
 
 
@@ -118,15 +118,15 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
         url=data["url"],
         run_interval=data["run_interval"],
     )
-    status = await api.request("POST", "/monitorings/", json_data=monitoring)
+    response_status = await api.request("POST", "/monitorings/", json_data=monitoring)
 
-    if status == 200:
+    if response_status == 200:
         answer_message = (
             "Monitoring has been created successfully. Monitoring will start soon.\n"
             "Please note that during the first run of monitoring, "
             "you will not receive messages about existing adverts. You will only receive messages about new adverts."
         )
-    elif status == 409:
+    elif response_status == 409:
         answer_message = "Monitoring with this url already exists."
     else:
         answer_message = "Something went wrong. Please try again later."
