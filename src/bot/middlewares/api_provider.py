@@ -1,6 +1,7 @@
 from typing import Any, Awaitable, Callable, Literal, overload
 
 from aiogram import BaseMiddleware
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.types import TelegramObject
 from httpx import AsyncClient
 from pydantic import BaseModel as PydanticModel
@@ -35,7 +36,9 @@ class ApiProvider(BaseMiddleware):
         json_data: PydanticModel | None = None,
         response_model: None = None,
         response_as_list: bool = False,
-    ) -> int: ...
+        acceptable_statuses: list[int] | None = None,
+        custom_error_messages: dict[int, str] | None = None,
+    ) -> None: ...
 
     @overload
     async def request[
@@ -49,7 +52,9 @@ class ApiProvider(BaseMiddleware):
         json_data: PydanticModel | None = None,
         response_model: type[T],
         response_as_list: Literal[False] = False,
-    ) -> tuple[int, T | None]: ...
+        acceptable_statuses: list[int] | None = None,
+        custom_error_messages: dict[int, str] | None = None,
+    ) -> T: ...
 
     @overload
     async def request[
@@ -63,7 +68,9 @@ class ApiProvider(BaseMiddleware):
         json_data: PydanticModel | None = None,
         response_model: type[T],
         response_as_list: Literal[True] = True,
-    ) -> tuple[int, list[T] | None]: ...
+        acceptable_statuses: list[int] | None = None,
+        custom_error_messages: dict[int, str] | None = None,
+    ) -> list[T]: ...
 
     async def request[
         T: PydanticModel
@@ -76,7 +83,9 @@ class ApiProvider(BaseMiddleware):
         json_data: PydanticModel | None = None,
         response_model: type[T] | None = None,
         response_as_list: bool = False,
-    ) -> (int | tuple[int, T | list[T] | None]):
+        acceptable_statuses: list[int] | None = None,
+        custom_error_messages: dict[int, str] | None = None,
+    ) -> (T | list[T] | None):
         """Makes a request to the API.
 
         Args:
@@ -84,15 +93,17 @@ class ApiProvider(BaseMiddleware):
             url (str): The URL.
             query_params (dict[str, Any] | None): The query parameters. Default is None.
             json_data (PydanticModel | None): The data to send. Default is None.
-            response_model (type[T] | None): The response model.
-                If not provided, the response will not be validated. Default is None.
-            response_as_list (bool): If the response should be treated as a list. Default is False.
+            response_model (type[T] | None): Model for response item(s). Default is None.
+            response_as_list (bool): Whether to return response as list. Default is False.
+            acceptable_statuses (list[int] | None): The acceptable statuses.
+                If the response status code is not in this list, exception will be raised.
+                If not provided, [200] will be used. Default is None.
+            custom_error_messages (dict[int, str] | None): Custom error messages for statuses. Default is None.
 
         Returns:
-            int: Only the status code if response model is not provided.
-            tuple[int, T | list[T] | None]: The status code and response item
-                or list of response items if `response_as_list` is True.
-                If the request failed, the response item(s) will be None.
+            T: Response item if response_model provided and response_as_list is False.
+            list[T]: Response items if response_model provided and response_as_list is True.
+            None: If response_model is not provided.
 
         """
         kwargs: dict[str, Any] = {"method": method, "url": url}
@@ -102,14 +113,18 @@ class ApiProvider(BaseMiddleware):
             kwargs["json"] = json_data.model_dump(mode="json")
         response = await self._client.request(**kwargs)
 
-        if response_model is None:
-            return response.status_code
+        acceptable_statuses = acceptable_statuses or [200]
+        if response.status_code not in acceptable_statuses:
+            custom_error_messages = custom_error_messages or {}
+            error_message = custom_error_messages.get(
+                response.status_code, "Something went wrong. Please try again later."
+            )
+            raise DetailedAiogramError(error_message)
 
-        if response.status_code != 200:
-            return response.status_code, None
+        if response_model is None:
+            return None
 
         response_json = response.json()
-
         if response_as_list:
-            return response.status_code, [response_model.model_validate(item) for item in response_json]
-        return response.status_code, response_model.model_validate(response_json)
+            return [response_model.model_validate(item) for item in response_json]
+        return response_model.model_validate(response_json)

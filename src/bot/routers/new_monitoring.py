@@ -1,5 +1,4 @@
 from aiogram import Router
-from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
@@ -110,13 +109,12 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
         url=data["url"],
         run_interval=data["run_interval"],
     )
-    response_status = await api.request("POST", "/monitorings/", json_data=monitoring)
-
-    if response_status == 409:
-        raise DetailedAiogramError("Monitoring with this url already exists.")
-    if response_status != 200:
-        raise DetailedAiogramError("Something went wrong. Please try again later.")
-
+    await api.request(
+        "POST",
+        "/monitorings/",
+        json_data=monitoring,
+        custom_error_messages={409: "Monitoring with this url already exists."},
+    )
     await message.answer(
         "Monitoring has been created successfully. Monitoring will start soon.\n"
         "Please note that during the first run of monitoring, "

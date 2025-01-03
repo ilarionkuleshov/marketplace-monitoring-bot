@@ -1,5 +1,4 @@
 from aiogram import Router
-from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -20,9 +19,7 @@ async def register_user(message: Message, api: ApiProvider) -> None:
         api (ApiProvider): Provider for the API.
 
     """
-    response_status = await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id))
-    if response_status not in [200, 409]:
-        raise DetailedAiogramError("Something went wrong. Please try again later.")
+    await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id), acceptable_statuses=[200, 409])
     await message.answer(
         "Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces."
     )

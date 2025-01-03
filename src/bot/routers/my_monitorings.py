@@ -1,7 +1,6 @@
 from typing import Literal
 
 from aiogram import F, Router
-from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
@@ -10,7 +9,6 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.middlewares import ApiProvider
-from bot.utils.api import update_monitoring
 from bot.utils.keyboards import get_run_intervals_keyboard
 from bot.utils.time import (
     get_readable_time_ago,
@@ -81,16 +79,13 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
     """
     message, answer_method = validate_message_and_answer_method(event)
 
-    response_status, monitorings = await api.request(
+    monitorings = await api.request(
         "GET",
         "/monitorings/",
         query_params={"user_id": message.chat.id},
         response_model=MonitoringRead,
         response_as_list=True,
     )
-    if response_status != 200 or monitorings is None:
-        raise DetailedAiogramError("Something went wrong. Please try again later.")
-
     if not monitorings:
         await message.answer("You don't have any monitorings yet. Use /new_monitoring to add one.")
         return
@@ -119,12 +114,9 @@ async def show_monitoring_details(
 
     """
     _, answer_method = validate_message_and_answer_method(event)
-
-    response_status, monitoring_details = await api.request(
+    monitoring_details = await api.request(
         "GET", f"/monitorings/{callback_data.monitoring_id}/details", response_model=MonitoringDetailsRead
     )
-    if response_status != 200 or monitoring_details is None:
-        raise DetailedAiogramError("Something went wrong. Please try again later.")
 
     if monitoring_details.enabled:
         status = "🟢 *Enabled*"
@@ -182,7 +174,11 @@ async def update_monitoring_enabled(
         callback_data (MyMonitoringsUpdateEnabledCD): Callback data.
 
     """
-    await update_monitoring(api, callback_data.monitoring_id, MonitoringUpdate(enabled=callback_data.enabled))
+    await api.request(
+        "PATCH",
+        f"/monitorings/{callback_data.monitoring_id}",
+        json_data=MonitoringUpdate(enabled=callback_data.enabled),
+    )
     await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
 
 
@@ -217,9 +213,7 @@ async def delete_monitoring(callback: CallbackQuery, api: ApiProvider, callback_
         callback_data (MyMonitoringsDeleteCD): Callback data.
 
     """
-    response_status = await api.request("DELETE", f"/monitorings/{callback_data.monitoring_id}")
-    if response_status != 200:
-        raise DetailedAiogramError("Something went wrong. Please try again later.")
+    await api.request("DELETE", f"/monitorings/{callback_data.monitoring_id}")
     await show_monitorings_list(callback, api)
 
 
@@ -296,7 +290,7 @@ async def update_monitoring_name(message: Message, api: ApiProvider, state: FSMC
     name = validate_monitoring_name(message.text)
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-    await update_monitoring(api, monitoring_id, MonitoringUpdate(name=name))
+    await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(name=name))
     await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
 
 
@@ -313,7 +307,7 @@ async def update_monitoring_url(message: Message, api: ApiProvider, state: FSMCo
     url = validate_monitoring_url(message.text)
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-    await update_monitoring(api, monitoring_id, MonitoringUpdate(url=url))
+    await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(url=url))
     await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
 
 
@@ -330,5 +324,5 @@ async def update_monitoring_run_interval(callback: CallbackQuery, api: ApiProvid
     run_interval = get_timedelta_from_callback_data(validate_callback_data(callback))
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-    await update_monitoring(api, monitoring_id, MonitoringUpdate(run_interval=run_interval))
+    await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(run_interval=run_interval))
     await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
