@@ -1,16 +1,17 @@
-from datetime import timedelta
-
 from aiogram import Router
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.utils.keyboard import InlineKeyboardBuilder
-from pydantic import ValidationError
-from pydantic.networks import AnyHttpUrl
 
 from bot.middlewares import ApiProvider
-from bot.utils import get_marketplaces_keyboard
+from bot.utils import (
+    get_marketplaces_keyboard,
+    get_run_intervals_keyboard,
+    get_timedelta_from_callback_data,
+    validate_monitoring_name,
+    validate_monitoring_url,
+)
 from database.schemas import MonitoringCreate
 
 router = Router(name="new_monitoring")
@@ -23,20 +24,6 @@ class NewMonitoringState(StatesGroup):
     enter_url = State()
     choose_run_interval = State()
     enter_name = State()
-
-
-RUN_INTERVALS = {
-    "5min": timedelta(minutes=5),
-    "10min": timedelta(minutes=10),
-    "15min": timedelta(minutes=15),
-    "30min": timedelta(minutes=30),
-    "1h": timedelta(hours=1),
-    "2h": timedelta(hours=2),
-    "3h": timedelta(hours=3),
-    "6h": timedelta(hours=6),
-    "12h": timedelta(hours=12),
-    "24h": timedelta(days=1),
-}
 
 
 @router.message(Command("new_monitoring"))
@@ -85,27 +72,12 @@ async def choose_run_interval(message: Message, state: FSMContext) -> None:
 
     """
     url = message.text
-    if not url:
-        await message.answer("URL is required. Please enter a URL.")
-        return
-
-    try:
-        AnyHttpUrl(url)
-    except ValidationError:
-        await message.answer("Invalid URL. Please enter a valid URL.")
-        return
-    if len(url) > 2000:
-        await message.answer("URL is too long. Please enter a shorter URL (max 2000 characters).")
+    if error_message := validate_monitoring_url(url):
+        await message.answer(error_message)
         return
 
     await state.update_data(url=url)
-
-    keyboard_builder = InlineKeyboardBuilder()
-    for interval in RUN_INTERVALS:
-        keyboard_builder.button(text=interval, callback_data=interval)
-    keyboard_builder.adjust(3)
-
-    await message.answer("Choose monitoring interval:", reply_markup=keyboard_builder.as_markup())
+    await message.answer("Choose monitoring run interval:", reply_markup=get_run_intervals_keyboard())
     await state.set_state(NewMonitoringState.choose_run_interval)
 
 
@@ -122,7 +94,7 @@ async def enter_name(query: CallbackQuery, state: FSMContext) -> None:
         await query.answer("Something went wrong. Please try again later.")
         return
 
-    await state.update_data(run_interval=RUN_INTERVALS[query.data])
+    await state.update_data(run_interval=get_timedelta_from_callback_data(query.data))
     await query.message.answer("Enter monitoring name")
     await state.set_state(NewMonitoringState.enter_name)
 
@@ -138,12 +110,8 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
 
     """
     name = message.text
-    if not name:
-        await message.answer("Name is required. Please enter a name.")
-        return
-
-    if len(name) > 100:
-        await message.answer("Name is too long. Please enter a shorter name (max 100 characters).")
+    if error_message := validate_monitoring_name(name):
+        await message.answer(error_message)
         return
 
     data = await state.get_data()

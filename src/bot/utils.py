@@ -2,9 +2,11 @@ from datetime import datetime, timedelta
 from typing import Any
 
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
+from pydantic import ValidationError
+from pydantic.networks import AnyHttpUrl
 
 from bot.middlewares import ApiProvider
-from database.schemas import MarketplaceRead
+from database.schemas import MarketplaceRead, MonitoringUpdate
 
 
 async def get_marketplaces_keyboard(
@@ -37,8 +39,8 @@ async def get_marketplaces_keyboard(
     return keyboard_builder.as_markup()
 
 
-def get_timedelta_frequency(td: timedelta) -> str:
-    """Returns a human-readable string representing the frequency of a timedelta.
+def get_readable_timedelta(td: timedelta) -> str:
+    """Returns a human-readable string representing timedelta.
 
     Timedelta is considered to be a multiple of minutes or hours.
 
@@ -48,16 +50,12 @@ def get_timedelta_frequency(td: timedelta) -> str:
     """
     total_seconds = int(td.total_seconds())
 
-    if total_seconds % 60 == 0:
+    if total_seconds < 3600 and total_seconds % 60 == 0:
         minutes = total_seconds // 60
-        if minutes == 1:
-            return "every 1 min"
-        return f"every {minutes} min"
+        return f"{minutes}min"
 
     hours = total_seconds // 3600
-    if hours == 1:
-        return "every 1 hour"
-    return f"every {hours} hours"
+    return f"{hours}h"
 
 
 # pylint: disable=R0911
@@ -95,3 +93,89 @@ def get_time_ago(dt: datetime) -> str:
 
     years = delta.days // 365
     return f"{years} years ago" if years > 1 else "1 year ago"
+
+
+def get_run_intervals_keyboard() -> InlineKeyboardMarkup:
+    """Returns a keyboard with available run intervals."""
+    keyboard_builder = InlineKeyboardBuilder()
+    for td in [
+        timedelta(minutes=5),
+        timedelta(minutes=10),
+        timedelta(minutes=15),
+        timedelta(minutes=30),
+        timedelta(hours=1),
+        timedelta(hours=2),
+        timedelta(hours=3),
+        timedelta(hours=6),
+        timedelta(hours=12),
+        timedelta(hours=24),
+    ]:
+        keyboard_builder.button(text=get_readable_timedelta(td), callback_data=str(td.total_seconds()))
+    keyboard_builder.adjust(3)
+    return keyboard_builder.as_markup()
+
+
+def get_timedelta_from_callback_data(data: str) -> timedelta:
+    """Returns a timedelta object from callback data.
+
+    Args:
+        data (str): Callback data.
+
+    """
+    return timedelta(seconds=float(data))
+
+
+async def update_monitoring(api: ApiProvider, monitoring_id: int, json_data: MonitoringUpdate) -> bool:
+    """Updates the monitoring via the API.
+
+    Args:
+        api (ApiProvider): Provider for the API.
+        monitoring_id (int): Monitoring ID.
+        json_data (MonitoringUpdate): Monitoring update data.
+
+    Returns:
+        bool: True if the monitoring was updated successfully, False otherwise.
+
+    """
+    response_status = await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=json_data)
+    return response_status == 200
+
+
+def validate_monitoring_name(name: str | None) -> str | None:
+    """Validates the monitoring name.
+
+    Args:
+        name (str | None): Monitoring name.
+
+    Returns:
+        None: Monitoring name is valid.
+        str: Error message.
+
+    """
+    if not name:
+        return "Name is required. Please enter a name."
+    if len(name) > 100:
+        return "Name is too long. Please enter a shorter name (max 100 characters)."
+    return None
+
+
+def validate_monitoring_url(url: str | None) -> str | None:
+    """Validates the monitoring URL.
+
+    Args:
+        url (str | None): Monitoring URL.
+
+    Returns:
+        None: Monitoring URL is valid.
+        str: Error message.
+
+    """
+    if not url:
+        return "URL is required. Please enter a URL."
+    try:
+        AnyHttpUrl(url)
+    except ValidationError:
+        return "Invalid URL. Please enter a valid URL."
+    if len(url) > 2000:
+        return "URL is too long. Please enter a shorter URL (max 2000 characters)."
+    return None
