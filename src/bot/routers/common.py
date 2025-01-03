@@ -4,7 +4,7 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
 
 from bot.middlewares import ApiProvider
-from bot.utils import get_marketplaces_keyboard
+from bot.utils.keyboards import get_marketplaces_keyboard
 from database.schemas import UserCreate
 
 router = Router(name="common")

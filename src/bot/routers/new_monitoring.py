@@ -5,13 +5,9 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 
 from bot.middlewares import ApiProvider
-from bot.utils import (
-    get_marketplaces_keyboard,
-    get_run_intervals_keyboard,
-    get_timedelta_from_callback_data,
-    validate_monitoring_name,
-    validate_monitoring_url,
-)
+from bot.utils.keyboards import get_marketplaces_keyboard, get_run_intervals_keyboard
+from bot.utils.time import get_timedelta_from_callback_data
+from bot.utils.validators import validate_monitoring_name, validate_monitoring_url
 from database.schemas import MonitoringCreate
 
 router = Router(name="new_monitoring")

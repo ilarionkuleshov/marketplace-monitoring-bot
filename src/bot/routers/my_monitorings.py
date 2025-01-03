@@ -9,15 +9,14 @@ from aiogram.types import CallbackQuery, Message
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.middlewares import ApiProvider
-from bot.utils import (
+from bot.utils.api import update_monitoring
+from bot.utils.keyboards import get_run_intervals_keyboard
+from bot.utils.time import (
+    get_readable_time_ago,
     get_readable_timedelta,
-    get_run_intervals_keyboard,
-    get_time_ago,
     get_timedelta_from_callback_data,
-    update_monitoring,
-    validate_monitoring_name,
-    validate_monitoring_url,
 )
+from bot.utils.validators import validate_monitoring_name, validate_monitoring_url
 from database.schemas import MonitoringDetailsRead, MonitoringRead, MonitoringUpdate
 
 router = Router(name="my_monitorings")
@@ -33,8 +32,8 @@ class MyMonitoringsDetailsCD(CallbackData, prefix="my_monitorings_details"):
     monitoring_id: int
 
 
-class MyMonitoringsChangeStatusCD(CallbackData, prefix="my_monitorings_change_status"):
-    """Callback data for changing monitoring status."""
+class MyMonitoringsUpdateEnabledCD(CallbackData, prefix="my_monitorings_update_enabled"):
+    """Callback data for updating monitoring enabled status."""
 
     monitoring_id: int
     enabled: bool
@@ -151,7 +150,9 @@ async def show_monitoring_details(
         change_status_button_enabled_value = True
 
     last_run = (
-        get_time_ago(monitoring_details.last_successful_run) if monitoring_details.last_successful_run else "never"
+        get_readable_time_ago(monitoring_details.last_successful_run)
+        if monitoring_details.last_successful_run
+        else "never"
     )
     text = (
         f"Name: *{monitoring_details.name}*\n"
@@ -164,7 +165,7 @@ async def show_monitoring_details(
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
         text=change_status_button_text,
-        callback_data=MyMonitoringsChangeStatusCD(
+        callback_data=MyMonitoringsUpdateEnabledCD(
             monitoring_id=callback_data.monitoring_id,
             enabled=change_status_button_enabled_value,
         ),
@@ -183,24 +184,20 @@ async def show_monitoring_details(
     )
 
 
-@router.callback_query(MyMonitoringsChangeStatusCD.filter())
-async def change_monitoring_status(
-    query: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsChangeStatusCD
+@router.callback_query(MyMonitoringsUpdateEnabledCD.filter())
+async def update_monitoring_enabled(
+    query: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsUpdateEnabledCD
 ) -> None:
     """Changes monitoring status.
 
     Args:
         query (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
-        callback_data (MyMonitoringsChangeStatusCD): Callback data.
+        callback_data (MyMonitoringsUpdateEnabledCD): Callback data.
 
     """
-    response_status = await api.request(
-        "PATCH",
-        f"/monitorings/{callback_data.monitoring_id}",
-        json_data=MonitoringUpdate(enabled=callback_data.enabled),
-    )
-    if response_status != 200:
+    status = await update_monitoring(api, callback_data.monitoring_id, MonitoringUpdate(enabled=callback_data.enabled))
+    if status is False:
         await query.answer("Something went wrong. Please try again later.")
         return
     await show_monitoring_details(query, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
