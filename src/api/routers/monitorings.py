@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 
 from database import DatabaseProvider, get_database_dep
 from database.enums import MonitoringRunStatus
-from database.models import Marketplace, Monitoring, MonitoringRun
+from database.models import Advert, Marketplace, Monitoring, MonitoringRun
 from database.schemas import (
     MonitoringCreate,
     MonitoringDetailsRead,
@@ -176,6 +176,8 @@ async def delete_monitoring(
 
     """
     try:
+        await database.delete(model=Advert, filters=[Advert.monitoring_id == monitoring_id])
+        await database.delete(model=MonitoringRun, filters=[MonitoringRun.monitoring_id == monitoring_id])
         await database.delete(model=Monitoring, filters=[Monitoring.id == monitoring_id])
         return {"detail": "Monitoring deleted successfully"}
     except ValueError:
