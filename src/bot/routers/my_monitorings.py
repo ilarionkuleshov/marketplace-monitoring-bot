@@ -1,4 +1,4 @@
-from typing import Callable, Literal
+from typing import Literal
 
 from aiogram import F, Router
 from aiogram.filters import Command
@@ -10,6 +10,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.middlewares import ApiProvider
 from bot.utils.api import update_monitoring
+from bot.utils.events import get_message_and_answer_method_from_event
 from bot.utils.keyboards import get_run_intervals_keyboard
 from bot.utils.time import (
     get_readable_time_ago,
@@ -71,17 +72,11 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         api (ApiProvider): Provider for the API.
 
     """
-    answer_method: Callable
-
-    if isinstance(event, Message):
-        message = event
-        answer_method = message.answer
-    else:
-        if not isinstance(event.message, Message):
-            await event.answer("Something went wrong. Please try again later.")
-            return
-        message = event.message
-        answer_method = message.edit_text
+    message_and_answer_method = get_message_and_answer_method_from_event(event)
+    if message_and_answer_method is None:
+        await event.answer("Something went wrong. Please try again later.")
+        return
+    message, answer_method = message_and_answer_method
 
     status, monitorings = await api.request(
         "GET",
@@ -121,17 +116,11 @@ async def show_monitoring_details(
         callback_data (MyMonitoringsDetailsCD): Callback data.
 
     """
-    answer_method: Callable
-
-    if isinstance(event, Message):
-        message = event
-        answer_method = message.answer
-    else:
-        if not isinstance(event.message, Message):
-            await event.answer("Something went wrong. Please try again later.")
-            return
-        message = event.message
-        answer_method = message.edit_text
+    message_and_answer_method = get_message_and_answer_method_from_event(event)
+    if message_and_answer_method is None:
+        await event.answer("Something went wrong. Please try again later.")
+        return
+    message, answer_method = message_and_answer_method
 
     response_status, monitoring_details = await api.request(
         "GET", f"/monitorings/{callback_data.monitoring_id}/details", response_model=MonitoringDetailsRead
