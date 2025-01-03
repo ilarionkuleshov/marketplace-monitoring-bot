@@ -1,4 +1,5 @@
 from aiogram import Router
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command, CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message
@@ -20,12 +21,11 @@ async def register_user(message: Message, api: ApiProvider) -> None:
 
     """
     response_status = await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id))
-    if response_status in [200, 409]:
-        await message.answer(
-            "Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces."
-        )
-    else:
-        await message.answer("Something went wrong. Please try again later.")
+    if response_status not in [200, 409]:
+        raise DetailedAiogramError("Something went wrong. Please try again later.")
+    await message.answer(
+        "Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces."
+    )
 
 
 @router.message(Command("marketplaces"))
@@ -38,10 +38,7 @@ async def show_marketplaces(message: Message, api: ApiProvider) -> None:
 
     """
     marketplaces_keyboard = await get_marketplaces_keyboard(api, provide_id=False, provide_url=True)
-    if marketplaces_keyboard is None:
-        await message.answer("Something went wrong. Please try again later.")
-    else:
-        await message.answer("Available marketplaces:", reply_markup=marketplaces_keyboard)
+    await message.answer("Available marketplaces:", reply_markup=marketplaces_keyboard)
 
 
 @router.message(Command("cancel"))

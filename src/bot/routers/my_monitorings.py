@@ -1,6 +1,7 @@
 from typing import Literal
 
 from aiogram import F, Router
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
@@ -10,14 +11,20 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.middlewares import ApiProvider
 from bot.utils.api import update_monitoring
-from bot.utils.events import get_message_and_answer_method_from_event
 from bot.utils.keyboards import get_run_intervals_keyboard
 from bot.utils.time import (
     get_readable_time_ago,
     get_readable_timedelta,
     get_timedelta_from_callback_data,
 )
-from bot.utils.validators import validate_monitoring_name, validate_monitoring_url
+from bot.utils.validators import (
+    validate_callback_data,
+    validate_callback_message,
+    validate_message_and_answer_method,
+    validate_monitoring_name,
+    validate_monitoring_url,
+    validate_state_context_value,
+)
 from database.schemas import MonitoringDetailsRead, MonitoringRead, MonitoringUpdate
 
 router = Router(name="my_monitorings")
@@ -72,11 +79,7 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         api (ApiProvider): Provider for the API.
 
     """
-    message_and_answer_method = get_message_and_answer_method_from_event(event)
-    if message_and_answer_method is None:
-        await event.answer("Something went wrong. Please try again later.")
-        return
-    message, answer_method = message_and_answer_method
+    message, answer_method = validate_message_and_answer_method(event)
 
     response_status, monitorings = await api.request(
         "GET",
@@ -86,8 +89,7 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         response_as_list=True,
     )
     if response_status != 200 or monitorings is None:
-        await message.answer("Something went wrong. Please try again later.")
-        return
+        raise DetailedAiogramError("Something went wrong. Please try again later.")
 
     if not monitorings:
         await message.answer("You don't have any monitorings yet. Use /new_monitoring to add one.")
@@ -116,18 +118,13 @@ async def show_monitoring_details(
         callback_data (MyMonitoringsDetailsCD): Callback data.
 
     """
-    message_and_answer_method = get_message_and_answer_method_from_event(event)
-    if message_and_answer_method is None:
-        await event.answer("Something went wrong. Please try again later.")
-        return
-    message, answer_method = message_and_answer_method
+    _, answer_method = validate_message_and_answer_method(event)
 
     response_status, monitoring_details = await api.request(
         "GET", f"/monitorings/{callback_data.monitoring_id}/details", response_model=MonitoringDetailsRead
     )
     if response_status != 200 or monitoring_details is None:
-        await message.answer("Something went wrong. Please try again later.")
-        return
+        raise DetailedAiogramError("Something went wrong. Please try again later.")
 
     if monitoring_details.enabled:
         status = "🟢 *Enabled*"
@@ -141,13 +138,13 @@ async def show_monitoring_details(
     last_run = (
         get_readable_time_ago(monitoring_details.last_successful_run)
         if monitoring_details.last_successful_run
-        else "never"
+        else "Never"
     )
     text = (
         f"Name: *{monitoring_details.name}*\n"
         f"Status: {status}\n"
         f"URL: [*{monitoring_details.marketplace_name}*]({monitoring_details.url})\n"
-        f"Run interval: *every {get_readable_timedelta(monitoring_details.run_interval)}*\n"
+        f"Run interval: *Every {get_readable_timedelta(monitoring_details.run_interval)}*\n"
         f"Last run: *{last_run}*"
     )
 
@@ -185,10 +182,7 @@ async def update_monitoring_enabled(
         callback_data (MyMonitoringsUpdateEnabledCD): Callback data.
 
     """
-    status = await update_monitoring(api, callback_data.monitoring_id, MonitoringUpdate(enabled=callback_data.enabled))
-    if status is False:
-        await callback.answer("Something went wrong. Please try again later.")
-        return
+    await update_monitoring(api, callback_data.monitoring_id, MonitoringUpdate(enabled=callback_data.enabled))
     await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
 
 
@@ -201,17 +195,14 @@ async def confirm_monitoring_deletion(callback: CallbackQuery, callback_data: My
         callback_data (MyMonitoringsDeleteCD): Callback data.
 
     """
-    if not isinstance(callback.message, Message):
-        await callback.answer("Something went wrong. Please try again later.")
-        return
-
+    message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
         text="Yes", callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id, confirmed=True)
     )
     keyboard_builder.button(text="No", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
     keyboard_builder.adjust(1)
-    await callback.message.edit_text(
+    await message.edit_text(
         "Are you sure you want to delete this monitoring?", reply_markup=keyboard_builder.as_markup()
     )
 
@@ -228,8 +219,7 @@ async def delete_monitoring(callback: CallbackQuery, api: ApiProvider, callback_
     """
     response_status = await api.request("DELETE", f"/monitorings/{callback_data.monitoring_id}")
     if response_status != 200:
-        await callback.answer("Something went wrong. Please try again later.")
-        return
+        raise DetailedAiogramError("Something went wrong. Please try again later.")
     await show_monitorings_list(callback, api)
 
 
@@ -242,10 +232,7 @@ async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitorin
         callback_data (MyMonitoringsUpdateCD): Callback data.
 
     """
-    if not isinstance(callback.message, Message):
-        await callback.answer("Something went wrong. Please try again later.")
-        return
-
+    message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
         text="Name", callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="name")
@@ -261,7 +248,7 @@ async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitorin
         text="<-- Back to monitoring", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
     )
     keyboard_builder.adjust(1)
-    await callback.message.edit_text("What field do you want to update?", reply_markup=keyboard_builder.as_markup())
+    await message.edit_text("What field do you want to update?", reply_markup=keyboard_builder.as_markup())
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field != None))  # noqa: E711  # pylint: disable=C0121
@@ -276,9 +263,7 @@ async def enter_new_field_value(
         state (FSMContext): State context.
 
     """
-    if not isinstance(callback.message, Message):
-        await callback.answer("Something went wrong. Please try again later.")
-        return
+    message = validate_callback_message(callback)
 
     if callback_data.field == "name":
         text = "Enter new name for the monitoring"
@@ -293,9 +278,9 @@ async def enter_new_field_value(
         reply_markup = get_run_intervals_keyboard()
         new_state = MyMonitoringUpdateState.choose_run_interval
 
-    await callback.message.answer(text, reply_markup=reply_markup)
     await state.update_data(monitoring_id=callback_data.monitoring_id)
     await state.set_state(new_state)
+    await message.answer(text, reply_markup=reply_markup)
 
 
 @router.message(MyMonitoringUpdateState.enter_name)
@@ -308,22 +293,10 @@ async def update_monitoring_name(message: Message, api: ApiProvider, state: FSMC
         state (FSMContext): State context.
 
     """
-    name = message.text
-    if error_message := validate_monitoring_name(name):
-        await message.answer(error_message)
-        return
-
-    monitoring_id = await state.get_value("monitoring_id")
-    if not isinstance(monitoring_id, int):
-        await message.answer("Something went wrong. Please try again later.")
-        return
-
-    status = await update_monitoring(api, monitoring_id, MonitoringUpdate(name=name))
-    if status is False:
-        await message.answer("Something went wrong. Please try again later.")
-        return
+    name = validate_monitoring_name(message.text)
+    monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-
+    await update_monitoring(api, monitoring_id, MonitoringUpdate(name=name))
     await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
 
 
@@ -337,22 +310,10 @@ async def update_monitoring_url(message: Message, api: ApiProvider, state: FSMCo
         state (FSMContext): State context.
 
     """
-    url = message.text
-    if error_message := validate_monitoring_url(url):
-        await message.answer(error_message)
-        return
-
-    monitoring_id = await state.get_value("monitoring_id")
-    if not isinstance(monitoring_id, int):
-        await message.answer("Something went wrong. Please try again later.")
-        return
-
-    status = await update_monitoring(api, monitoring_id, MonitoringUpdate(url=url))
-    if status is False:
-        await message.answer("Something went wrong. Please try again later.")
-        return
+    url = validate_monitoring_url(message.text)
+    monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-
+    await update_monitoring(api, monitoring_id, MonitoringUpdate(url=url))
     await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
 
 
@@ -366,16 +327,8 @@ async def update_monitoring_run_interval(callback: CallbackQuery, api: ApiProvid
         state (FSMContext): State context.
 
     """
-    monitoring_id = await state.get_value("monitoring_id")
-    if not isinstance(monitoring_id, int) or callback.data is None:
-        await callback.answer("Something went wrong. Please try again later.")
-        return
-
-    run_interval = get_timedelta_from_callback_data(callback.data)
-    status = await update_monitoring(api, monitoring_id, MonitoringUpdate(run_interval=run_interval))
-    if status is False:
-        await callback.answer("Something went wrong. Please try again later.")
-        return
+    run_interval = get_timedelta_from_callback_data(validate_callback_data(callback))
+    monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
-
+    await update_monitoring(api, monitoring_id, MonitoringUpdate(run_interval=run_interval))
     await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))

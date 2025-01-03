@@ -1,6 +1,7 @@
 from datetime import timedelta
 from typing import Any
 
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.utils.keyboard import InlineKeyboardBuilder, InlineKeyboardMarkup
 
 from bot.middlewares import ApiProvider
@@ -8,9 +9,7 @@ from bot.utils.time import get_readable_timedelta
 from database.schemas import MarketplaceRead
 
 
-async def get_marketplaces_keyboard(
-    api: ApiProvider, provide_id: bool, provide_url: bool
-) -> InlineKeyboardMarkup | None:
+async def get_marketplaces_keyboard(api: ApiProvider, provide_id: bool, provide_url: bool) -> InlineKeyboardMarkup:
     """Returns a keyboard with available marketplaces.
 
     Args:
@@ -23,7 +22,7 @@ async def get_marketplaces_keyboard(
         "GET", "/marketplaces/", response_model=MarketplaceRead, response_as_list=True
     )
     if response_status != 200 or not marketplaces:
-        return None
+        raise DetailedAiogramError("Something went wrong. Please try again later.")
 
     keyboard_builder = InlineKeyboardBuilder()
     for marketplace in marketplaces:
