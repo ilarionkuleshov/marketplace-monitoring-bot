@@ -114,7 +114,7 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
         "POST",
         "/monitorings/",
         json_data=monitoring,
-        custom_error_messages={409: "Monitoring with this url already exists."},
+        custom_error_messages={409: _("Monitoring with this url already exists.")},
     )
     await message.answer(
         _(
