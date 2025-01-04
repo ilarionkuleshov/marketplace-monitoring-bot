@@ -94,7 +94,9 @@ async def read_monitoring_details(
         .join(Marketplace, Marketplace.id == Monitoring.marketplace_id)
     )
 
-    if monitoring_details := await database.get_by_query(query=query, read_schema=MonitoringDetailsRead):
+    if monitoring_details := await database.get_by_query(
+        query=query, by_mappings=True, read_schema=MonitoringDetailsRead
+    ):
         return monitoring_details
     raise HTTPException(status.HTTP_404_NOT_FOUND, "Monitoring not found")
 

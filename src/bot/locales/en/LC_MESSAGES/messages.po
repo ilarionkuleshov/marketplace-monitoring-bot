@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 22:37+0000\n"
+"POT-Creation-Date: 2025-01-04 23:21+0000\n"
 "PO-Revision-Date: 2025-01-04 14:06+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -42,99 +42,99 @@ msgstr "No active operations to cancel"
 msgid "Operation canceled"
 msgstr "Operation canceled"
 
-#: src/bot/routers/my_monitorings.py:92
+#: src/bot/routers/my_monitorings.py:93
 msgid "You don't have any monitorings yet. Use /new_monitoring to add one."
 msgstr "You don't have any monitorings yet. Use /new_monitoring to add one."
 
-#: src/bot/routers/my_monitorings.py:103
+#: src/bot/routers/my_monitorings.py:104
 msgid "Here are your monitorings:"
 msgstr "Here are your monitorings:"
 
-#: src/bot/routers/my_monitorings.py:124
+#: src/bot/routers/my_monitorings.py:125
 msgid "🟢 Enabled"
 msgstr "🟢 Enabled"
 
-#: src/bot/routers/my_monitorings.py:125
+#: src/bot/routers/my_monitorings.py:126
 msgid "🔴 Disable"
 msgstr "🔴 Disable"
 
-#: src/bot/routers/my_monitorings.py:128
+#: src/bot/routers/my_monitorings.py:129
 msgid "🔴 Disabled"
 msgstr "🔴 Disabled"
 
-#: src/bot/routers/my_monitorings.py:129
+#: src/bot/routers/my_monitorings.py:130
 msgid "🟢 Enable"
 msgstr "🟢 Enable"
 
-#: src/bot/routers/my_monitorings.py:135
+#: src/bot/routers/my_monitorings.py:136
 msgid "Never"
 msgstr "Never"
 
-#: src/bot/routers/my_monitorings.py:147
+#: src/bot/routers/my_monitorings.py:148
 msgid "📝 Edit"
 msgstr "📝 Edit"
 
-#: src/bot/routers/my_monitorings.py:150
+#: src/bot/routers/my_monitorings.py:151
 msgid "🗑 Delete"
 msgstr "🗑 Delete"
 
-#: src/bot/routers/my_monitorings.py:152
+#: src/bot/routers/my_monitorings.py:153
 msgid "<-- Back to monitorings list"
 msgstr "<-- Back to monitorings list"
 
-#: src/bot/routers/my_monitorings.py:157
+#: src/bot/routers/my_monitorings.py:158
 msgid "Monitoring"
 msgstr "Monitoring"
 
-#: src/bot/routers/my_monitorings.py:158
+#: src/bot/routers/my_monitorings.py:159
 msgid "Status"
 msgstr "Status"
 
-#: src/bot/routers/my_monitorings.py:159 src/bot/routers/my_monitorings.py:244
+#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:245
 msgid "URL"
 msgstr "URL"
 
-#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:248
+#: src/bot/routers/my_monitorings.py:161 src/bot/routers/my_monitorings.py:249
 msgid "Run interval"
 msgstr "Run interval"
 
-#: src/bot/routers/my_monitorings.py:161
+#: src/bot/routers/my_monitorings.py:162
 msgid "Last run"
 msgstr "Last run"
 
-#: src/bot/routers/my_monitorings.py:202
+#: src/bot/routers/my_monitorings.py:203
 msgid "Yes"
 msgstr "Yes"
 
-#: src/bot/routers/my_monitorings.py:206
+#: src/bot/routers/my_monitorings.py:207
 msgid "No"
 msgstr "No"
 
-#: src/bot/routers/my_monitorings.py:210
+#: src/bot/routers/my_monitorings.py:211
 msgid "Are you sure you want to delete this monitoring?"
 msgstr "Are you sure you want to delete this monitoring?"
 
-#: src/bot/routers/my_monitorings.py:240
+#: src/bot/routers/my_monitorings.py:241
 msgid "Name"
 msgstr "Name"
 
-#: src/bot/routers/my_monitorings.py:252
+#: src/bot/routers/my_monitorings.py:253
 msgid "<-- Back to monitoring"
 msgstr "<-- Back to monitoring"
 
-#: src/bot/routers/my_monitorings.py:256
+#: src/bot/routers/my_monitorings.py:257
 msgid "What property do you want to change?"
 msgstr "What property do you want to change?"
 
-#: src/bot/routers/my_monitorings.py:274
+#: src/bot/routers/my_monitorings.py:275
 msgid "Enter new name for the monitoring"
 msgstr "Enter new name for the monitoring"
 
-#: src/bot/routers/my_monitorings.py:278
+#: src/bot/routers/my_monitorings.py:279
 msgid "Enter new URL for the monitoring"
 msgstr "Enter new URL for the monitoring"
 
-#: src/bot/routers/my_monitorings.py:282
+#: src/bot/routers/my_monitorings.py:283
 msgid "Choose new run interval for the monitoring:"
 msgstr "Choose new run interval for the monitoring:"
 
@@ -203,6 +203,10 @@ msgstr "<-- Back to settings"
 #: src/bot/routers/settings.py:91
 msgid "Choose new language:"
 msgstr "Choose new language:"
+
+#: src/bot/utils/adverts.py:64
+msgid "View advert"
+msgstr "View advert"
 
 #: src/bot/utils/time.py:20
 msgid "{minutes}min"
