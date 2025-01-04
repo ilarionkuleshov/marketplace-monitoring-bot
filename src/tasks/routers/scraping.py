@@ -5,18 +5,17 @@ from pathlib import Path
 from aiogram import Bot
 from faststream import Logger
 from faststream.rabbit import RabbitRouter
-from sqlalchemy import select
 
 from database import get_database
 from database.enums import MonitoringRunStatus
-from database.models import Advert, Monitoring, MonitoringRun, User
+from database.models import Advert, Monitoring, MonitoringRun
 from database.schemas import (
     AdvertCreate,
     AdvertRead,
     AdvertUpdate,
+    MonitoringRead,
     MonitoringRunRead,
     MonitoringRunUpdate,
-    UserRead,
 )
 from scrapers.crawlers import BaseAdvertCrawler, OlxUaCrawler
 from settings import BotSettings
@@ -101,18 +100,22 @@ async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) 
     if advert.monitoring_run_id != first_monitoring_run.id and not advert.sent_to_user:
         logger.info(f"Sending advert {advert.id} to user")
         async with get_database() as database:
-            user = await database.get_by_query(
-                query=select(User).join(Monitoring, Monitoring.user_id == advert.monitoring_id),
-                read_schema=UserRead,
+            monitoring = await database.get(
+                model=Monitoring, filters=[Monitoring.id == advert.monitoring_id], read_schema=MonitoringRead
             )
-        if user:
+        if monitoring:
             bot = Bot(BotSettings().token)
             if advert.image:
                 await bot.send_photo(
-                    chat_id=user.id, photo=advert.image, caption=advert.get_telegram_message(), parse_mode="MarkdownV2"
+                    chat_id=monitoring.user_id,
+                    photo=advert.image,
+                    caption=advert.get_telegram_message(),
+                    parse_mode="MarkdownV2",
                 )
             else:
-                await bot.send_message(chat_id=user.id, text=advert.get_telegram_message(), parse_mode="MarkdownV2")
+                await bot.send_message(
+                    chat_id=monitoring.user_id, text=advert.get_telegram_message(), parse_mode="MarkdownV2"
+                )
 
     async with get_database() as database:
         await database.update(
