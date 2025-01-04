@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import ClassVar
 
+from aiogram.utils.markdown import hlink
 from pydantic import Field
 
 from database.schemas.base import (
@@ -30,7 +31,7 @@ class AdvertRead(DatabaseReadSchema):
 
     def get_telegram_message(self) -> str:
         """Returns telegram message for advert."""
-        paragraphs = [f"[{self.title}]({self.url})"]
+        paragraphs = [hlink(self.title, self.url)]
 
         if self.description:
             paragraphs.append("")

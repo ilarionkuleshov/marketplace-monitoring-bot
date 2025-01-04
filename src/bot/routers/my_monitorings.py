@@ -8,6 +8,8 @@ from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
 from aiogram.utils.i18n import gettext as _
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.utils.markdown import hbold, hlink
+from aiogram.utils.markdown import text as join_text
 
 from bot.middlewares import ApiProvider
 from bot.utils.keyboards import get_run_intervals_keyboard
@@ -120,11 +122,11 @@ async def show_monitoring_details(
     )
 
     if monitoring_details.enabled:
-        status = _("🟢 *Enabled*")
+        status = _("🟢 Enabled")
         change_status_button_text = _("🔴 Disable")
         change_status_button_enabled_value = False
     else:
-        status = _("🔴 *Disabled*")
+        status = _("🔴 Disabled")
         change_status_button_text = _("🟢 Enable")
         change_status_button_enabled_value = True
 
@@ -132,20 +134,6 @@ async def show_monitoring_details(
         get_readable_time_ago(monitoring_details.last_successful_run)
         if monitoring_details.last_successful_run
         else _("Never")
-    )
-    text = _(
-        "Monitoring: *{name}*\n"
-        "Status: {status}\n"
-        "URL: [*{marketplace_name}*]({url})\n"
-        "Run interval: *{run_interval}*\n"
-        "Last run: *{last_run}*"
-    ).format(
-        name=monitoring_details.name,
-        status=status,
-        marketplace_name=monitoring_details.marketplace_name,
-        url=monitoring_details.url,
-        run_interval=get_readable_timedelta(monitoring_details.run_interval),
-        last_run=last_run,
     )
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -166,7 +154,17 @@ async def show_monitoring_details(
     keyboard_builder.adjust(1)
 
     await answer_method(
-        text, parse_mode="MarkdownV2", disable_web_page_preview=True, reply_markup=keyboard_builder.as_markup()
+        text=join_text(
+            f"{_("Monitoring")}: {hbold(monitoring_details.name)}",
+            f"{_("Status")}: {hbold(status)}",
+            f"{_("URL")}: {hlink(monitoring_details.marketplace_name, monitoring_details.url)}",
+            f"{_("Run interval")}: {hbold(get_readable_timedelta(monitoring_details.run_interval))}",
+            f"{_("Last run")}: {hbold(last_run)}",
+            sep="\n",
+        ),
+        parse_mode="HTML",
+        disable_web_page_preview=True,
+        reply_markup=keyboard_builder.as_markup(),
     )
 
 

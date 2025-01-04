@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 21:47+0000\n"
+"POT-Creation-Date: 2025-01-04 22:37+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -39,96 +39,99 @@ msgstr ""
 msgid "Operation canceled"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:91
+#: src/bot/routers/my_monitorings.py:92
 msgid "You don't have any monitorings yet. Use /new_monitoring to add one."
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:102
+#: src/bot/routers/my_monitorings.py:103
 msgid "Here are your monitorings:"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:123
-msgid "🟢 *Enabled*"
+#: src/bot/routers/my_monitorings.py:124
+msgid "🟢 Enabled"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:124
+#: src/bot/routers/my_monitorings.py:125
 msgid "🔴 Disable"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:127
-msgid "🔴 *Disabled*"
+#: src/bot/routers/my_monitorings.py:128
+msgid "🔴 Disabled"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:128
+#: src/bot/routers/my_monitorings.py:129
 msgid "🟢 Enable"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:134
+#: src/bot/routers/my_monitorings.py:135
 msgid "Never"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:136
-msgid ""
-"Monitoring: *{name}*\n"
-"Status: {status}\n"
-"URL: [*{marketplace_name}*]({url})\n"
-"Run interval: *{run_interval}*\n"
-"Last run: *{last_run}*"
-msgstr ""
-
-#: src/bot/routers/my_monitorings.py:160
+#: src/bot/routers/my_monitorings.py:147
 msgid "📝 Edit"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:163
+#: src/bot/routers/my_monitorings.py:150
 msgid "🗑 Delete"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:165
+#: src/bot/routers/my_monitorings.py:152
 msgid "<-- Back to monitorings list"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:205
-msgid "Yes"
+#: src/bot/routers/my_monitorings.py:157
+msgid "Monitoring"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:209
-msgid "No"
+#: src/bot/routers/my_monitorings.py:158
+msgid "Status"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:213
-msgid "Are you sure you want to delete this monitoring?"
-msgstr ""
-
-#: src/bot/routers/my_monitorings.py:243
-msgid "Name"
-msgstr ""
-
-#: src/bot/routers/my_monitorings.py:247
+#: src/bot/routers/my_monitorings.py:159 src/bot/routers/my_monitorings.py:244
 msgid "URL"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:251
+#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:248
 msgid "Run interval"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:255
+#: src/bot/routers/my_monitorings.py:161
+msgid "Last run"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:202
+msgid "Yes"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:206
+msgid "No"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:210
+msgid "Are you sure you want to delete this monitoring?"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:240
+msgid "Name"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:252
 msgid "<-- Back to monitoring"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:259
+#: src/bot/routers/my_monitorings.py:256
 msgid "What property do you want to change?"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:277
+#: src/bot/routers/my_monitorings.py:274
 msgid "Enter new name for the monitoring"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:281
+#: src/bot/routers/my_monitorings.py:278
 msgid "Enter new URL for the monitoring"
 msgstr ""
 
-#: src/bot/routers/my_monitorings.py:285
+#: src/bot/routers/my_monitorings.py:282
 msgid "Choose new run interval for the monitoring:"
 msgstr ""
 

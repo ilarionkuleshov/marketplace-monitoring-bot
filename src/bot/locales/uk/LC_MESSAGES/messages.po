@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 21:47+0000\n"
+"POT-Creation-Date: 2025-01-04 22:37+0000\n"
 "PO-Revision-Date: 2025-01-04 18:12+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: uk\n"
@@ -43,103 +43,101 @@ msgstr "Немає активних операцій для скасування
 msgid "Operation canceled"
 msgstr "Операцію скасовано"
 
-#: src/bot/routers/my_monitorings.py:91
+#: src/bot/routers/my_monitorings.py:92
 msgid "You don't have any monitorings yet. Use /new_monitoring to add one."
 msgstr ""
 "У вас ще немає моніторингів. Використовуйте /new_monitoring, щоб додати "
 "моніторинг."
 
-#: src/bot/routers/my_monitorings.py:102
+#: src/bot/routers/my_monitorings.py:103
 msgid "Here are your monitorings:"
 msgstr "Ось ваші моніторинги:"
 
-#: src/bot/routers/my_monitorings.py:123
-msgid "🟢 *Enabled*"
-msgstr "🟢 *Активний*"
-
 #: src/bot/routers/my_monitorings.py:124
+msgid "🟢 Enabled"
+msgstr "🟢 Активний"
+
+#: src/bot/routers/my_monitorings.py:125
 msgid "🔴 Disable"
 msgstr "🔴 Деактивувати"
 
-#: src/bot/routers/my_monitorings.py:127
-msgid "🔴 *Disabled*"
-msgstr "🔴 *Деактивований*"
-
 #: src/bot/routers/my_monitorings.py:128
+msgid "🔴 Disabled"
+msgstr "🔴 Деактивований"
+
+#: src/bot/routers/my_monitorings.py:129
 msgid "🟢 Enable"
 msgstr "🟢 Активувати"
 
-#: src/bot/routers/my_monitorings.py:134
+#: src/bot/routers/my_monitorings.py:135
 msgid "Never"
 msgstr "Ніколи"
 
-#: src/bot/routers/my_monitorings.py:136
-msgid ""
-"Monitoring: *{name}*\n"
-"Status: {status}\n"
-"URL: [*{marketplace_name}*]({url})\n"
-"Run interval: *{run_interval}*\n"
-"Last run: *{last_run}*"
-msgstr ""
-"Моніторинг: *{name}*\n"
-"Статус: {status}\n"
-"Посилання: [*{marketplace_name}*]({url})\n"
-"Інтервал запуску: *{run_interval}*\n"
-"Останній запуск: *{last_run}*"
-
-#: src/bot/routers/my_monitorings.py:160
+#: src/bot/routers/my_monitorings.py:147
 msgid "📝 Edit"
 msgstr "📝 Редагувати"
 
-#: src/bot/routers/my_monitorings.py:163
+#: src/bot/routers/my_monitorings.py:150
 msgid "🗑 Delete"
 msgstr "🗑 Видалити"
 
-#: src/bot/routers/my_monitorings.py:165
+#: src/bot/routers/my_monitorings.py:152
 msgid "<-- Back to monitorings list"
 msgstr "<-- Назад до списку моніторингів"
 
-#: src/bot/routers/my_monitorings.py:205
-msgid "Yes"
-msgstr "Так"
+#: src/bot/routers/my_monitorings.py:157
+msgid "Monitoring"
+msgstr "Моніторинг"
 
-#: src/bot/routers/my_monitorings.py:209
-msgid "No"
-msgstr "Ні"
+#: src/bot/routers/my_monitorings.py:158
+msgid "Status"
+msgstr "Статус"
 
-#: src/bot/routers/my_monitorings.py:213
-msgid "Are you sure you want to delete this monitoring?"
-msgstr "Ви впевнені, що хочете видалити цей моніторинг?"
-
-#: src/bot/routers/my_monitorings.py:243
-msgid "Name"
-msgstr "Назва"
-
-#: src/bot/routers/my_monitorings.py:247
+#: src/bot/routers/my_monitorings.py:159 src/bot/routers/my_monitorings.py:244
 msgid "URL"
 msgstr "Посилання"
 
-#: src/bot/routers/my_monitorings.py:251
+#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:248
 msgid "Run interval"
 msgstr "Інтервал запуску"
 
-#: src/bot/routers/my_monitorings.py:255
+#: src/bot/routers/my_monitorings.py:161
+msgid "Last run"
+msgstr "Останній запуск"
+
+#: src/bot/routers/my_monitorings.py:202
+msgid "Yes"
+msgstr "Так"
+
+#: src/bot/routers/my_monitorings.py:206
+msgid "No"
+msgstr "Ні"
+
+#: src/bot/routers/my_monitorings.py:210
+msgid "Are you sure you want to delete this monitoring?"
+msgstr "Ви впевнені, що хочете видалити цей моніторинг?"
+
+#: src/bot/routers/my_monitorings.py:240
+msgid "Name"
+msgstr "Назва"
+
+#: src/bot/routers/my_monitorings.py:252
 msgid "<-- Back to monitoring"
 msgstr "<-- Назад до моніторингу"
 
-#: src/bot/routers/my_monitorings.py:259
+#: src/bot/routers/my_monitorings.py:256
 msgid "What property do you want to change?"
 msgstr "Яку властивість ви хочете змінити?"
 
-#: src/bot/routers/my_monitorings.py:277
+#: src/bot/routers/my_monitorings.py:274
 msgid "Enter new name for the monitoring"
 msgstr "Введіть нову назву для моніторингу"
 
-#: src/bot/routers/my_monitorings.py:281
+#: src/bot/routers/my_monitorings.py:278
 msgid "Enter new URL for the monitoring"
 msgstr "Введіть нове посилання для моніторингу"
 
-#: src/bot/routers/my_monitorings.py:285
+#: src/bot/routers/my_monitorings.py:282
 msgid "Choose new run interval for the monitoring:"
 msgstr "Оберіть новий інтервал запуску для моніторингу:"
 

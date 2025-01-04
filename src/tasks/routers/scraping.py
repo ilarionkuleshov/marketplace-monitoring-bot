@@ -110,11 +110,11 @@ async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) 
                     chat_id=monitoring.user_id,
                     photo=advert.image,
                     caption=advert.get_telegram_message(),
-                    parse_mode="MarkdownV2",
+                    parse_mode="HTML",
                 )
             else:
                 await bot.send_message(
-                    chat_id=monitoring.user_id, text=advert.get_telegram_message(), parse_mode="MarkdownV2"
+                    chat_id=monitoring.user_id, text=advert.get_telegram_message(), parse_mode="HTML"
                 )
 
     async with get_database() as database:
