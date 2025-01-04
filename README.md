@@ -7,3 +7,17 @@
 </p>
 
 Bot for monitoring new adverts on marketplaces.
+
+
+## Usage
+Build the docker image:
+```bash
+docker build --build-arg UID={your-uid} --build-arg GID={your-gid} -t marketplace-monitoring-bot:latest .
+```
+
+Create `.env` file and fill it in according to the `.env.example` file.
+
+Run docker compose services:
+```bash
+docker compose up -d
+```
