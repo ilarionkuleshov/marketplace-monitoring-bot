@@ -28,6 +28,34 @@ class AdvertRead(DatabaseReadSchema):
     created_at: datetime
     updated_at: datetime
 
+    def get_telegram_message(self) -> str:
+        """Returns telegram message for advert."""
+        paragraphs = [f"[{self.title}]({self.url})"]
+
+        if self.description:
+            paragraphs.append("")
+            paragraphs.append(self.description)
+
+        if self.price is not None and self.max_price is not None:
+            price_paragraph = (
+                f"{int(self.price) if self.price.is_integer() else self.price} - "
+                f"{int(self.max_price) if self.max_price.is_integer() else self.max_price}"
+            )
+        elif self.price is not None:
+            price_paragraph = str(int(self.price)) if self.price.is_integer() else str(self.price)
+        elif self.max_price is not None:
+            price_paragraph = str(int(self.max_price)) if self.max_price.is_integer() else str(self.max_price)
+        else:
+            price_paragraph = None
+
+        if price_paragraph:
+            paragraphs.append("")
+            if self.currency:
+                price_paragraph += f" {self.currency}"
+            paragraphs.append(price_paragraph)
+
+        return "\n".join(paragraphs)
+
 
 class AdvertCreate(DatabaseCreateSchema):
     """Advert schema for creation."""
