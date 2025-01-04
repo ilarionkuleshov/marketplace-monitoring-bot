@@ -1,4 +1,5 @@
 from aiogram import Router
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import Command
 from aiogram.filters.callback_data import CallbackData
 from aiogram.types import CallbackQuery, Message
@@ -32,14 +33,17 @@ class SettingsUpdateLanguageCD(CallbackData, prefix="settings_update_language"):
 
 @router.message(Command("settings"))
 @router.callback_query(SettingsListCD.filter())
-async def show_settings(event: Message | CallbackQuery, user: UserRead) -> None:
+async def show_settings(event: Message | CallbackQuery, user: UserRead | None) -> None:
     """Shows the settings.
 
     Args:
         event (Message | CallbackQuery): Event object.
-        user (UserRead): Current user.
+        user (UserRead | None): Current user.
 
     """
+    if user is None:
+        raise DetailedAiogramError(_("Something went wrong. Please try again later."))
+
     _message, answer_method = validate_message_and_answer_method(event)
 
     if user.language == UserLanguage.EN:
@@ -88,19 +92,19 @@ async def choose_language(callback: CallbackQuery) -> None:
 
 
 @router.callback_query(SettingsUpdateLanguageCD.filter())
-async def update_language(
-    callback: CallbackQuery, callback_data: SettingsUpdateLanguageCD, api: ApiProvider, user: UserRead
-) -> None:
+async def update_language(callback: CallbackQuery, callback_data: SettingsUpdateLanguageCD, api: ApiProvider) -> None:
     """Updates the language.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         callback_data (SettingsUpdateLanguageCD): Callback data.
         api (ApiProvider): Provider for the API.
-        user (UserRead): Current user.
 
     """
     user = await api.request(
-        "PATCH", f"/users/{user.id}", json_data=UserUpdate(language=callback_data.language), response_model=UserRead
+        "PATCH",
+        f"/users/{callback.from_user.id}",
+        json_data=UserUpdate(language=callback_data.language),
+        response_model=UserRead,
     )
     await show_settings(callback, user)

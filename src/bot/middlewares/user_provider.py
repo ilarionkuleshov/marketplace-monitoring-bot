@@ -19,9 +19,13 @@ class UserProvider(BaseMiddleware):
     ) -> Any:
         """See `BaseMiddleware` class."""
         api = data.get("api")
-        if not isinstance(api, ApiProvider) or not isinstance(event, (Message, CallbackQuery)):
-            raise DetailedAiogramError("Something went wrong. Please try again later.")
-
-        user_id = event.chat.id if isinstance(event, Message) else event.from_user.id
-        data["user"] = await api.request("GET", f"/users/{user_id}", response_model=UserRead)
+        if isinstance(api, ApiProvider) and isinstance(event, (Message, CallbackQuery)):
+            user_id = event.chat.id if isinstance(event, Message) else event.from_user.id
+            try:
+                user = await api.request("GET", f"/users/{user_id}", response_model=UserRead)
+            except DetailedAiogramError:
+                user = None
+        else:
+            user = None
+        data["user"] = user
         return await handler(event, data)

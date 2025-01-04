@@ -6,24 +6,28 @@ from aiogram.utils.i18n import gettext as _
 
 from bot.middlewares import ApiProvider
 from bot.utils.keyboards import get_marketplaces_keyboard
-from database.schemas import UserCreate
+from database.schemas import UserCreate, UserRead
 
 router = Router(name="common")
 
 
 @router.message(CommandStart())
-async def register_user(message: Message, api: ApiProvider) -> None:
+async def register_user(message: Message, api: ApiProvider, user: UserRead | None) -> None:
     """Registers new user and sends a welcome message.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
+        user (UserRead | None): Current user.
 
     """
-    await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id), acceptable_statuses=[200, 409])
-    await message.answer(
-        _("Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces.")
-    )
+    if user is None:
+        await api.request("POST", "/users/", json_data=UserCreate(id=message.chat.id), acceptable_statuses=[200, 409])
+        await message.answer(
+            _("Hello! I'm marketplace monitoring bot. I can help you to monitor adverts on different marketplaces.")
+        )
+    else:
+        await message.answer(_("Welcome back!"))
 
 
 @router.message(Command("marketplaces"))

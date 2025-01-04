@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 18:21+0000\n"
+"POT-Creation-Date: 2025-01-04 21:47+0000\n"
 "PO-Revision-Date: 2025-01-04 14:10+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -19,7 +19,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.13.1\n"
 
-#: src/bot/routers/common.py:25
+#: src/bot/routers/common.py:27
 msgid ""
 "Hello! I'm marketplace monitoring bot. I can help you to monitor adverts "
 "on different marketplaces."
@@ -27,15 +27,19 @@ msgstr ""
 "Привет! Я бот для мониторинга маркетплейсов. Я могу помочь вам "
 "отслеживать объявления на различных рынках."
 
-#: src/bot/routers/common.py:39
+#: src/bot/routers/common.py:30
+msgid "Welcome back!"
+msgstr "С возвращением!"
+
+#: src/bot/routers/common.py:43
 msgid "Available marketplaces:"
 msgstr "Доступные маркетплейсы:"
 
-#: src/bot/routers/common.py:53
+#: src/bot/routers/common.py:57
 msgid "No active operations to cancel"
 msgstr "Нет активных операций для отмены"
 
-#: src/bot/routers/common.py:57
+#: src/bot/routers/common.py:61
 msgid "Operation canceled"
 msgstr "Операция отменена"
 
@@ -171,31 +175,37 @@ msgstr ""
 "получать сообщения о существующих объявлениях. Вы будете получать "
 "сообщения только о новых объявлениях."
 
-#: src/bot/routers/settings.py:46 src/bot/routers/settings.py:74
+#: src/bot/routers/settings.py:45 src/bot/utils/time.py:61
+#: src/bot/utils/validators.py:20 src/bot/utils/validators.py:32
+#: src/bot/utils/validators.py:92
+msgid "Something went wrong. Please try again later."
+msgstr "Что-то пошло не так. Пожалуйста, попробуйте позже."
+
+#: src/bot/routers/settings.py:50 src/bot/routers/settings.py:78
 msgid "English"
 msgstr "Английский"
 
-#: src/bot/routers/settings.py:48 src/bot/routers/settings.py:78
+#: src/bot/routers/settings.py:52 src/bot/routers/settings.py:82
 msgid "Russian"
 msgstr "Русский"
 
-#: src/bot/routers/settings.py:50 src/bot/routers/settings.py:82
+#: src/bot/routers/settings.py:54 src/bot/routers/settings.py:86
 msgid "Ukrainian"
 msgstr "Украинский"
 
-#: src/bot/routers/settings.py:54
+#: src/bot/routers/settings.py:58
 msgid "Language (current: {current_language})"
 msgstr "Язык (текущий: {current_language})"
 
-#: src/bot/routers/settings.py:60
+#: src/bot/routers/settings.py:64
 msgid "Here are the settings:"
 msgstr "Вот ваши настройки:"
 
-#: src/bot/routers/settings.py:85
+#: src/bot/routers/settings.py:89
 msgid "<-- Back to settings"
 msgstr "<-- Назад к настройкам"
 
-#: src/bot/routers/settings.py:87
+#: src/bot/routers/settings.py:91
 msgid "Choose new language:"
 msgstr "Выберите новый язык:"
 
@@ -222,11 +232,6 @@ msgstr "{hours}ч назад"
 #: src/bot/utils/time.py:48
 msgid "{days}d ago"
 msgstr "{days}дн назад"
-
-#: src/bot/utils/time.py:61 src/bot/utils/validators.py:20
-#: src/bot/utils/validators.py:32 src/bot/utils/validators.py:92
-msgid "Something went wrong. Please try again later."
-msgstr "Что-то пошло не так. Пожалуйста, попробуйте позже."
 
 #: src/bot/utils/validators.py:57
 msgid "Name is required. Please enter a name."

@@ -1,6 +1,5 @@
 from typing import Any
 
-from aiogram.exceptions import DetailedAiogramError
 from aiogram.types import TelegramObject
 from aiogram.utils.i18n.middleware import I18nMiddleware
 
@@ -13,6 +12,6 @@ class I18nProvider(I18nMiddleware):
     async def get_locale(self, event: TelegramObject, data: dict[str, Any]) -> str:
         """See `I18nMiddleware` class."""
         user = data.get("user")
-        if not isinstance(user, UserRead):
-            raise DetailedAiogramError("Something went wrong. Please try again later.")
-        return str(user.language)
+        if isinstance(user, UserRead):
+            return str(user.language)
+        return self.i18n.default_locale
