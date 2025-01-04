@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 14:57+0000\n"
+"POT-Creation-Date: 2025-01-04 15:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -65,10 +65,10 @@ msgstr ""
 
 #: src/bot/routers/my_monitorings.py:136
 msgid ""
-"Name: *{name}*\n"
+"Monitoring: *{name}*\n"
 "Status: {status}\n"
 "URL: [*{marketplace_name}*]({url})\n"
-"Run interval: *Every {run_interval}*\n"
+"Run interval: *{run_interval}*\n"
 "Last run: *{last_run}*"
 msgstr ""
 
@@ -113,7 +113,7 @@ msgid "<-- Back to monitoring"
 msgstr ""
 
 #: src/bot/routers/my_monitorings.py:259
-msgid "What field do you want to update?"
+msgid "What property do you want to change?"
 msgstr ""
 
 #: src/bot/routers/my_monitorings.py:277

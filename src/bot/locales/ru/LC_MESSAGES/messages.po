@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 14:57+0000\n"
+"POT-Creation-Date: 2025-01-04 15:11+0000\n"
 "PO-Revision-Date: 2025-01-04 14:10+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -71,16 +71,16 @@ msgstr "Никогда"
 
 #: src/bot/routers/my_monitorings.py:136
 msgid ""
-"Name: *{name}*\n"
+"Monitoring: *{name}*\n"
 "Status: {status}\n"
 "URL: [*{marketplace_name}*]({url})\n"
-"Run interval: *Every {run_interval}*\n"
+"Run interval: *{run_interval}*\n"
 "Last run: *{last_run}*"
 msgstr ""
-"Название: *{name}*\n"
+"Мониторинг: *{name}*\n"
 "Статус: {status}\n"
 "Ссылка: [*{marketplace_name}*]({url})\n"
-"Интервал запуска: *Every {run_interval}*\n"
+"Интервал запуска: *{run_interval}*\n"
 "Последний запуск: *{last_run}*"
 
 #: src/bot/routers/my_monitorings.py:160
@@ -124,8 +124,8 @@ msgid "<-- Back to monitoring"
 msgstr "<-- Назад к мониторингу"
 
 #: src/bot/routers/my_monitorings.py:259
-msgid "What field do you want to update?"
-msgstr "Какое поле вы хотите обновить?"
+msgid "What property do you want to change?"
+msgstr "Какое свойство вы хотите изменить?"
 
 #: src/bot/routers/my_monitorings.py:277
 msgid "Enter new name for the monitoring"

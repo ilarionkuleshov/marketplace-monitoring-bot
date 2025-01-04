@@ -134,10 +134,10 @@ async def show_monitoring_details(
         else _("Never")
     )
     text = _(
-        "Name: *{name}*\n"
+        "Monitoring: *{name}*\n"
         "Status: {status}\n"
         "URL: [*{marketplace_name}*]({url})\n"
-        "Run interval: *Every {run_interval}*\n"
+        "Run interval: *{run_interval}*\n"
         "Last run: *{last_run}*"
     ).format(
         name=monitoring_details.name,
@@ -256,7 +256,7 @@ async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitorin
         callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id),
     )
     keyboard_builder.adjust(1)
-    await message.edit_text(_("What field do you want to update?"), reply_markup=keyboard_builder.as_markup())
+    await message.edit_text(_("What property do you want to change?"), reply_markup=keyboard_builder.as_markup())
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field != None))  # noqa: E711  # pylint: disable=C0121
