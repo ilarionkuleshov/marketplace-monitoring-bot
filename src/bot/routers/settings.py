@@ -44,8 +44,10 @@ async def show_settings(event: Message | CallbackQuery, user: UserRead) -> None:
 
     if user.language == UserLanguage.EN:
         current_language = _("English", locale=user.language)
-    else:
+    elif user.language == UserLanguage.RU:
         current_language = _("Russian", locale=user.language)
+    else:
+        current_language = _("Ukrainian", locale=user.language)
 
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
@@ -75,6 +77,10 @@ async def choose_language(callback: CallbackQuery) -> None:
     keyboard_builder.button(
         text=f"{_("Russian", locale=UserLanguage.RU)} ({_("Russian")})",
         callback_data=SettingsUpdateLanguageCD(language=UserLanguage.RU),
+    )
+    keyboard_builder.button(
+        text=f"{_("Ukrainian", locale=UserLanguage.UK)} ({_("Ukrainian")})",
+        callback_data=SettingsUpdateLanguageCD(language=UserLanguage.UK),
     )
     keyboard_builder.button(text=_("<-- Back to settings"), callback_data=SettingsListCD())
     keyboard_builder.adjust(1)

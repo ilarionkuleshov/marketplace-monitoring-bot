@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 17:44+0000\n"
+"POT-Creation-Date: 2025-01-04 18:21+0000\n"
 "PO-Revision-Date: 2025-01-04 14:06+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: en\n"
@@ -168,56 +168,60 @@ msgstr ""
 " messages about existing adverts. You will only receive messages about "
 "new adverts."
 
-#: src/bot/routers/settings.py:44 src/bot/routers/settings.py:68
+#: src/bot/routers/settings.py:46 src/bot/routers/settings.py:74
 msgid "English"
 msgstr "English"
 
-#: src/bot/routers/settings.py:46 src/bot/routers/settings.py:71
+#: src/bot/routers/settings.py:48 src/bot/routers/settings.py:78
 msgid "Russian"
 msgstr "Russian"
 
-#: src/bot/routers/settings.py:50
+#: src/bot/routers/settings.py:50 src/bot/routers/settings.py:82
+msgid "Ukrainian"
+msgstr "Ukrainian"
+
+#: src/bot/routers/settings.py:54
 msgid "Language (current: {current_language})"
 msgstr "Language (current: {current_language})"
 
-#: src/bot/routers/settings.py:54
+#: src/bot/routers/settings.py:60
 msgid "Here are the settings:"
 msgstr "Here are the settings:"
 
-#: src/bot/routers/settings.py:73
+#: src/bot/routers/settings.py:85
 msgid "<-- Back to settings"
 msgstr "<-- Back to settings"
 
-#: src/bot/routers/settings.py:75
+#: src/bot/routers/settings.py:87
 msgid "Choose new language:"
 msgstr "Choose new language:"
 
-#: src/bot/utils/time.py:19
+#: src/bot/utils/time.py:20
 msgid "{minutes}min"
 msgstr "{minutes}min"
 
-#: src/bot/utils/time.py:22
+#: src/bot/utils/time.py:23
 msgid "{hours}h"
 msgstr "{hours}h"
 
-#: src/bot/utils/time.py:36
+#: src/bot/utils/time.py:37
 msgid "just now"
 msgstr "just now"
 
-#: src/bot/utils/time.py:40
+#: src/bot/utils/time.py:41
 msgid "{minutes}min ago"
 msgstr "{minutes}min ago"
 
-#: src/bot/utils/time.py:44
+#: src/bot/utils/time.py:45
 msgid "{hours}h ago"
 msgstr "{hours}h ago"
 
-#: src/bot/utils/time.py:47
+#: src/bot/utils/time.py:48
 msgid "{days}d ago"
 msgstr "{days}d ago"
 
-#: src/bot/utils/validators.py:20 src/bot/utils/validators.py:32
-#: src/bot/utils/validators.py:92
+#: src/bot/utils/time.py:61 src/bot/utils/validators.py:20
+#: src/bot/utils/validators.py:32 src/bot/utils/validators.py:92
 msgid "Something went wrong. Please try again later."
 msgstr "Something went wrong. Please try again later."
 
