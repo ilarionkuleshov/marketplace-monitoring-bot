@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 15:11+0000\n"
+"POT-Creation-Date: 2025-01-04 17:44+0000\n"
 "PO-Revision-Date: 2025-01-04 14:10+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: ru\n"
@@ -170,6 +170,30 @@ msgstr ""
 "Обратите внимание, что во время первого запуска мониторинга вы не будете "
 "получать сообщения о существующих объявлениях. Вы будете получать "
 "сообщения только о новых объявлениях."
+
+#: src/bot/routers/settings.py:44 src/bot/routers/settings.py:68
+msgid "English"
+msgstr "Английский"
+
+#: src/bot/routers/settings.py:46 src/bot/routers/settings.py:71
+msgid "Russian"
+msgstr "Русский"
+
+#: src/bot/routers/settings.py:50
+msgid "Language (current: {current_language})"
+msgstr "Язык (текущий: {current_language})"
+
+#: src/bot/routers/settings.py:54
+msgid "Here are the settings:"
+msgstr "Вот ваши настройки:"
+
+#: src/bot/routers/settings.py:73
+msgid "<-- Back to settings"
+msgstr "<-- Назад к настройкам"
+
+#: src/bot/routers/settings.py:75
+msgid "Choose new language:"
+msgstr "Выберите новый язык:"
 
 #: src/bot/utils/time.py:19
 msgid "{minutes}min"

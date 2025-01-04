@@ -1,5 +1,5 @@
-start - start the bot
-marketplaces - list of available marketplaces
-new_monitoring - create a new monitoring
 my_monitorings - list of your monitorings
+new_monitoring - create a new monitoring
+marketplaces - list of available marketplaces
+settings - change your settings
 cancel - cancel the current operation

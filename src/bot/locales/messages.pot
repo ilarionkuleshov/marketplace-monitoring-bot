@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
-"POT-Creation-Date: 2025-01-04 15:11+0000\n"
+"POT-Creation-Date: 2025-01-04 17:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -154,6 +154,30 @@ msgid ""
 "Please note that during the first run of monitoring, you will not receive"
 " messages about existing adverts. You will only receive messages about "
 "new adverts."
+msgstr ""
+
+#: src/bot/routers/settings.py:44 src/bot/routers/settings.py:68
+msgid "English"
+msgstr ""
+
+#: src/bot/routers/settings.py:46 src/bot/routers/settings.py:71
+msgid "Russian"
+msgstr ""
+
+#: src/bot/routers/settings.py:50
+msgid "Language (current: {current_language})"
+msgstr ""
+
+#: src/bot/routers/settings.py:54
+msgid "Here are the settings:"
+msgstr ""
+
+#: src/bot/routers/settings.py:73
+msgid "<-- Back to settings"
+msgstr ""
+
+#: src/bot/routers/settings.py:75
+msgid "Choose new language:"
 msgstr ""
 
 #: src/bot/utils/time.py:19

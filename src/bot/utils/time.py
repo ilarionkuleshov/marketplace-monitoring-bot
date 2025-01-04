@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from aiogram.exceptions import DetailedAiogramError
 from aiogram.utils.i18n import gettext as _
 
 
@@ -54,4 +55,7 @@ def get_timedelta_from_callback_data(data: str) -> timedelta:
         data (str): Callback data.
 
     """
-    return timedelta(seconds=float(data))
+    try:
+        return timedelta(seconds=float(data))
+    except ValueError:
+        raise DetailedAiogramError(_("Something went wrong. Please try again later."))
