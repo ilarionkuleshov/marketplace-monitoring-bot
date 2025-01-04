@@ -6,6 +6,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
+from aiogram.utils.i18n.core import I18n
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 from bot.middlewares import ApiProvider
@@ -69,12 +70,13 @@ class MyMonitoringUpdateState(StatesGroup):
 
 @router.message(Command("my_monitorings"))
 @router.callback_query(MyMonitoringsListCD.filter())
-async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider) -> None:
+async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider, i18n: I18n) -> None:
     """Shows user's monitorings list.
 
     Args:
         event (Message | CallbackQuery): Event object.
         api (ApiProvider): Provider for the API.
+        i18n (I18n): I18n object.
 
     """
     message, answer_method = validate_message_and_answer_method(event)
@@ -87,7 +89,7 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         response_as_list=True,
     )
     if not monitorings:
-        await message.answer("You don't have any monitorings yet. Use /new_monitoring to add one.")
+        await message.answer(i18n.gettext("You don't have any monitorings yet. Use /new_monitoring to add one."))
         return
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -98,12 +100,12 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         )
     keyboard_builder.adjust(1)
 
-    await answer_method("Here are your monitorings:", reply_markup=keyboard_builder.as_markup())
+    await answer_method(i18n.gettext("Here are your monitorings:"), reply_markup=keyboard_builder.as_markup())
 
 
 @router.callback_query(MyMonitoringsDetailsCD.filter())
 async def show_monitoring_details(
-    event: Message | CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDetailsCD
+    event: Message | CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDetailsCD, i18n: I18n
 ) -> None:
     """Shows monitoring details.
 
@@ -111,6 +113,7 @@ async def show_monitoring_details(
         event (Message | CallbackQuery): Event object.
         api (ApiProvider): Provider for the API.
         callback_data (MyMonitoringsDetailsCD): Callback data.
+        i18n (I18n): I18n object.
 
     """
     _, answer_method = validate_message_and_answer_method(event)
@@ -119,25 +122,32 @@ async def show_monitoring_details(
     )
 
     if monitoring_details.enabled:
-        status = "🟢 *Enabled*"
-        change_status_button_text = "🔴 Disable"
+        status = i18n.gettext("🟢 *Enabled*")
+        change_status_button_text = i18n.gettext("🔴 Disable")
         change_status_button_enabled_value = False
     else:
-        status = "🔴 *Disabled*"
-        change_status_button_text = "🟢 Enable"
+        status = i18n.gettext("🔴 *Disabled*")
+        change_status_button_text = i18n.gettext("🟢 Enable")
         change_status_button_enabled_value = True
 
     last_run = (
         get_readable_time_ago(monitoring_details.last_successful_run)
         if monitoring_details.last_successful_run
-        else "Never"
+        else i18n.gettext("Never")
     )
-    text = (
-        f"Name: *{monitoring_details.name}*\n"
-        f"Status: {status}\n"
-        f"URL: [*{monitoring_details.marketplace_name}*]({monitoring_details.url})\n"
-        f"Run interval: *Every {get_readable_timedelta(monitoring_details.run_interval)}*\n"
-        f"Last run: *{last_run}*"
+    text = i18n.gettext(
+        "Name: *{name}*\n"
+        "Status: {status}\n"
+        "URL: [*{marketplace_name}*]({url})\n"
+        "Run interval: *Every {run_interval}*\n"
+        "Last run: *{last_run}*"
+    ).format(
+        name=monitoring_details.name,
+        status=status,
+        marketplace_name=monitoring_details.marketplace_name,
+        url=monitoring_details.url,
+        run_interval=get_readable_timedelta(monitoring_details.run_interval),
+        last_run=last_run,
     )
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -149,12 +159,12 @@ async def show_monitoring_details(
         ),
     )
     keyboard_builder.button(
-        text="📝 Edit", callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id)
+        text=i18n.gettext("📝 Edit"), callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id)
     )
     keyboard_builder.button(
-        text="🗑 Delete", callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id)
+        text=i18n.gettext("🗑 Delete"), callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id)
     )
-    keyboard_builder.button(text="<-- Back to monitorings list", callback_data=MyMonitoringsListCD())
+    keyboard_builder.button(text=i18n.gettext("<-- Back to monitorings list"), callback_data=MyMonitoringsListCD())
     keyboard_builder.adjust(1)
 
     await answer_method(
@@ -164,7 +174,7 @@ async def show_monitoring_details(
 
 @router.callback_query(MyMonitoringsUpdateEnabledCD.filter())
 async def update_monitoring_enabled(
-    callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsUpdateEnabledCD
+    callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsUpdateEnabledCD, i18n: I18n
 ) -> None:
     """Updates monitoring enabled.
 
@@ -172,6 +182,7 @@ async def update_monitoring_enabled(
         callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         callback_data (MyMonitoringsUpdateEnabledCD): Callback data.
+        i18n (I18n): I18n object.
 
     """
     await api.request(
@@ -179,75 +190,92 @@ async def update_monitoring_enabled(
         f"/monitorings/{callback_data.monitoring_id}",
         json_data=MonitoringUpdate(enabled=callback_data.enabled),
     )
-    await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
+    await show_monitoring_details(
+        callback, api, MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id), i18n
+    )
 
 
 @router.callback_query(MyMonitoringsDeleteCD.filter(F.confirmed == False))  # noqa: E712  # pylint: disable=C0121
-async def confirm_monitoring_deletion(callback: CallbackQuery, callback_data: MyMonitoringsDeleteCD) -> None:
+async def confirm_monitoring_deletion(
+    callback: CallbackQuery, callback_data: MyMonitoringsDeleteCD, i18n: I18n
+) -> None:
     """Confirms monitoring deletion.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsDeleteCD): Callback data.
+        i18n (I18n): I18n object.
 
     """
     message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
-        text="Yes", callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id, confirmed=True)
+        text=i18n.gettext("Yes"),
+        callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id, confirmed=True),
     )
-    keyboard_builder.button(text="No", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id))
+    keyboard_builder.button(
+        text=i18n.gettext("No"), callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
+    )
     keyboard_builder.adjust(1)
     await message.edit_text(
-        "Are you sure you want to delete this monitoring?", reply_markup=keyboard_builder.as_markup()
+        i18n.gettext("Are you sure you want to delete this monitoring?"), reply_markup=keyboard_builder.as_markup()
     )
 
 
 @router.callback_query(MyMonitoringsDeleteCD.filter(F.confirmed == True))  # noqa: E712  # pylint: disable=C0121
-async def delete_monitoring(callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDeleteCD) -> None:
+async def delete_monitoring(
+    callback: CallbackQuery, api: ApiProvider, callback_data: MyMonitoringsDeleteCD, i18n: I18n
+) -> None:
     """Deletes monitoring.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         callback_data (MyMonitoringsDeleteCD): Callback data.
+        i18n (I18n): I18n object.
 
     """
     await api.request("DELETE", f"/monitorings/{callback_data.monitoring_id}")
-    await show_monitorings_list(callback, api)
+    await show_monitorings_list(callback, api, i18n)
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field == None))  # noqa: E711  # pylint: disable=C0121
-async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD) -> None:
+async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD, i18n: I18n) -> None:
     """Shows fields that can be updated.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsUpdateCD): Callback data.
+        i18n (I18n): I18n object.
 
     """
     message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
-        text="Name", callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="name")
+        text=i18n.gettext("Name"),
+        callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="name"),
     )
     keyboard_builder.button(
-        text="URL", callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="url")
+        text=i18n.gettext("URL"),
+        callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="url"),
     )
     keyboard_builder.button(
-        text="Run interval",
+        text=i18n.gettext("Run interval"),
         callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="run_interval"),
     )
     keyboard_builder.button(
-        text="<-- Back to monitoring", callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
+        text=i18n.gettext("<-- Back to monitoring"),
+        callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id),
     )
     keyboard_builder.adjust(1)
-    await message.edit_text("What field do you want to update?", reply_markup=keyboard_builder.as_markup())
+    await message.edit_text(
+        i18n.gettext("What field do you want to update?"), reply_markup=keyboard_builder.as_markup()
+    )
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field != None))  # noqa: E711  # pylint: disable=C0121
 async def enter_new_field_value(
-    callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD, state: FSMContext
+    callback: CallbackQuery, callback_data: MyMonitoringsUpdateCD, state: FSMContext, i18n: I18n
 ) -> None:
     """Enters new field value.
 
@@ -255,20 +283,21 @@ async def enter_new_field_value(
         callback (CallbackQuery): CallbackQuery object.
         callback_data (MyMonitoringsUpdateCD): Callback data.
         state (FSMContext): State context.
+        i18n (I18n): I18n object.
 
     """
     message = validate_callback_message(callback)
 
     if callback_data.field == "name":
-        text = "Enter new name for the monitoring"
+        text = i18n.gettext("Enter new name for the monitoring")
         reply_markup = None
         new_state = MyMonitoringUpdateState.enter_name
     elif callback_data.field == "url":
-        text = "Enter new URL for the monitoring"
+        text = i18n.gettext("Enter new URL for the monitoring")
         reply_markup = None
         new_state = MyMonitoringUpdateState.enter_url
     else:
-        text = "Choose new run interval for the monitoring:"
+        text = i18n.gettext("Choose new run interval for the monitoring:")
         reply_markup = get_run_intervals_keyboard()
         new_state = MyMonitoringUpdateState.choose_run_interval
 
@@ -278,51 +307,56 @@ async def enter_new_field_value(
 
 
 @router.message(MyMonitoringUpdateState.enter_name)
-async def update_monitoring_name(message: Message, api: ApiProvider, state: FSMContext) -> None:
+async def update_monitoring_name(message: Message, api: ApiProvider, state: FSMContext, i18n: I18n) -> None:
     """Updates monitoring name.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
+        i18n (I18n): I18n object.
 
     """
     name = validate_monitoring_name(message.text)
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
     await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(name=name))
-    await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
+    await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id), i18n)
 
 
 @router.message(MyMonitoringUpdateState.enter_url)
-async def update_monitoring_url(message: Message, api: ApiProvider, state: FSMContext) -> None:
+async def update_monitoring_url(message: Message, api: ApiProvider, state: FSMContext, i18n: I18n) -> None:
     """Updates monitoring URL.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
+        i18n (I18n): I18n object.
 
     """
     url = validate_monitoring_url(message.text)
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
     await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(url=url))
-    await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
+    await show_monitoring_details(message, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id), i18n)
 
 
 @router.callback_query(MyMonitoringUpdateState.choose_run_interval)
-async def update_monitoring_run_interval(callback: CallbackQuery, api: ApiProvider, state: FSMContext) -> None:
+async def update_monitoring_run_interval(
+    callback: CallbackQuery, api: ApiProvider, state: FSMContext, i18n: I18n
+) -> None:
     """Updates monitoring run interval.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
+        i18n (I18n): I18n object.
 
     """
     run_interval = get_timedelta_from_callback_data(validate_callback_data(callback))
     monitoring_id = await validate_state_context_value(state, "monitoring_id", int)
     await state.clear()
     await api.request("PATCH", f"/monitorings/{monitoring_id}", json_data=MonitoringUpdate(run_interval=run_interval))
-    await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id))
+    await show_monitoring_details(callback, api, MyMonitoringsDetailsCD(monitoring_id=monitoring_id), i18n)

@@ -4,9 +4,10 @@ import logging
 from aiogram import Bot, Dispatcher, F
 from aiogram.exceptions import DetailedAiogramError
 from aiogram.filters import ExceptionTypeFilter
+from aiogram.utils.i18n.core import I18n
 
 from bot.errors import handle_detailed_error
-from bot.middlewares import ApiProvider
+from bot.middlewares import ApiProvider, I18nProvider
 from bot.routers import common_router, my_monitorings_router, new_monitoring_router
 from settings import BotSettings
 
@@ -22,7 +23,9 @@ async def main() -> None:
     dp.errors(ExceptionTypeFilter(DetailedAiogramError), F.update.message.as_("message"))(handle_detailed_error)
     dp.errors(ExceptionTypeFilter(DetailedAiogramError), F.update.callback_query.as_("callback"))(handle_detailed_error)
     dp.message.middleware(ApiProvider())
+    dp.message.middleware(I18nProvider(i18n=I18n(path="bot/locales")))
     dp.callback_query.middleware(ApiProvider())
+    dp.callback_query.middleware(I18nProvider(i18n=I18n(path="bot/locales")))
     dp.include_routers(common_router, new_monitoring_router, my_monitorings_router)
 
     await dp.start_polling(bot)
