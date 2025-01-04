@@ -76,3 +76,4 @@ async def send_advert_message(advert: AdvertRead, user: UserRead) -> None:
         await bot.send_message(
             chat_id=user.id, text=message, parse_mode="HTML", reply_markup=keyboard_builder.as_markup()
         )
+    await bot.close()
