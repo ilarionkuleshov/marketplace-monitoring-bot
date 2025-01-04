@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.utils.i18n.core import I18n
+from aiogram.utils.i18n import gettext as _
 
 from bot.middlewares import ApiProvider
 from bot.utils.keyboards import get_marketplaces_keyboard, get_run_intervals_keyboard
@@ -29,80 +29,75 @@ class NewMonitoringState(StatesGroup):
 
 
 @router.message(Command("new_monitoring"))
-async def choose_marketplace(message: Message, api: ApiProvider, state: FSMContext, i18n: I18n) -> None:
+async def choose_marketplace(message: Message, api: ApiProvider, state: FSMContext) -> None:
     """Asks user to choose a marketplace for monitoring.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
-        i18n (I18n): I18n object.
 
     """
     marketplaces_keyboard = await get_marketplaces_keyboard(api, provide_id=True, provide_url=False)
-    await message.answer(i18n.gettext("Choose the marketplace for monitoring:"), reply_markup=marketplaces_keyboard)
+    await message.answer(_("Choose the marketplace for monitoring:"), reply_markup=marketplaces_keyboard)
     await state.set_state(NewMonitoringState.choose_marketplace)
 
 
 @router.callback_query(NewMonitoringState.choose_marketplace)
-async def enter_url(callback: CallbackQuery, state: FSMContext, i18n: I18n) -> None:
+async def enter_url(callback: CallbackQuery, state: FSMContext) -> None:
     """Saves the marketplace ID and asks user to enter monitoring URL.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         state (FSMContext): State context.
-        i18n (I18n): I18n object.
 
     """
     message = validate_callback_message(callback)
     marketplace_id = int(validate_callback_data(callback))
     await state.update_data(marketplace_id=marketplace_id)
     await state.set_state(NewMonitoringState.enter_url)
-    await message.answer(i18n.gettext("Enter search URL on the marketplace to monitor"))
+    await message.answer(_("Enter search URL on the marketplace to monitor"))
 
 
 @router.message(NewMonitoringState.enter_url)
-async def choose_run_interval(message: Message, state: FSMContext, i18n: I18n) -> None:
+async def choose_run_interval(message: Message, state: FSMContext) -> None:
     """Saves the monitoring URL and asks user to choose monitoring run interval.
 
     Args:
         message (Message): Message object.
         state (FSMContext): State context.
-        i18n (I18n): I18n object.
 
     """
     url = validate_monitoring_url(message.text)
     await state.update_data(url=url)
     await state.set_state(NewMonitoringState.choose_run_interval)
-    await message.answer(i18n.gettext("Choose monitoring run interval:"), reply_markup=get_run_intervals_keyboard())
+    await message.answer(_("Choose monitoring run interval:"), reply_markup=get_run_intervals_keyboard())
 
 
 @router.callback_query(NewMonitoringState.choose_run_interval)
-async def enter_name(callback: CallbackQuery, state: FSMContext, i18n: I18n) -> None:
+async def enter_name(callback: CallbackQuery, state: FSMContext) -> None:
     """Saves the monitoring run interval and asks user to enter monitoring name.
 
     Args:
         callback (CallbackQuery): CallbackQuery object.
         state (FSMContext): State context.
-        i18n (I18n): I18n object.
 
     """
     message = validate_callback_message(callback)
     run_interval = get_timedelta_from_callback_data(validate_callback_data(callback))
     await state.update_data(run_interval=run_interval)
     await state.set_state(NewMonitoringState.enter_name)
-    await message.answer(i18n.gettext("Enter monitoring name"))
+    await message.answer(_("Enter monitoring name"))
 
 
 @router.message(NewMonitoringState.enter_name)
-async def create_monitoring(message: Message, api: ApiProvider, state: FSMContext, i18n: I18n) -> None:
+async def create_monitoring(message: Message, api: ApiProvider, state: FSMContext) -> None:
     """Creates a new monitoring and sends a response to the user.
 
     Args:
         message (Message): Message object.
         api (ApiProvider): Provider for the API.
         state (FSMContext): State context.
-        i18n (I18n): I18n object.
 
     """
     data = await state.get_data()
@@ -122,7 +117,7 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
         custom_error_messages={409: "Monitoring with this url already exists."},
     )
     await message.answer(
-        i18n.gettext(
+        _(
             "Monitoring has been created successfully. Monitoring will start soon.\n"
             "Please note that during the first run of monitoring, "
             "you will not receive messages about existing adverts. You will only receive messages about new adverts."
