@@ -4,7 +4,6 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.markdown import hbold
 
 from database.schemas import AdvertRead, UserRead
-from settings import BotSettings
 
 
 def format_advert_price(price: float) -> str:
@@ -49,15 +48,15 @@ def get_advert_message(advert: AdvertRead) -> str:
     return "\n".join(paragraphs)
 
 
-async def send_advert_message(advert: AdvertRead, user: UserRead) -> None:
+async def send_advert_message(advert: AdvertRead, user: UserRead, bot: Bot) -> None:
     """Sends advert message to user.
 
     Args:
         advert (AdvertRead): Advert to send.
         user (UserRead): User to send advert to.
+        bot (Bot): Bot instance.
 
     """
-    bot = Bot(BotSettings().token)
     message = get_advert_message(advert)
 
     i18n = I18n(path="bot/locales")
@@ -76,4 +75,3 @@ async def send_advert_message(advert: AdvertRead, user: UserRead) -> None:
         await bot.send_message(
             chat_id=user.id, text=message, parse_mode="HTML", reply_markup=keyboard_builder.as_markup()
         )
-    await bot.close()
