@@ -61,6 +61,23 @@ class DatabaseProvider:
             return read_schema.model_validate(row)
         return None
 
+    async def get_by_query[
+        T: DatabaseReadSchema
+    ](self, *, query: Select, by_mappings: bool, read_schema: type[T]) -> T | None:
+        """Returns a single row from the database by query.
+
+        Args:
+            query (Select): The query to execute.
+            by_mappings (bool): Whether to fetch row by mappings.
+            read_schema (type[T]): The schema to validate the result.
+
+        """
+        cursor = await self._session.execute(query)
+        row = cursor.mappings().first() if by_mappings else cursor.scalars().first()
+        if row:
+            return read_schema.model_validate(row)
+        return None
+
     async def get_all[
         T: DatabaseReadSchema
     ](
@@ -234,9 +251,7 @@ class DatabaseProvider:
 
         """
         query = delete(model).where(*filters)
-        cursor = await self._session.execute(query)
-        if cursor.rowcount == 0:
-            raise ValueError("No rows to delete")
+        await self._session.execute(query)
         await self._session.flush()
 
 

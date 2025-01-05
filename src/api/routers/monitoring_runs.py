@@ -20,7 +20,9 @@ async def read_monitoring_runs(
         database (DatabaseProvider): Provider for the database.
 
     """
-    return await database.get_all(model=MonitoringRun, read_schema=MonitoringRunRead)
+    return await database.get_all(
+        model=MonitoringRun, order_by=[MonitoringRun.created_at.asc()], read_schema=MonitoringRunRead
+    )
 
 
 @router.get("/{monitoring_run_id}")

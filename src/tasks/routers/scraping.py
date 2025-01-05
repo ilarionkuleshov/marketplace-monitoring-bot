@@ -1,21 +1,27 @@
 import traceback
 from datetime import datetime
 from pathlib import Path
+from typing import Annotated
 
-from faststream import Logger
+from aiogram import Bot
+from faststream import Depends, Logger
 from faststream.rabbit import RabbitRouter
+from sqlalchemy import select
 
+from bot.utils.adverts import send_advert_message
 from database import get_database
 from database.enums import MonitoringRunStatus
-from database.models import Advert, MonitoringRun
+from database.models import Advert, Monitoring, MonitoringRun, User
 from database.schemas import (
     AdvertCreate,
     AdvertRead,
     AdvertUpdate,
     MonitoringRunRead,
     MonitoringRunUpdate,
+    UserRead,
 )
 from scrapers.crawlers import BaseAdvertCrawler, OlxUaCrawler
+from tasks.dependencies import get_bot
 from tasks.messages import ScrapingTask
 from tasks.queues import SCRAPING_RESULTS_QUEUE, SCRAPING_TASKS_QUEUE
 
@@ -71,12 +77,15 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
 
 
 @router.subscriber(SCRAPING_RESULTS_QUEUE)
-async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) -> None:
+async def process_scraping_result(
+    scraped_advert: AdvertCreate, logger: Logger, bot: Annotated[Bot, Depends(get_bot)]
+) -> None:
     """Processes scraping result.
 
     Args:
         scraped_advert (AdvertCreate): Scraped advert.
         logger (Logger): FastStream logger.
+        bot (Bot): Telegram bot.
 
     """
     async with get_database() as database:
@@ -95,7 +104,19 @@ async def process_scraping_result(scraped_advert: AdvertCreate, logger: Logger) 
         return
 
     if advert.monitoring_run_id != first_monitoring_run.id and not advert.sent_to_user:
+        async with get_database() as database:
+            user = await database.get_by_query(
+                query=select(User)
+                .join(Monitoring, Monitoring.user_id == User.id)
+                .where(Monitoring.id == advert.monitoring_id),
+                by_mappings=False,
+                read_schema=UserRead,
+            )
+        if user is None:
+            logger.error(f"User for advert {advert.id} not found")
+            return
         logger.info(f"Sending advert {advert.id} to user")
+        await send_advert_message(advert, user, bot)
 
     async with get_database() as database:
         await database.update(

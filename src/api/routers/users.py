@@ -18,7 +18,7 @@ async def read_users(database: Annotated[DatabaseProvider, Depends(get_database_
         database (DatabaseProvider): Provider for the database.
 
     """
-    return await database.get_all(model=User, read_schema=UserRead)
+    return await database.get_all(model=User, order_by=[User.created_at.asc()], read_schema=UserRead)
 
 
 @router.get("/{user_id}")

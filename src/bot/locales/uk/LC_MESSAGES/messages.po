@@ -1,0 +1,261 @@
+# Ukrainian translations for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-04 23:21+0000\n"
+"PO-Revision-Date: 2025-01-04 18:12+0000\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: uk\n"
+"Language-Team: uk <LL@li.org>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: src/bot/routers/common.py:27
+msgid ""
+"Hello! I'm marketplace monitoring bot. I can help you to monitor adverts "
+"on different marketplaces."
+msgstr ""
+"Привіт! Я бот для моніторингу маркетплейсів. Я допоможу вам "
+"відслідковувати оголошення на різних маркетплейсах."
+
+#: src/bot/routers/common.py:30
+msgid "Welcome back!"
+msgstr "З поверненням!"
+
+#: src/bot/routers/common.py:43
+msgid "Available marketplaces:"
+msgstr "Доступні маркетплейси:"
+
+#: src/bot/routers/common.py:57
+msgid "No active operations to cancel"
+msgstr "Немає активних операцій для скасування"
+
+#: src/bot/routers/common.py:61
+msgid "Operation canceled"
+msgstr "Операцію скасовано"
+
+#: src/bot/routers/my_monitorings.py:93
+msgid "You don't have any monitorings yet. Use /new_monitoring to add one."
+msgstr ""
+"У вас ще немає моніторингів. Використовуйте /new_monitoring, щоб додати "
+"моніторинг."
+
+#: src/bot/routers/my_monitorings.py:104
+msgid "Here are your monitorings:"
+msgstr "Ось ваші моніторинги:"
+
+#: src/bot/routers/my_monitorings.py:125
+msgid "🟢 Enabled"
+msgstr "🟢 Активний"
+
+#: src/bot/routers/my_monitorings.py:126
+msgid "🔴 Disable"
+msgstr "🔴 Деактивувати"
+
+#: src/bot/routers/my_monitorings.py:129
+msgid "🔴 Disabled"
+msgstr "🔴 Деактивований"
+
+#: src/bot/routers/my_monitorings.py:130
+msgid "🟢 Enable"
+msgstr "🟢 Активувати"
+
+#: src/bot/routers/my_monitorings.py:136
+msgid "Never"
+msgstr "Ніколи"
+
+#: src/bot/routers/my_monitorings.py:148
+msgid "📝 Edit"
+msgstr "📝 Редагувати"
+
+#: src/bot/routers/my_monitorings.py:151
+msgid "🗑 Delete"
+msgstr "🗑 Видалити"
+
+#: src/bot/routers/my_monitorings.py:153
+msgid "<-- Back to monitorings list"
+msgstr "<-- Назад до списку моніторингів"
+
+#: src/bot/routers/my_monitorings.py:158
+msgid "Monitoring"
+msgstr "Моніторинг"
+
+#: src/bot/routers/my_monitorings.py:159
+msgid "Status"
+msgstr "Статус"
+
+#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:245
+msgid "URL"
+msgstr "Посилання"
+
+#: src/bot/routers/my_monitorings.py:161 src/bot/routers/my_monitorings.py:249
+msgid "Run interval"
+msgstr "Інтервал запуску"
+
+#: src/bot/routers/my_monitorings.py:162
+msgid "Last run"
+msgstr "Останній запуск"
+
+#: src/bot/routers/my_monitorings.py:203
+msgid "Yes"
+msgstr "Так"
+
+#: src/bot/routers/my_monitorings.py:207
+msgid "No"
+msgstr "Ні"
+
+#: src/bot/routers/my_monitorings.py:211
+msgid "Are you sure you want to delete this monitoring?"
+msgstr "Ви впевнені, що хочете видалити цей моніторинг?"
+
+#: src/bot/routers/my_monitorings.py:241
+msgid "Name"
+msgstr "Назва"
+
+#: src/bot/routers/my_monitorings.py:253
+msgid "<-- Back to monitoring"
+msgstr "<-- Назад до моніторингу"
+
+#: src/bot/routers/my_monitorings.py:257
+msgid "What property do you want to change?"
+msgstr "Яку властивість ви хочете змінити?"
+
+#: src/bot/routers/my_monitorings.py:275
+msgid "Enter new name for the monitoring"
+msgstr "Введіть нову назву для моніторингу"
+
+#: src/bot/routers/my_monitorings.py:279
+msgid "Enter new URL for the monitoring"
+msgstr "Введіть нове посилання для моніторингу"
+
+#: src/bot/routers/my_monitorings.py:283
+msgid "Choose new run interval for the monitoring:"
+msgstr "Оберіть новий інтервал запуску для моніторингу:"
+
+#: src/bot/routers/new_monitoring.py:42
+msgid "Choose the marketplace for monitoring:"
+msgstr "Оберіть маркетплейс для моніторингу:"
+
+#: src/bot/routers/new_monitoring.py:59
+msgid "Enter search URL on the marketplace to monitor"
+msgstr "Введіть посилання пошуку на маркетплейсі для моніторингу"
+
+#: src/bot/routers/new_monitoring.py:74
+msgid "Choose monitoring run interval:"
+msgstr "Оберіть інтервал запуску моніторингу:"
+
+#: src/bot/routers/new_monitoring.py:90
+msgid "Enter monitoring name"
+msgstr "Введіть назву моніторингу"
+
+#: src/bot/routers/new_monitoring.py:117
+msgid "Monitoring with this url already exists."
+msgstr "Моніторинг з цим посиланням вже існує."
+
+#: src/bot/routers/new_monitoring.py:120
+msgid ""
+"Monitoring has been created successfully. Monitoring will start soon.\n"
+"Please note that during the first run of monitoring, you will not receive"
+" messages about existing adverts. You will only receive messages about "
+"new adverts."
+msgstr ""
+"Моніторинг успішно створено. Моніторинг скоро почнеться.\n"
+"Зверніть увагу, що під час першого запуску моніторингу ви не отримаєте "
+"повідомлень про існуючі оголошення. Ви будете отримувати повідомлення "
+"лише про нові оголошення."
+
+#: src/bot/routers/settings.py:45 src/bot/utils/time.py:61
+#: src/bot/utils/validators.py:20 src/bot/utils/validators.py:32
+#: src/bot/utils/validators.py:92
+msgid "Something went wrong. Please try again later."
+msgstr "Щось пішло не так. Будь ласка, спробуйте ще раз пізніше."
+
+#: src/bot/routers/settings.py:50 src/bot/routers/settings.py:78
+msgid "English"
+msgstr "Англійська"
+
+#: src/bot/routers/settings.py:52 src/bot/routers/settings.py:82
+msgid "Russian"
+msgstr "Російська"
+
+#: src/bot/routers/settings.py:54 src/bot/routers/settings.py:86
+msgid "Ukrainian"
+msgstr "Українська"
+
+#: src/bot/routers/settings.py:58
+msgid "Language (current: {current_language})"
+msgstr "Мова (поточна: {current_language})"
+
+#: src/bot/routers/settings.py:64
+msgid "Here are the settings:"
+msgstr "Ось налаштування:"
+
+#: src/bot/routers/settings.py:89
+msgid "<-- Back to settings"
+msgstr "<-- Назад до налаштувань"
+
+#: src/bot/routers/settings.py:91
+msgid "Choose new language:"
+msgstr "Оберіть нову мову:"
+
+#: src/bot/utils/adverts.py:64
+msgid "View advert"
+msgstr "Переглянути оголошення"
+
+#: src/bot/utils/time.py:20
+msgid "{minutes}min"
+msgstr "{minutes}хв"
+
+#: src/bot/utils/time.py:23
+msgid "{hours}h"
+msgstr "{hours}год"
+
+#: src/bot/utils/time.py:37
+msgid "just now"
+msgstr "щойно"
+
+#: src/bot/utils/time.py:41
+msgid "{minutes}min ago"
+msgstr "{minutes}хв тому"
+
+#: src/bot/utils/time.py:45
+msgid "{hours}h ago"
+msgstr "{hours}год тому"
+
+#: src/bot/utils/time.py:48
+msgid "{days}d ago"
+msgstr "{days}дн тому"
+
+#: src/bot/utils/validators.py:57
+msgid "Name is required. Please enter a name."
+msgstr "Назва обов'язкова. Будь ласка, введіть назву."
+
+#: src/bot/utils/validators.py:59
+msgid "Name is too long. Please enter a shorter name (max 100 characters)."
+msgstr ""
+"Назва занадто довга. Будь ласка, введіть коротшу назву (максимум 100 "
+"символів)."
+
+#: src/bot/utils/validators.py:71
+msgid "URL is required. Please enter a URL."
+msgstr "Посилання обов'язкове. Будь ласка, введіть посилання."
+
+#: src/bot/utils/validators.py:75
+msgid "Invalid URL. Please enter a valid URL."
+msgstr "Недійсне посилання. Будь ласка, введіть дійсне посилання."
+
+#: src/bot/utils/validators.py:77
+msgid "URL is too long. Please enter a shorter URL (max 2000 characters)."
+msgstr ""
+"Посилання занадто довге. Будь ласка, введіть коротше посилання (максимум "
+"2000 символів)."
+

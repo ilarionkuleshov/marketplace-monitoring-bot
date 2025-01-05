@@ -1,3 +1,12 @@
+x-python-common:
+  &python-common
+  image: ${DOCKER_IMAGE}
+  user: "${DOCKER_UID}:${DOCKER_GID}"
+  volumes:
+    - ./.env:${DOCKER_PROJECT_DIR}/.env
+    - ./src:${DOCKER_PROJECT_DIR}/src
+  working_dir: ${DOCKER_PROJECT_DIR}/src
+
 services:
   postgres:
     image: postgres:17.0
@@ -34,3 +43,39 @@ services:
       retries: 5
       start_period: 10s
     restart: always
+
+  postgres-init:
+    <<: *python-common
+    depends_on:
+      - postgres
+    command: poetry run alembic upgrade head
+
+  tasks-worker:
+    <<: *python-common
+    depends_on:
+      - postgres-init
+      - rabbitmq
+    restart: always
+    command: poetry run python -m tasks worker
+
+  tasks-scheduler:
+    <<: *python-common
+    depends_on:
+      - postgres-init
+      - rabbitmq
+    restart: always
+    command: poetry run python -m tasks scheduler
+
+  api:
+    <<: *python-common
+    depends_on:
+      - postgres-init
+    restart: always
+    command: poetry run python -m api
+
+  bot:
+    <<: *python-common
+    depends_on:
+      - api
+    restart: always
+    command: poetry run python -m bot

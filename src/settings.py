@@ -34,6 +34,10 @@ class ApiSettings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="api_", env_file=find_dotenv(), extra="ignore")
 
+    def get_url(self) -> str:
+        """Returns the URL for the API."""
+        return f"http://{self.host}:{self.port}"
+
 
 class ScrapersSettings(BaseSettings):
     """Settings for the FastCrawl scrapers."""
@@ -65,3 +69,12 @@ class TasksSettings(BaseSettings):
             f"amqp://{self.broker_user}:{self.broker_password}"
             f"@{self.broker_host}:{self.broker_port}/{self.broker_vhost}"
         )
+
+
+class BotSettings(BaseSettings):
+    """Settings for the Aiogram bot."""
+
+    log_level: str
+    token: str
+
+    model_config = SettingsConfigDict(env_prefix="bot_", env_file=find_dotenv(), extra="ignore")

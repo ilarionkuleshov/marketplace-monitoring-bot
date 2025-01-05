@@ -17,4 +17,4 @@ async def read_marketplaces(database: Annotated[DatabaseProvider, Depends(get_da
         database (DatabaseProvider): Provider for the database.
 
     """
-    return await database.get_all(model=Marketplace, read_schema=MarketplaceRead)
+    return await database.get_all(model=Marketplace, order_by=[Marketplace.name.asc()], read_schema=MarketplaceRead)

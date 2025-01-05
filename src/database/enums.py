@@ -14,6 +14,8 @@ class UserLanguage(DatabaseEnum):
     """Supported user languages."""
 
     EN = "en"
+    RU = "ru"
+    UK = "uk"
 
 
 class MonitoringRunStatus(DatabaseEnum):

@@ -24,6 +24,13 @@ class MonitoringRead(DatabaseReadSchema):
     updated_at: datetime
 
 
+class MonitoringDetailsRead(MonitoringRead):
+    """Monitoring details schema for reading."""
+
+    marketplace_name: str
+    last_successful_run: datetime | None
+
+
 class MonitoringCreate(DatabaseCreateSchema):
     """Monitoring schema for creation."""
 

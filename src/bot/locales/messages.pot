@@ -1,0 +1,247 @@
+# Translations template for PROJECT.
+# Copyright (C) 2025 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2025.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2025-01-04 23:21+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.13.1\n"
+
+#: src/bot/routers/common.py:27
+msgid ""
+"Hello! I'm marketplace monitoring bot. I can help you to monitor adverts "
+"on different marketplaces."
+msgstr ""
+
+#: src/bot/routers/common.py:30
+msgid "Welcome back!"
+msgstr ""
+
+#: src/bot/routers/common.py:43
+msgid "Available marketplaces:"
+msgstr ""
+
+#: src/bot/routers/common.py:57
+msgid "No active operations to cancel"
+msgstr ""
+
+#: src/bot/routers/common.py:61
+msgid "Operation canceled"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:93
+msgid "You don't have any monitorings yet. Use /new_monitoring to add one."
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:104
+msgid "Here are your monitorings:"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:125
+msgid "🟢 Enabled"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:126
+msgid "🔴 Disable"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:129
+msgid "🔴 Disabled"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:130
+msgid "🟢 Enable"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:136
+msgid "Never"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:148
+msgid "📝 Edit"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:151
+msgid "🗑 Delete"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:153
+msgid "<-- Back to monitorings list"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:158
+msgid "Monitoring"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:159
+msgid "Status"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:160 src/bot/routers/my_monitorings.py:245
+msgid "URL"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:161 src/bot/routers/my_monitorings.py:249
+msgid "Run interval"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:162
+msgid "Last run"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:203
+msgid "Yes"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:207
+msgid "No"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:211
+msgid "Are you sure you want to delete this monitoring?"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:241
+msgid "Name"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:253
+msgid "<-- Back to monitoring"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:257
+msgid "What property do you want to change?"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:275
+msgid "Enter new name for the monitoring"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:279
+msgid "Enter new URL for the monitoring"
+msgstr ""
+
+#: src/bot/routers/my_monitorings.py:283
+msgid "Choose new run interval for the monitoring:"
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:42
+msgid "Choose the marketplace for monitoring:"
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:59
+msgid "Enter search URL on the marketplace to monitor"
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:74
+msgid "Choose monitoring run interval:"
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:90
+msgid "Enter monitoring name"
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:117
+msgid "Monitoring with this url already exists."
+msgstr ""
+
+#: src/bot/routers/new_monitoring.py:120
+msgid ""
+"Monitoring has been created successfully. Monitoring will start soon.\n"
+"Please note that during the first run of monitoring, you will not receive"
+" messages about existing adverts. You will only receive messages about "
+"new adverts."
+msgstr ""
+
+#: src/bot/routers/settings.py:45 src/bot/utils/time.py:61
+#: src/bot/utils/validators.py:20 src/bot/utils/validators.py:32
+#: src/bot/utils/validators.py:92
+msgid "Something went wrong. Please try again later."
+msgstr ""
+
+#: src/bot/routers/settings.py:50 src/bot/routers/settings.py:78
+msgid "English"
+msgstr ""
+
+#: src/bot/routers/settings.py:52 src/bot/routers/settings.py:82
+msgid "Russian"
+msgstr ""
+
+#: src/bot/routers/settings.py:54 src/bot/routers/settings.py:86
+msgid "Ukrainian"
+msgstr ""
+
+#: src/bot/routers/settings.py:58
+msgid "Language (current: {current_language})"
+msgstr ""
+
+#: src/bot/routers/settings.py:64
+msgid "Here are the settings:"
+msgstr ""
+
+#: src/bot/routers/settings.py:89
+msgid "<-- Back to settings"
+msgstr ""
+
+#: src/bot/routers/settings.py:91
+msgid "Choose new language:"
+msgstr ""
+
+#: src/bot/utils/adverts.py:64
+msgid "View advert"
+msgstr ""
+
+#: src/bot/utils/time.py:20
+msgid "{minutes}min"
+msgstr ""
+
+#: src/bot/utils/time.py:23
+msgid "{hours}h"
+msgstr ""
+
+#: src/bot/utils/time.py:37
+msgid "just now"
+msgstr ""
+
+#: src/bot/utils/time.py:41
+msgid "{minutes}min ago"
+msgstr ""
+
+#: src/bot/utils/time.py:45
+msgid "{hours}h ago"
+msgstr ""
+
+#: src/bot/utils/time.py:48
+msgid "{days}d ago"
+msgstr ""
+
+#: src/bot/utils/validators.py:57
+msgid "Name is required. Please enter a name."
+msgstr ""
+
+#: src/bot/utils/validators.py:59
+msgid "Name is too long. Please enter a shorter name (max 100 characters)."
+msgstr ""
+
+#: src/bot/utils/validators.py:71
+msgid "URL is required. Please enter a URL."
+msgstr ""
+
+#: src/bot/utils/validators.py:75
+msgid "Invalid URL. Please enter a valid URL."
+msgstr ""
+
+#: src/bot/utils/validators.py:77
+msgid "URL is too long. Please enter a shorter URL (max 2000 characters)."
+msgstr ""
+

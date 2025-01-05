@@ -3,7 +3,7 @@ FROM python:3.12.6-slim
 ARG USERNAME=app
 ARG UID=1000
 ARG GID=1000
-ARG WORKING_DIR=/marketplace-monitoring-bot
+ARG PROJECT_DIR=/marketplace-monitoring-bot
 ARG POETRY_INSTALL_DEV=False
 
 RUN groupadd --gid $GID $USERNAME \
@@ -15,7 +15,7 @@ RUN groupadd --gid $GID $USERNAME \
 
 USER $USERNAME
 
-WORKDIR $WORKING_DIR
+WORKDIR $PROJECT_DIR
 COPY pyproject.toml poetry.lock ./
 COPY src ./src
 COPY scripts ./scripts

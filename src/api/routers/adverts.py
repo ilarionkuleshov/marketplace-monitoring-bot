@@ -17,7 +17,7 @@ async def read_adverts(database: Annotated[DatabaseProvider, Depends(get_databas
         database (DatabaseProvider): Provider for the database.
 
     """
-    return await database.get_all(model=Advert, read_schema=AdvertRead)
+    return await database.get_all(model=Advert, order_by=[Advert.created_at.asc()], read_schema=AdvertRead)
 
 
 @router.get("/{advert_id}")

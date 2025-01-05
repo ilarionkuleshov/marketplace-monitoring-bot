@@ -5,7 +5,7 @@
         "dockerfile": "../Dockerfile",
         "args": {
             "USERNAME": "vscode",
-            "WORKING_DIR": "${containerWorkspaceFolder}",
+            "PROJECT_DIR": "${containerWorkspaceFolder}",
             "POETRY_INSTALL_DEV": "True"
         }
     },
