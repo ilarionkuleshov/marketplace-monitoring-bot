@@ -558,14 +558,14 @@ standard = ["email-validator (>=2.0.0)", "fastapi-cli[standard] (>=0.0.5)", "htt
 
 [[package]]
 name = "fastcrawl"
-version = "0.2.0"
+version = "0.2.1"
 description = "Fast and asynchronous web crawling and scraping library for Python."
 category = "main"
 optional = false
 python-versions = "<4.0,>=3.9"
 files = [
-    {file = "fastcrawl-0.2.0-py3-none-any.whl", hash = "sha256:365410769ac2752919f5500b57678354581221b3e0a4ae237a5e4cc01309cf49"},
-    {file = "fastcrawl-0.2.0.tar.gz", hash = "sha256:2ff2e8d79ece757eb9611201dc7f73c607ab36c4ab1c181a8421f84b33d24b61"},
+    {file = "fastcrawl-0.2.1-py3-none-any.whl", hash = "sha256:3265848e8f2dc5282073d5cce90cd74f9bfb914165cc0e168beb4698ebb468c7"},
+    {file = "fastcrawl-0.2.1.tar.gz", hash = "sha256:5c46550af817f4a304eeccac7c173f59b2d73aecbb5bd29ae69cc417dc8ec6ce"},
 ]
 
 [package.dependencies]

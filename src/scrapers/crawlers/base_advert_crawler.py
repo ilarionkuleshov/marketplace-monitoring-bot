@@ -38,6 +38,7 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
                 configure_globally=False,
                 level=scrapers_settings.log_level,
                 file=log_file,
+                logger_name_suffix=str(monitoring_run_id),
             ),
             http_client=HttpClientSettings(headers={"User-Agent": scrapers_settings.user_agent}),
         )
