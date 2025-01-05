@@ -3,7 +3,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.utils.i18n import gettext as _
+from aiogram.utils.i18n import gettext as get_i18n_text
 
 from bot.middlewares import ApiProvider
 from bot.utils.keyboards import get_marketplaces_keyboard, get_run_intervals_keyboard
@@ -39,7 +39,7 @@ async def choose_marketplace(message: Message, api: ApiProvider, state: FSMConte
 
     """
     marketplaces_keyboard = await get_marketplaces_keyboard(api, provide_id=True, provide_url=False)
-    await message.answer(_("Choose the marketplace for monitoring:"), reply_markup=marketplaces_keyboard)
+    await message.answer(get_i18n_text("Choose the marketplace for monitoring:"), reply_markup=marketplaces_keyboard)
     await state.set_state(NewMonitoringState.choose_marketplace)
 
 
@@ -56,7 +56,7 @@ async def enter_url(callback: CallbackQuery, state: FSMContext) -> None:
     marketplace_id = int(validate_callback_data(callback))
     await state.update_data(marketplace_id=marketplace_id)
     await state.set_state(NewMonitoringState.enter_url)
-    await message.answer(_("Enter search URL on the marketplace to monitor"))
+    await message.answer(get_i18n_text("Enter search URL on the marketplace to monitor"))
 
 
 @router.message(NewMonitoringState.enter_url)
@@ -71,7 +71,7 @@ async def choose_run_interval(message: Message, state: FSMContext) -> None:
     url = validate_monitoring_url(message.text)
     await state.update_data(url=url)
     await state.set_state(NewMonitoringState.choose_run_interval)
-    await message.answer(_("Choose monitoring run interval:"), reply_markup=get_run_intervals_keyboard())
+    await message.answer(get_i18n_text("Choose monitoring run interval:"), reply_markup=get_run_intervals_keyboard())
 
 
 @router.callback_query(NewMonitoringState.choose_run_interval)
@@ -87,7 +87,7 @@ async def enter_name(callback: CallbackQuery, state: FSMContext) -> None:
     run_interval = get_timedelta_from_callback_data(validate_callback_data(callback))
     await state.update_data(run_interval=run_interval)
     await state.set_state(NewMonitoringState.enter_name)
-    await message.answer(_("Enter monitoring name"))
+    await message.answer(get_i18n_text("Enter monitoring name"))
 
 
 @router.message(NewMonitoringState.enter_name)
@@ -114,10 +114,10 @@ async def create_monitoring(message: Message, api: ApiProvider, state: FSMContex
         "POST",
         "/monitorings/",
         json_data=monitoring,
-        custom_error_messages={409: _("Monitoring with this url already exists.")},
+        custom_error_messages={409: get_i18n_text("Monitoring with this url already exists.")},
     )
     await message.answer(
-        _(
+        get_i18n_text(
             "Monitoring has been created successfully. Monitoring will start soon.\n"
             "Please note that during the first run of monitoring, "
             "you will not receive messages about existing adverts. You will only receive messages about new adverts."

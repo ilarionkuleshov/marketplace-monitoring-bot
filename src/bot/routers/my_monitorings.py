@@ -6,7 +6,7 @@ from aiogram.filters.callback_data import CallbackData
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import State, StatesGroup
 from aiogram.types import CallbackQuery, Message
-from aiogram.utils.i18n import gettext as _
+from aiogram.utils.i18n import gettext as get_i18n_text
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.utils.markdown import hbold, hlink
 from aiogram.utils.markdown import text as join_text
@@ -90,7 +90,7 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         response_as_list=True,
     )
     if not monitorings:
-        await message.answer(_("You don't have any monitorings yet. Use /new_monitoring to add one."))
+        await message.answer(get_i18n_text("You don't have any monitorings yet. Use /new_monitoring to add one."))
         return
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -101,7 +101,7 @@ async def show_monitorings_list(event: Message | CallbackQuery, api: ApiProvider
         )
     keyboard_builder.adjust(1)
 
-    await answer_method(_("Here are your monitorings:"), reply_markup=keyboard_builder.as_markup())
+    await answer_method(get_i18n_text("Here are your monitorings:"), reply_markup=keyboard_builder.as_markup())
 
 
 @router.callback_query(MyMonitoringsDetailsCD.filter())
@@ -122,18 +122,18 @@ async def show_monitoring_details(
     )
 
     if monitoring_details.enabled:
-        status = _("🟢 Enabled")
-        change_status_button_text = _("🔴 Disable")
+        status = get_i18n_text("🟢 Enabled")
+        change_status_button_text = get_i18n_text("🔴 Disable")
         change_status_button_enabled_value = False
     else:
-        status = _("🔴 Disabled")
-        change_status_button_text = _("🟢 Enable")
+        status = get_i18n_text("🔴 Disabled")
+        change_status_button_text = get_i18n_text("🟢 Enable")
         change_status_button_enabled_value = True
 
     last_run = (
         get_readable_time_ago(monitoring_details.last_successful_run)
         if monitoring_details.last_successful_run
-        else _("Never")
+        else get_i18n_text("Never")
     )
 
     keyboard_builder = InlineKeyboardBuilder()
@@ -145,21 +145,21 @@ async def show_monitoring_details(
         ),
     )
     keyboard_builder.button(
-        text=_("📝 Edit"), callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id)
+        text=get_i18n_text("📝 Edit"), callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id)
     )
     keyboard_builder.button(
-        text=_("🗑 Delete"), callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id)
+        text=get_i18n_text("🗑 Delete"), callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id)
     )
-    keyboard_builder.button(text=_("<-- Back to monitorings list"), callback_data=MyMonitoringsListCD())
+    keyboard_builder.button(text=get_i18n_text("<-- Back to monitorings list"), callback_data=MyMonitoringsListCD())
     keyboard_builder.adjust(1)
 
     await answer_method(
         text=join_text(
-            f"{_("Monitoring")}: {hbold(monitoring_details.name)}",
-            f"{_("Status")}: {hbold(status)}",
-            f"{_("URL")}: {hlink(monitoring_details.marketplace_name, monitoring_details.url)}",
-            f"{_("Run interval")}: {hbold(get_readable_timedelta(monitoring_details.run_interval))}",
-            f"{_("Last run")}: {hbold(last_run)}",
+            f"{get_i18n_text("Monitoring")}: {hbold(monitoring_details.name)}",
+            f"{get_i18n_text("Status")}: {hbold(status)}",
+            f"{get_i18n_text("URL")}: {hlink(monitoring_details.marketplace_name, monitoring_details.url)}",
+            f"{get_i18n_text("Run interval")}: {hbold(get_readable_timedelta(monitoring_details.run_interval))}",
+            f"{get_i18n_text("Last run")}: {hbold(last_run)}",
             sep="\n",
         ),
         parse_mode="HTML",
@@ -200,15 +200,15 @@ async def confirm_monitoring_deletion(callback: CallbackQuery, callback_data: My
     message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
-        text=_("Yes"),
+        text=get_i18n_text("Yes"),
         callback_data=MyMonitoringsDeleteCD(monitoring_id=callback_data.monitoring_id, confirmed=True),
     )
     keyboard_builder.button(
-        text=_("No"), callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
+        text=get_i18n_text("No"), callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id)
     )
     keyboard_builder.adjust(1)
     await message.edit_text(
-        _("Are you sure you want to delete this monitoring?"), reply_markup=keyboard_builder.as_markup()
+        get_i18n_text("Are you sure you want to delete this monitoring?"), reply_markup=keyboard_builder.as_markup()
     )
 
 
@@ -238,23 +238,25 @@ async def show_update_fields(callback: CallbackQuery, callback_data: MyMonitorin
     message = validate_callback_message(callback)
     keyboard_builder = InlineKeyboardBuilder()
     keyboard_builder.button(
-        text=_("Name"),
+        text=get_i18n_text("Name"),
         callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="name"),
     )
     keyboard_builder.button(
-        text=_("URL"),
+        text=get_i18n_text("URL"),
         callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="url"),
     )
     keyboard_builder.button(
-        text=_("Run interval"),
+        text=get_i18n_text("Run interval"),
         callback_data=MyMonitoringsUpdateCD(monitoring_id=callback_data.monitoring_id, field="run_interval"),
     )
     keyboard_builder.button(
-        text=_("<-- Back to monitoring"),
+        text=get_i18n_text("<-- Back to monitoring"),
         callback_data=MyMonitoringsDetailsCD(monitoring_id=callback_data.monitoring_id),
     )
     keyboard_builder.adjust(1)
-    await message.edit_text(_("What property do you want to change?"), reply_markup=keyboard_builder.as_markup())
+    await message.edit_text(
+        get_i18n_text("What property do you want to change?"), reply_markup=keyboard_builder.as_markup()
+    )
 
 
 @router.callback_query(MyMonitoringsUpdateCD.filter(F.field != None))  # noqa: E711  # pylint: disable=C0121
@@ -272,15 +274,15 @@ async def enter_new_field_value(
     message = validate_callback_message(callback)
 
     if callback_data.field == "name":
-        text = _("Enter new name for the monitoring")
+        text = get_i18n_text("Enter new name for the monitoring")
         reply_markup = None
         new_state = MyMonitoringUpdateState.enter_name
     elif callback_data.field == "url":
-        text = _("Enter new URL for the monitoring")
+        text = get_i18n_text("Enter new URL for the monitoring")
         reply_markup = None
         new_state = MyMonitoringUpdateState.enter_url
     else:
-        text = _("Choose new run interval for the monitoring:")
+        text = get_i18n_text("Choose new run interval for the monitoring:")
         reply_markup = get_run_intervals_keyboard()
         new_state = MyMonitoringUpdateState.choose_run_interval
 

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from aiogram.exceptions import DetailedAiogramError
-from aiogram.utils.i18n import gettext as _
+from aiogram.utils.i18n import gettext as get_i18n_text
 
 
 def get_readable_timedelta(td: timedelta) -> str:
@@ -17,10 +17,10 @@ def get_readable_timedelta(td: timedelta) -> str:
 
     if total_seconds < 3600 and total_seconds % 60 == 0:
         minutes = total_seconds // 60
-        return _("{minutes}min").format(minutes=minutes)
+        return get_i18n_text("{minutes}min").format(minutes=minutes)
 
     hours = total_seconds // 3600
-    return _("{hours}h").format(hours=hours)
+    return get_i18n_text("{hours}h").format(hours=hours)
 
 
 # pylint: disable=R0911
@@ -34,18 +34,18 @@ def get_readable_time_ago(dt: datetime) -> str:
     delta = datetime.now(tz=dt.tzinfo) - dt
 
     if delta < timedelta(minutes=1):
-        return _("just now")
+        return get_i18n_text("just now")
 
     if delta < timedelta(hours=1):
         minutes = delta.total_seconds() // 60
-        return _("{minutes}min ago").format(minutes=int(minutes))
+        return get_i18n_text("{minutes}min ago").format(minutes=int(minutes))
 
     if delta < timedelta(days=1):
         hours = delta.total_seconds() // 3600
-        return _("{hours}h ago").format(hours=int(hours))
+        return get_i18n_text("{hours}h ago").format(hours=int(hours))
 
     days = delta.days
-    return _("{days}d ago").format(days=days)
+    return get_i18n_text("{days}d ago").format(days=days)
 
 
 def get_timedelta_from_callback_data(data: str) -> timedelta:
@@ -58,4 +58,4 @@ def get_timedelta_from_callback_data(data: str) -> timedelta:
     try:
         return timedelta(seconds=float(data))
     except ValueError:
-        raise DetailedAiogramError(_("Something went wrong. Please try again later."))
+        raise DetailedAiogramError(get_i18n_text("Something went wrong. Please try again later."))
