@@ -9,13 +9,15 @@ from fastcrawl import BasePipeline
 from database.schemas import AdvertCreate
 
 
-class DebugSaveAdvertPipeline(BasePipeline[AdvertCreate]):
+class DebugSaveAdvertPipeline(BasePipeline):
     """Pipeline to save adverts locally for debugging purposes.
 
     Attributes:
         storage_path (Path): The path to save the adverts.
 
     """
+
+    allowed_items = [AdvertCreate]
 
     storage_path: Path
 

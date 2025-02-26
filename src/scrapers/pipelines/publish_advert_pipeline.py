@@ -6,8 +6,10 @@ from settings import TasksSettings
 from tasks.queues import SCRAPING_RESULTS_QUEUE
 
 
-class PublishAdvertPipeline(BasePipeline[AdvertCreate]):
+class PublishAdvertPipeline(BasePipeline):
     """Pipeline to publish advert to message broker."""
+
+    allowed_items = [AdvertCreate]
 
     _broker: RabbitBroker
 
