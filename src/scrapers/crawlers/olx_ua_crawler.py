@@ -11,21 +11,8 @@ from scrapers.crawlers.base_advert_crawler import BaseAdvertCrawler
 class OlxUaCrawler(BaseAdvertCrawler):
     """Crawler for scraping adverts from `olx.ua`."""
 
-    async def generate_requests(self) -> AsyncIterator[Request]:
-        """Yields a request to start scraping."""
-        yield Request(url=self.monitoring_url, callback=self.parse_search_page)
-
     async def parse_search_page(self, response: Response) -> AsyncIterator[AdvertCreate | Request]:
-        """Parses search page.
-
-        Args:
-            response (Response): Page response.
-
-        Yields:
-            AdvertCreate: Parsed advert.
-            Request: Next page request.
-
-        """
+        """See `BaseAdvertCrawler` class."""
         raw_adverts = self._get_raw_adverts(response.selector)
 
         for raw_advert in raw_adverts:
