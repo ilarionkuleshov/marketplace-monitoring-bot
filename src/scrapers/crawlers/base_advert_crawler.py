@@ -1,10 +1,8 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from pathlib import Path
-from typing import AsyncIterator
 
-from fastcrawl import BaseCrawler, CrawlerSettings, HttpClientSettings, LogSettings, Request, Response
+from fastcrawl import BaseCrawler, CrawlerSettings, HttpClientSettings, LogSettings
 
-from database.schemas import AdvertCreate
 from scrapers.pipelines import (
     DebugSaveAdvertPipeline,
     FilterDuplicateAdvertPipeline,
@@ -54,25 +52,27 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
         self.monitoring_run_id = monitoring_run_id
         self.monitoring_url = monitoring_url
 
-    async def generate_requests(self) -> AsyncIterator[Request]:
-        """Yields a request to start scraping."""
-        yield Request(url=self.monitoring_url, callback=self.parse_search_page)
-
-    @abstractmethod
-    async def parse_search_page(self, response: Response) -> AsyncIterator[AdvertCreate | Request]:
-        """Parses search page.
+    def crop_advert_description(self, description: str | None) -> str | None:
+        """Returns cropped advert description if it's not None.
 
         Args:
-            response (Response): Search page response.
-
-        Yields:
-            AdvertCreate: Extracted advert.
-            Request: Next page request.
+            description (str | None): Advert description.
 
         """
+        if not description:
+            return None
+        return self.crop_str(description, 300)
 
-    @staticmethod
-    def crop_str(str_value: str, max_length: int) -> str:
+    def crop_advert_title(self, title: str) -> str:
+        """Returns cropped advert title.
+
+        Args:
+            title (str): Advert title.
+
+        """
+        return self.crop_str(title, 100)
+
+    def crop_str(self, str_value: str, max_length: int) -> str:
         """Returns cropped string.
 
         Args:

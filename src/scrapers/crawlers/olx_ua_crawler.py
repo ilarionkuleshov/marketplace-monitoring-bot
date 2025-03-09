@@ -11,8 +11,21 @@ from scrapers.crawlers.base_advert_crawler import BaseAdvertCrawler
 class OlxUaCrawler(BaseAdvertCrawler):
     """Crawler for scraping adverts from `olx.ua`."""
 
+    async def generate_requests(self) -> AsyncIterator[Request]:
+        """Yields request with monitoring URL to start scraping."""
+        yield Request(url=self.monitoring_url, callback=self.parse_search_page)
+
     async def parse_search_page(self, response: Response) -> AsyncIterator[AdvertCreate | Request]:
-        """See `BaseAdvertCrawler` class."""
+        """Parses search page.
+
+        Args:
+            response (Response): Search page response.
+
+        Yields:
+            AdvertCreate: Extracted advert.
+            Request: Next page request.
+
+        """
         raw_adverts = self._get_raw_adverts(response.selector)
 
         for raw_advert in raw_adverts:
@@ -25,8 +38,8 @@ class OlxUaCrawler(BaseAdvertCrawler):
                 monitoring_id=self.monitoring_id,
                 monitoring_run_id=self.monitoring_run_id,
                 url=raw_advert["url"],
-                title=self.crop_str(raw_advert["title"], 100),
-                description=self.crop_str(raw_advert["description"], 300) if raw_advert.get("description") else None,
+                title=self.crop_advert_title(raw_advert["title"]),
+                description=self.crop_advert_description(raw_advert.get("description")),
                 image=raw_advert["photos"][0] if raw_advert.get("photos") else None,
                 price=price_data.get("value") or None,
                 currency=price_data.get("currencyCode") or None,
