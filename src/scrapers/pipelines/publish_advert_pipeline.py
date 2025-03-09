@@ -6,16 +6,18 @@ from settings import TasksSettings
 from tasks.queues import SCRAPING_RESULTS_QUEUE
 
 
-class PublishAdvertPipeline(BasePipeline[AdvertCreate]):
+class PublishAdvertPipeline(BasePipeline):
     """Pipeline to publish advert to message broker."""
+
+    allowed_items = [AdvertCreate]
 
     _broker: RabbitBroker
 
-    async def on_crawler_start(self) -> None:
+    async def on_start(self) -> None:
         """Initializes message broker."""
         self._broker = RabbitBroker(TasksSettings().get_broker_url())
 
-    async def on_crawler_finish(self) -> None:
+    async def on_finish(self) -> None:
         """Closes message broker."""
         await self._broker.close()
 

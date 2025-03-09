@@ -52,8 +52,27 @@ class BaseAdvertCrawler(BaseCrawler, ABC):
         self.monitoring_run_id = monitoring_run_id
         self.monitoring_url = monitoring_url
 
-    @staticmethod
-    def crop_str(str_value: str, max_length: int) -> str:
+    def crop_advert_description(self, description: str | None) -> str | None:
+        """Returns cropped advert description if it's not None.
+
+        Args:
+            description (str | None): Advert description.
+
+        """
+        if not description:
+            return None
+        return self.crop_str(description, 300)
+
+    def crop_advert_title(self, title: str) -> str:
+        """Returns cropped advert title.
+
+        Args:
+            title (str): Advert title.
+
+        """
+        return self.crop_str(title, 100)
+
+    def crop_str(self, str_value: str, max_length: int) -> str:
         """Returns cropped string.
 
         Args:

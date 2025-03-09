@@ -3,13 +3,15 @@ from fastcrawl import BasePipeline
 from database.schemas import AdvertCreate
 
 
-class FilterDuplicateAdvertPipeline(BasePipeline[AdvertCreate]):
+class FilterDuplicateAdvertPipeline(BasePipeline):
     """Pipeline to filter duplicate adverts.
 
     Attributes:
         unique_advert_urls (set[str]): A set to store unique advert urls.
 
     """
+
+    allowed_items = [AdvertCreate]
 
     unique_advert_urls: set[str]
 
@@ -28,9 +30,6 @@ class FilterDuplicateAdvertPipeline(BasePipeline[AdvertCreate]):
             None: If the advert is a duplicate.
 
         """
-        if not isinstance(item, AdvertCreate):
-            return item
-
         advert_url = str(item.url)
         if advert_url in self.unique_advert_urls:
             return None

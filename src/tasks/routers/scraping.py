@@ -20,7 +20,7 @@ from database.schemas import (
     MonitoringRunUpdate,
     UserRead,
 )
-from scrapers.crawlers import BaseAdvertCrawler, OlxUaCrawler
+from scrapers.crawlers import MARKETPLACE_CRAWLERS_MAPPING
 from tasks.dependencies import get_bot
 from tasks.messages import ScrapingTask
 from tasks.queues import SCRAPING_RESULTS_QUEUE, SCRAPING_TASKS_QUEUE
@@ -48,7 +48,7 @@ async def process_scraping_task(scraping_task: ScrapingTask, logger: Logger) -> 
     log_file_dir.mkdir(parents=True, exist_ok=True)
     log_file = log_file_dir / f"{scraping_task.monitoring_run_id}.log"
 
-    crawler_cls: type[BaseAdvertCrawler] = {"Olx UA": OlxUaCrawler}[scraping_task.marketplace_name]
+    crawler_cls = MARKETPLACE_CRAWLERS_MAPPING[scraping_task.marketplace_name]
     crawler = crawler_cls(
         monitoring_id=scraping_task.monitoring_id,
         monitoring_run_id=scraping_task.monitoring_run_id,
